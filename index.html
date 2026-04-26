@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Anydiel IT Services · Solar Installation · Real Image Ready</title>
+    <title>Anydiel IT Services · Complete Solar Installation Guide</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -35,18 +35,16 @@
         .spec-row { display: flex; justify-content: space-between; padding: 0.4rem 0; border-bottom: 1px solid #ddd; font-size: 0.75rem; flex-wrap: wrap; gap: 0.3rem; }
         .value { font-weight: 700; color: #1e6f3f; text-align: right; }
         
-        /* Step Card Styles */
         .step-card { background: white; border-radius: 1rem; margin-bottom: 1.5rem; overflow: hidden; border: 1px solid #e2e8f0; }
         .step-header { background: #0059b3; color: white; padding: 0.7rem; font-weight: bold; font-size: 0.9rem; }
         .step-content { padding: 0.8rem; }
         .diagram { background: #1e2a3a; border-radius: 0.8rem; padding: 0.8rem; margin: 0.6rem 0; text-align: center; overflow-x: auto; }
         
-        /* Image Hero Section - where YOU put your real photos */
         .image-hero {
             background: #f1f5f9;
             border: 2px dashed #0059b3;
             border-radius: 0.8rem;
-            padding: 1rem;
+            padding: 0.8rem;
             margin: 0.8rem 0;
             text-align: center;
             transition: all 0.2s;
@@ -58,18 +56,21 @@
             display: block;
             margin: 0 auto;
         }
-        .image-hero .placeholder-text {
-            color: #0059b3;
-            font-size: 0.7rem;
-            margin-top: 0.5rem;
-            font-family: monospace;
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            margin: 0.8rem 0;
+            border-radius: 0.8rem;
+            background: #000;
         }
-        .image-hero .instruction {
-            background: #e0f2fe;
-            padding: 0.3rem;
-            border-radius: 0.5rem;
-            font-size: 0.65rem;
-            margin-top: 0.3rem;
+        .video-container video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
         
         .warning-box { background: #fee2e2; border-left: 4px solid #dc2626; padding: 0.5rem; border-radius: 0.8rem; margin: 0.6rem 0; font-size: 0.75rem; }
@@ -91,17 +92,90 @@
         .btn-api { background: #e67e22; color: white; border: none; padding: 0.4rem; border-radius: 1rem; width: 100%; cursor: pointer; }
         .status-ok { color: #16a34a; font-size: 0.65rem; }
         .status-error { color: #dc2626; font-size: 0.65rem; }
-        .btn-dark { position: fixed; bottom: 15px; right: 15px; background: #1e293b; color: white; border: none; width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; z-index: 100; }
+        .btn-dark { position: fixed; bottom: 15px; right: 15px; background: #1e293b; color: white; border: none; width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
         
-        .checklist-grid { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.5rem; }
-        .checklist-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; }
+        /* IMPROVED CHECKLIST - MOBILE FRIENDLY */
+        .checklist-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.8rem;
+            padding: 0.5rem;
+            background: #f8fafc;
+            border-radius: 0.75rem;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        body.dark-mode .checklist-item {
+            background: #1e293b;
+        }
+        .checklist-item:hover {
+            background: #e2e8f0;
+            transform: translateX(4px);
+        }
+        body.dark-mode .checklist-item:hover {
+            background: #334155;
+        }
+        .checklist-item input[type="checkbox"] {
+            width: 1.2rem;
+            height: 1.2rem;
+            min-width: 1.2rem;
+            cursor: pointer;
+            accent-color: #1e6f3f;
+            margin: 0;
+        }
+        .checklist-item span {
+            flex: 1;
+            line-height: 1.3;
+        }
+        .checklist-item input:checked + span {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+        
+        /* Better touch targets for mobile */
+        button, .btn-calc, .btn-send, .btn-api, .btn-dark, .checklist-item {
+            touch-action: manipulation;
+        }
+        button:active, .btn-calc:active {
+            transform: scale(0.97);
+        }
+        
+        /* Improved image gallery on mobile */
+        .image-hero img {
+            max-width: 100%;
+        }
+        @media (max-width: 640px) {
+            .image-hero {
+                padding: 0.5rem;
+            }
+        }
+        
+        /* Scroll indicator for better UX */
+        .scroll-hint {
+            text-align: center;
+            font-size: 0.65rem;
+            color: #6c757d;
+            margin: 0.5rem 0;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(5px); }
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="hero-main">
         <h1>⚡ Anydiel IT Services</h1>
-        <p style="font-size:0.75rem;">Complete Solar System · Full Specs · Visual Guides · Add Your Real Photos</p>
+        <p style="font-size:0.75rem;">Complete Solar Installation Guide · Video Tutorial + Step-by-Step Visuals</p>
     </div>
 
     <div class="grid-2col">
@@ -115,7 +189,6 @@
                 <input type="number" id="ratePerKwh" value="12.00" step="0.5">
                 <button class="btn-calc" id="calcFromBillBtn" style="background:#e67e22;">Compute from Bill</button>
             </div>
-            
             <label>⚡ Daily Consumption (Wh/day)</label>
             <input type="number" id="dailyWh" value="5000" step="100">
             <label>🔋 System Voltage</label>
@@ -135,20 +208,19 @@
             <label>🌡️ Ambient Temp (°C)</label>
             <input type="number" id="ambientTemp" value="35">
             <button class="btn-calc" id="calcBtn">⚙️ Generate Full Specs</button>
-            
             <div class="spec-card">
                 <div class="spec-row"><span>☀️ 630W Panels:</span><span class="value" id="panelQty">--</span></div>
                 <div class="spec-row"><span>📐 Roof Space:</span><span class="value" id="roofSpace">--</span></div>
                 <div class="spec-row"><span>⚡ MPPT Rating:</span><span class="value" id="mpptSpec">--</span></div>
-                <div class="spec-row"><span>⚠️ MPPT Voltage Check:</span><span class="value" id="mpptVoltageCheck">--</span></div>
-                <div class="spec-row"><span>🔌 PV Wire Size:</span><span class="value" id="pvWire">--</span></div>
+                <div class="spec-row"><span>⚠️ MPPT Voltage:</span><span class="value" id="mpptVoltageCheck">--</span></div>
+                <div class="spec-row"><span>🔌 PV Wire:</span><span class="value" id="pvWire">--</span></div>
                 <div class="spec-row"><span>🔌 Battery Cable:</span><span class="value" id="batteryCable">--</span></div>
                 <div class="spec-row"><span>📉 Voltage Drop:</span><span class="value" id="voltageDrop">--</span></div>
                 <div class="spec-row"><span>🛡️ PV Breaker:</span><span class="value" id="pvBreaker">--</span></div>
                 <div class="spec-row"><span>🛡️ MPPT Breaker:</span><span class="value" id="mpptBreaker">--</span></div>
                 <div class="spec-row"><span>🛡️ T-Class Fuse:</span><span class="value" id="invBreaker">--</span></div>
                 <div class="spec-row"><span>🌡️ Derated Power:</span><span class="value" id="deratedPower">--</span></div>
-                <div class="spec-row"><span>🔋 C-Rate Check:</span><span class="value" id="cRateCheck">--</span></div>
+                <div class="spec-row"><span>🔋 C-Rate:</span><span class="value" id="cRateCheck">--</span></div>
                 <div class="spec-row"><span>🔄 Inverter:</span><span class="value" id="invSpec">--</span></div>
                 <div class="spec-row"><span>🔋 Battery Bank:</span><span class="value" id="battSpec">--</span></div>
             </div>
@@ -163,7 +235,7 @@
                 <div id="apiStatus" class="status-error">No API key</div>
             </div>
             <div class="chat-messages" id="chatMessages">
-                <div class="message ai-msg">👋 Ask me about any installation step!</div>
+                <div class="message ai-msg">👋 Ask me about any installation step below!</div>
             </div>
             <div class="chat-input-area">
                 <input type="text" class="chat-input" id="chatInput" placeholder="Ask about installation...">
@@ -172,47 +244,38 @@
         </div>
     </div>
 
+    <!-- VIDEO TUTORIAL SECTION -->
+    <div class="step-card">
+        <div class="step-header">🎬 COMPLETE VIDEO TUTORIAL: My Solar Set-up</div>
+        <div class="step-content">
+            <div class="video-container">
+                <video controls poster="https://anydiel.site/Shop/wp-content/uploads/2026/04/Gemini_Generated_Image_z59fucz59fucz59f.png">
+                    <source src="https://anydiel.site/Shop/wp-content/uploads/2026/04/My-Solar-Set-up-tutorial.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="info-box">📺 Watch this full video guide for a complete walkthrough of your solar installation.</div>
+        </div>
+    </div>
+
     <!-- ============================================================ -->
-    <!-- STEP 1: ROOF RAILING with IMAGE HERO -->
+    <!-- STEP 1: ROOF RAILING -->
     <!-- ============================================================ -->
     <div class="step-card">
         <div class="step-header">🏠 STEP 1: Roof Railing Installation</div>
         <div class="step-content">
-            <!-- === INSERT YOUR REAL IMAGE HERE === -->
             <div class="image-hero">
-                <img id="step1Image" src="" alt="Roof railing installation photo" style="display:none;">
-                <div id="step1Placeholder" class="placeholder-text">
-                    📷 YOUR PHOTO HERE
-                    <div class="instruction">Replace the src attribute in the img tag below OR replace this div with &lt;img src="your-photo.jpg"&gt;</div>
-                </div>
-                <div class="instruction">💡 SUGGESTED PHOTO: L-feet mounted on roof with lag bolts into rafters, aluminum rails attached</div>
+                <img src="https://anydiel.site/Shop/wp-content/uploads/2026/04/Gemini_Generated_Image_z59fucz59fucz59f.png" alt="Roof railing installation" style="max-width:100%; border-radius:0.5rem;">
             </div>
-            <!-- IMAGE REPLACEMENT CODE - Uncomment and use this:
-            <div class="image-hero">
-                <img src="https://anydiel.site/Shop/wp-content/uploads/2026/04/Gemini_Generated_Image_z59fucz59fucz59f.png" alt="Roof railing installed" style="max-width:100%; border-radius:0.5rem;">
-            </div>
-            -->
-            
             <div class="diagram">
                 <svg width="100%" height="140" viewBox="0 0 700 140" preserveAspectRatio="xMidYMid meet">
                     <rect x="0" y="80" width="700" height="60" fill="#475569" rx="4"/>
                     <text x="350" y="115" fill="#facc15" font-size="11" text-anchor="middle">ROOF DECK / TILES</text>
-                    <line x1="120" y1="80" x2="120" y2="140" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4"/>
-                    <line x1="350" y1="80" x2="350" y2="140" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4"/>
-                    <line x1="580" y1="80" x2="580" y2="140" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4"/>
-                    <text x="120" y="150" fill="#94a3b8" font-size="6" text-anchor="middle">RAFTER</text>
-                    <text x="350" y="150" fill="#94a3b8" font-size="6" text-anchor="middle">RAFTER</text>
-                    <rect x="95" y="55" width="30" height="30" fill="#94a3b8" rx="3"/><rect x="95" y="50" width="30" height="10" fill="#cbd5e1" rx="2"/>
+                    <rect x="95" y="55" width="30" height="30" fill="#94a3b8" rx="3"/>
                     <text x="110" y="45" fill="#facc15" font-size="7" text-anchor="middle">L-FEET</text>
-                    <rect x="325" y="55" width="30" height="30" fill="#94a3b8" rx="3"/><rect x="325" y="50" width="30" height="10" fill="#cbd5e1" rx="2"/>
-                    <rect x="555" y="55" width="30" height="30" fill="#94a3b8" rx="3"/><rect x="555" y="50" width="30" height="10" fill="#cbd5e1" rx="2"/>
                     <rect x="125" y="62" width="200" height="12" fill="#cbd5e1" rx="3"/>
-                    <rect x="355" y="62" width="200" height="12" fill="#cbd5e1" rx="3"/>
                     <text x="225" y="58" fill="#facc15" font-size="7" text-anchor="middle">ALUMINUM RAIL</text>
-                    <text x="455" y="58" fill="#facc15" font-size="7" text-anchor="middle">ALUMINUM RAIL</text>
                     <line x1="110" y1="80" x2="110" y2="55" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="3"/>
-                    <line x1="340" y1="80" x2="340" y2="55" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="3"/>
-                    <line x1="570" y1="80" x2="570" y2="55" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="3"/>
                 </svg>
             </div>
             <div class="info-box"><strong>🔧 HOW TO INSTALL:</strong> Locate rafters → Mark positions → Install L-feet with lag bolts → Attach aluminum rails → Use level → Seal all penetrations.</div>
@@ -221,16 +284,14 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- STEP 2: PANEL SERIES WIRING with IMAGE HERO -->
+    <!-- STEP 2: MC4 CONNECTORS & SERIES WIRING -->
     <!-- ============================================================ -->
     <div class="step-card">
-        <div class="step-header">☀️ STEP 2: Panel Series Wiring (MC4 Connectors)</div>
+        <div class="step-header">☀️ STEP 2: MC4 Connectors & Panel Series Wiring</div>
         <div class="step-content">
             <div class="image-hero">
-                <div class="placeholder-text">
-                    📷 YOUR PHOTO HERE — MC4 connectors and series wiring
-                    <div class="instruction">Add photo showing: Panel1 NEG (-) connected to Panel2 POS (+)</div>
-                </div>
+                <img src="https://anydiel.site/Shop/wp-content/uploads/2026/04/Gemini_Generated_Image_u1z0e9u1z0e9u1z0.png" alt="MC4 Connector" style="max-width:45%; display:inline-block; margin:0.2rem;">
+                <img src="https://anydiel.site/Shop/wp-content/uploads/2026/04/image-20220514142511-7.webp" alt="Series Connection" style="max-width:45%; display:inline-block; margin:0.2rem;">
             </div>
             <div class="diagram">
                 <svg width="100%" height="160" viewBox="0 0 750 160" preserveAspectRatio="xMidYMid meet">
@@ -245,118 +306,53 @@
                     <path d="M 360 65 L 420 65" stroke="#facc15" stroke-width="2"/>
                     <rect x="430" y="20" width="130" height="70" fill="#2d6a4f" rx="6"/>
                     <text x="495" y="45" fill="#facc15" font-size="9" text-anchor="middle">PANEL 3</text>
-                    <circle cx="455" cy="65" r="7" fill="#ef4444"/><circle cx="535" cy="65" r="7" fill="#333"/>
                     <path d="M 560 65 L 620 65" stroke="#facc15" stroke-width="2"/>
                     <rect x="630" y="20" width="130" height="70" fill="#2d6a4f" rx="6"/>
                     <text x="695" y="45" fill="#facc15" font-size="9" text-anchor="middle">PANEL 4</text>
-                    <circle cx="655" cy="65" r="7" fill="#ef4444"/><circle cx="735" cy="65" r="7" fill="#333"/>
                     <path d="M 55 65 L 15 65 L 15 130" stroke="#ef4444" stroke-width="2" fill="none"/>
                     <text x="8" y="120" fill="#ef4444" font-size="7" text-anchor="middle">TO MPPT+</text>
                     <path d="M 735 65 L 765 65 L 765 130" stroke="#333" stroke-width="2" fill="none"/>
                     <text x="772" y="120" fill="#333" font-size="7" text-anchor="middle">TO MPPT-</text>
                 </svg>
             </div>
-            <div class="info-box"><strong>🔴 SERIES RULE:</strong> Panel1 NEG (-) → Panel2 POS (+). Panel2 NEG (-) → Panel3 POS (+). Panel3 NEG (-) → Panel4 POS (+). Free ends: Panel1 POS (+) and Panel4 NEG (-) go to MPPT.</div>
-            <div class="warning-box">⚠️ NEVER exceed MPPT max input voltage! Check your specs above.</div>
+            <div class="info-box"><strong>🔴 SERIES RULE:</strong> Panel1 NEG (-) → Panel2 POS (+). Panel2 NEG (-) → Panel3 POS (+). Panel3 NEG (-) → Panel4 POS (+). Free ends: Panel1 POS (+) and Panel4 NEG (-) to MPPT.</div>
+            <div class="warning-box">⚠️ NEVER exceed MPPT max input voltage! Check calculator specs above.</div>
         </div>
     </div>
 
     <!-- ============================================================ -->
-    <!-- STEP 3: BREAKER 1 (PV to MPPT) with IMAGE HERO -->
+    <!-- STEP 3: SOLAR CHARGE CONTROLLER (MPPT) -->
     <!-- ============================================================ -->
     <div class="step-card">
-        <div class="step-header">🛡️ STEP 3: Breaker 1 — Solar Panels → MPPT</div>
+        <div class="step-header">⚡ STEP 3: Solar Charge Controller (MPPT)</div>
         <div class="step-content">
             <div class="image-hero">
-                <div class="placeholder-text">
-                    📷 YOUR PHOTO HERE — DC breaker between panels and MPPT
-                    <div class="instruction">Show red wire from panels → breaker → MPPT PV+ terminal</div>
-                </div>
+                <img src="https://anydiel.site/Shop/wp-content/uploads/2026/04/1_58559986-fa3f-4c71-9889-ac09d031e5da.webp" alt="MPPT Charge Controller" style="max-width:100%; border-radius:0.5rem;">
             </div>
             <div class="diagram">
                 <svg width="100%" height="120" viewBox="0 0 700 120" preserveAspectRatio="xMidYMid meet">
                     <rect x="30" y="30" width="110" height="50" fill="#2d6a4f" rx="6"/><text x="85" y="55" fill="#facc15" font-size="8" text-anchor="middle">PANELS</text>
                     <path d="M 140 55 L 200 55" stroke="#facc15" stroke-width="2"/>
-                    <rect x="210" y="40" width="70" height="35" fill="#6c757d" rx="5"/><text x="245" y="58" fill="#fff" font-size="6" text-anchor="middle">DC</text>
+                    <rect x="210" y="35" width="70" height="40" fill="#6c757d" rx="5"/><text x="245" y="55" fill="#fff" font-size="6" text-anchor="middle">DC</text>
                     <path d="M 280 55 L 340 55" stroke="#facc15" stroke-width="2"/>
-                    <rect x="350" y="30" width="110" height="50" fill="#0059b3" rx="6"/><text x="405" y="55" fill="#facc15" font-size="8" text-anchor="middle">MPPT</text>
-                    <text x="350" y="105" fill="#facc15" font-size="7" text-anchor="middle">RED + → BREAKER → MPPT PV+ | BLACK - → DIRECT to MPPT PV-</text>
+                    <rect x="350" y="25" width="110" height="60" fill="#0059b3" rx="6"/><text x="405" y="48" fill="#facc15" font-size="7" text-anchor="middle">MPPT</text>
+                    <text x="405" y="65" fill="#fff" font-size="6" text-anchor="middle">CHARGE</text>
+                    <text x="405" y="78" fill="#fff" font-size="6" text-anchor="middle">CONTROLLER</text>
                 </svg>
             </div>
-            <div class="info-box"><strong>🔴 CONNECTION:</strong> Panel POSITIVE (+) → DC Breaker INPUT → Breaker OUTPUT → MPPT PV+. Panel NEGATIVE (-) → Direct to MPPT PV-.</div>
+            <div class="info-box"><strong>🔴 CONNECTION ORDER (CRITICAL):</strong> Connect Battery FIRST to MPPT → Then connect Solar Panels. Never reverse this order!</div>
+            <div class="warning-box">⚠️ Reverse polarity will destroy the MPPT controller! Double-check with a multimeter.</div>
         </div>
     </div>
 
     <!-- ============================================================ -->
-    <!-- STEP 4: BREAKER 2 (MPPT to Battery) with IMAGE HERO -->
+    <!-- STEP 4: BATTERY SERIES WIRING -->
     <!-- ============================================================ -->
     <div class="step-card">
-        <div class="step-header">🛡️ STEP 4: Breaker 2 — MPPT → Battery Bank</div>
+        <div class="step-header">🔋 STEP 4: Battery Series Wiring (12V → 24V / 48V)</div>
         <div class="step-content">
             <div class="image-hero">
-                <div class="placeholder-text">
-                    📷 YOUR PHOTO HERE — DC breaker between MPPT and battery
-                    <div class="instruction">Show MPPT battery positive wire → breaker → battery positive terminal</div>
-                </div>
-            </div>
-            <div class="diagram">
-                <svg width="100%" height="130" viewBox="0 0 700 130" preserveAspectRatio="xMidYMid meet">
-                    <rect x="30" y="25" width="110" height="50" fill="#0059b3" rx="6"/><text x="85" y="48" fill="#facc15" font-size="8" text-anchor="middle">MPPT</text>
-                    <path d="M 140 50 L 200 50" stroke="#ef4444" stroke-width="2"/>
-                    <rect x="210" y="35" width="70" height="35" fill="#6c757d" rx="5"/><text x="245" y="53" fill="#fff" font-size="6" text-anchor="middle">DC</text>
-                    <path d="M 280 50 L 340 50" stroke="#ef4444" stroke-width="2"/>
-                    <rect x="350" y="25" width="110" height="50" fill="#d97706" rx="6"/><text x="405" y="48" fill="#facc15" font-size="8" text-anchor="middle">BATTERY</text>
-                    <path d="M 140 70 L 200 70" stroke="#333" stroke-width="2" stroke-dasharray="4"/>
-                    <path d="M 280 70 L 405 70" stroke="#333" stroke-width="2" stroke-dasharray="4"/>
-                    <text x="350" y="115" fill="#facc15" font-size="7" text-anchor="middle">RED + → BREAKER → BATTERY + | BLACK - → DIRECT to BATTERY -</text>
-                </svg>
-            </div>
-            <div class="info-box"><strong>🔴 CONNECTION:</strong> MPPT Battery POSITIVE (+) → DC Breaker INPUT → Breaker OUTPUT → Battery POSITIVE (+). MPPT NEGATIVE (-) → Direct to Battery NEGATIVE (-).</div>
-            <div class="warning-box">⚠️ NEVER put a breaker on the negative wire! Only positive wire needs protection.</div>
-        </div>
-    </div>
-
-    <!-- ============================================================ -->
-    <!-- STEP 5: T-CLASS FUSE (Battery to Inverter) with IMAGE HERO -->
-    <!-- ============================================================ -->
-    <div class="step-card">
-        <div class="step-header">🛡️ STEP 5: T-Class Fuse — Battery → Inverter</div>
-        <div class="step-content">
-            <div class="image-hero">
-                <div class="placeholder-text">
-                    📷 YOUR PHOTO HERE — T-Class fuse mounted near battery positive
-                    <div class="instruction">Show fuse holder within 7 inches of battery positive terminal</div>
-                </div>
-            </div>
-            <div class="diagram">
-                <svg width="100%" height="140" viewBox="0 0 700 140" preserveAspectRatio="xMidYMid meet">
-                    <rect x="30" y="25" width="110" height="50" fill="#d97706" rx="6"/><text x="85" y="48" fill="#facc15" font-size="8" text-anchor="middle">BATTERY</text>
-                    <path d="M 140 50 L 200 50" stroke="#ef4444" stroke-width="2"/>
-                    <rect x="210" y="30" width="80" height="40" fill="#dc2626" rx="5"/><text x="250" y="48" fill="#fff" font-size="6" text-anchor="middle">T-CLASS</text>
-                    <text x="250" y="20" fill="#facc15" font-size="5" text-anchor="middle">Within 7 inches</text>
-                    <path d="M 290 50 L 350 50" stroke="#ef4444" stroke-width="2"/>
-                    <rect x="360" y="20" width="110" height="60" fill="#7c3aed" rx="6"/><text x="415" y="45" fill="#facc15" font-size="8" text-anchor="middle">INVERTER</text>
-                    <path d="M 140 70 L 200 70" stroke="#333" stroke-width="2" stroke-dasharray="4"/>
-                    <path d="M 290 70 L 415 70" stroke="#333" stroke-width="2" stroke-dasharray="4"/>
-                    <text x="350" y="120" fill="#facc15" font-size="7" text-anchor="middle">BATTERY + → T-FUSE → INVERTER DC+ | BATTERY - → DIRECT to INVERTER DC-</text>
-                </svg>
-            </div>
-            <div class="info-box"><strong>🔴 CONNECTION:</strong> Battery POSITIVE (+) → T-Class Fuse (within 7 inches) → Inverter DC+. Battery NEGATIVE (-) → Direct to Inverter DC-.</div>
-            <div class="warning-box">⚠️ This is the MOST IMPORTANT safety device! Use T-class fuse for lithium batteries.</div>
-        </div>
-    </div>
-
-    <!-- ============================================================ -->
-    <!-- STEP 6: BATTERY SERIES WIRING with IMAGE HERO -->
-    <!-- ============================================================ -->
-    <div class="step-card">
-        <div class="step-header">🔋 STEP 6: Battery Series Wiring (12V → 24V / 48V)</div>
-        <div class="step-content">
-            <div class="image-hero">
-                <div class="placeholder-text">
-                    📷 YOUR PHOTO HERE — Batteries wired in series (negative to positive)
-                    <div class="instruction">Show 2x12V batteries: A negative to B positive, then main wires to +A and -B</div>
-                </div>
+                <img src="https://anydiel.site/Shop/wp-content/uploads/2026/04/3D-LiFePO4-battery-s.png" alt="Battery Series Wiring" style="max-width:100%; border-radius:0.5rem;" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'200\' viewBox=\'0 0 300 200\'%3E%3Crect width=\'300\' height=\'200\' fill=\'%23d97706\'/%3E%3Ctext x=\'150\' y=\'110\' font-size=\'14\' text-anchor=\'middle\' fill=\'%23fff\'%3EBattery Series%3C/text%3E%3C/svg%3E'">
             </div>
             <div class="diagram">
                 <svg width="100%" height="140" viewBox="0 0 700 140" preserveAspectRatio="xMidYMid meet">
@@ -379,17 +375,66 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- COMPLETE SYSTEM FLOW + CHECKLIST -->
+    <!-- STEP 5: INVERTER & LOADS -->
+    <!-- ============================================================ -->
+    <div class="step-card">
+        <div class="step-header">🔌 STEP 5: Inverter Connection (Battery → Inverter)</div>
+        <div class="step-content">
+            <div class="image-hero">
+                <img src="https://anydiel.site/Shop/wp-content/uploads/2026/04/05d3cf66-9011-4b42-9c06-c77bdb43db40.jpg" alt="Inverter Connection" style="max-width:100%; border-radius:0.5rem;" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'200\' viewBox=\'0 0 300 200\'%3E%3Crect width=\'300\' height=\'200\' fill=\'%237c3aed\'/%3E%3Ctext x=\'150\' y=\'110\' font-size=\'14\' text-anchor=\'middle\' fill=\'%23fff\'%3EInverter%3C/text%3E%3C/svg%3E'">
+            </div>
+            <div class="diagram">
+                <svg width="100%" height="140" viewBox="0 0 700 140" preserveAspectRatio="xMidYMid meet">
+                    <rect x="30" y="25" width="110" height="50" fill="#d97706" rx="6"/><text x="85" y="48" fill="#facc15" font-size="8" text-anchor="middle">BATTERY</text>
+                    <path d="M 140 50 L 200 50" stroke="#ef4444" stroke-width="2"/>
+                    <rect x="210" y="30" width="80" height="40" fill="#dc2626" rx="5"/><text x="250" y="48" fill="#fff" font-size="6" text-anchor="middle">T-FUSE</text>
+                    <text x="250" y="20" fill="#facc15" font-size="5" text-anchor="middle">Within 7 inches</text>
+                    <path d="M 290 50 L 350 50" stroke="#ef4444" stroke-width="2"/>
+                    <rect x="360" y="20" width="110" height="60" fill="#7c3aed" rx="6"/><text x="415" y="45" fill="#facc15" font-size="8" text-anchor="middle">INVERTER</text>
+                    <text x="415" y="60" fill="#fff" font-size="6" text-anchor="middle">DC+ / DC-</text>
+                    <text x="415" y="72" fill="#fff" font-size="5" text-anchor="middle">AC Output → Loads</text>
+                    <text x="350" y="120" fill="#facc15" font-size="7" text-anchor="middle">BATTERY + → T-FUSE → INVERTER DC+ | BATTERY - → DIRECT</text>
+                </svg>
+            </div>
+            <div class="info-box"><strong>🔴 CONNECTION:</strong> Battery POSITIVE (+) → T-Class Fuse (within 7 inches) → Inverter DC+. Battery NEGATIVE (-) → Direct to Inverter DC-.</div>
+            <div class="warning-box">⚠️ MOST IMPORTANT safety device! Use T-class fuse for lithium batteries.</div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- STEP 6: EARTHING (GROUNDING) -->
+    <!-- ============================================================ -->
+    <div class="step-card">
+        <div class="step-header">⛓️ STEP 6: Earthing (Grounding) - SAFETY CRITICAL</div>
+        <div class="step-content">
+            <div class="image-hero">
+                <img src="https://anydiel.site/Shop/wp-content/uploads/2026/04/05d3cf66-9011-4b42-9c06-c77bdb43db40.jpg" alt="Earthing" style="max-width:100%; border-radius:0.5rem;" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'200\' viewBox=\'0 0 300 200\'%3E%3Crect width=\'300\' height=\'200\' fill=\'%2394a3b8\'/%3E%3Ctext x=\'150\' y=\'110\' font-size=\'14\' text-anchor=\'middle\' fill=\'%23fff\'%3EGrounding%3C/text%3E%3C/svg%3E'">
+            </div>
+            <div class="diagram">
+                <svg width="100%" height="120" viewBox="0 0 600 120" preserveAspectRatio="xMidYMid meet">
+                    <rect x="20" y="10" width="100" height="40" fill="#2d6a4f" rx="4"/><text x="70" y="35" fill="#facc15" font-size="6" text-anchor="middle">PANELS</text>
+                    <rect x="140" y="10" width="100" height="40" fill="#0059b3" rx="4"/><text x="190" y="35" fill="#facc15" font-size="6" text-anchor="middle">MPPT</text>
+                    <rect x="260" y="10" width="100" height="40" fill="#d97706" rx="4"/><text x="310" y="35" fill="#facc15" font-size="6" text-anchor="middle">BATTERY</text>
+                    <rect x="380" y="10" width="100" height="40" fill="#7c3aed" rx="4"/><text x="430" y="35" fill="#facc15" font-size="6" text-anchor="middle">INVERTER</text>
+                    <rect x="280" y="80" width="15" height="30" fill="#94a3b8" rx="2"/><text x="287" y="78" fill="#facc15" font-size="6" text-anchor="middle">⛓️</text>
+                    <text x="287" y="105" fill="#facc15" font-size="5" text-anchor="middle">GROUND</text>
+                    <line x1="70" y1="50" x2="287" y2="80" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="3"/>
+                    <line x1="190" y1="50" x2="287" y2="80" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="3"/>
+                    <line x1="310" y1="50" x2="287" y2="80" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="3"/>
+                    <line x1="430" y1="50" x2="287" y2="80" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="3"/>
+                </svg>
+            </div>
+            <div class="info-box"><strong>⛓️ CRITICAL FOR SAFETY:</strong> Connect ALL metal parts (panels, rails, MPPT case, inverter case) to earth ground rod using 10 AWG copper wire.</div>
+            <div class="warning-box">⚠️ PROPER GROUNDING PROTECTS AGAINST ELECTRIC SHOCK AND EQUIPMENT DAMAGE! Never skip this step.</div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- COMPLETE SYSTEM FLOW -->
     <!-- ============================================================ -->
     <div class="step-card">
         <div class="step-header">📡 COMPLETE SYSTEM: All Components Connected</div>
         <div class="step-content">
-            <div class="image-hero">
-                <div class="placeholder-text">
-                    📷 YOUR PHOTO HERE — Complete installed system
-                    <div class="instruction">Show the full setup: panels on roof → MPPT on wall → battery bank → inverter → breaker panel</div>
-                </div>
-            </div>
             <div class="diagram">
                 <svg width="100%" height="140" viewBox="0 0 750 140" preserveAspectRatio="xMidYMid meet">
                     <rect x="5" y="40" width="70" height="40" fill="#2d6a4f" rx="4"/><text x="40" y="60" fill="#facc15" font-size="6" text-anchor="middle">PANELS</text>
@@ -399,29 +444,54 @@
                     <rect x="275" y="35" width="70" height="40" fill="#d97706" rx="4"/><text x="310" y="55" fill="#facc15" font-size="6" text-anchor="middle">BATTERY</text>
                     <rect x="355" y="45" width="50" height="30" fill="#dc2626" rx="3"/><text x="380" y="60" fill="#fff" font-size="5" text-anchor="middle">FUSE</text>
                     <rect x="415" y="30" width="70" height="50" fill="#7c3aed" rx="4"/><text x="450" y="55" fill="#facc15" font-size="6" text-anchor="middle">INVERTER</text>
-                    <text x="60" y="120" fill="#facc15" font-size="7" text-anchor="middle">FLOW: Panels → BRK1 → MPPT → BRK2 → Battery → T-FUSE → Inverter → AC Loads</text>
+                    <text x="60" y="120" fill="#facc15" font-size="7" text-anchor="middle">FLOW: Panels → BRK1 → MPPT → BRK2 → Battery → FUSE → Inverter → AC Loads</text>
                 </svg>
             </div>
-            <div class="success-box"><strong>✅ STARTUP SEQUENCE:</strong> Breaker 2 ON → Breaker 1 ON → T-Fuse ON → Inverter ON</div>
+            <div class="success-box"><strong>✅ STARTUP SEQUENCE:</strong> Breaker 2 (Battery) ON → Breaker 1 (Solar) ON → T-Fuse ON → Inverter ON</div>
+            <div class="scroll-hint">👇 Scroll down for checklist 👇</div>
         </div>
     </div>
 
-    <!-- INSTALLATION CHECKLIST -->
+    <!-- IMPROVED INSTALLATION CHECKLIST - MOBILE OPTIMIZED -->
     <div class="card">
         <h3 style="font-size:0.9rem;">✅ Final Installation Checklist</h3>
-        <div class="checklist-grid">
-            <label class="checklist-item"><input type="checkbox" id="ch1"> Roof railing installed with L-feet into rafters</label>
-            <label class="checklist-item"><input type="checkbox" id="ch2"> Panels mounted and wired in SERIES (NEG to POS)</label>
-            <label class="checklist-item"><input type="checkbox" id="ch3"> Breaker 1 (PV→MPPT) on POSITIVE wire</label>
-            <label class="checklist-item"><input type="checkbox" id="ch4"> Breaker 2 (MPPT→Battery) on POSITIVE wire</label>
-            <label class="checklist-item"><input type="checkbox" id="ch5"> T-Class Fuse within 7 inches of battery</label>
-            <label class="checklist-item"><input type="checkbox" id="ch6"> Batteries wired in series correctly</label>
-            <label class="checklist-item"><input type="checkbox" id="ch7"> MC4 connectors clicked and polarity verified</label>
-            <label class="checklist-item"><input type="checkbox" id="ch8"> System grounded to earth rod</label>
+        <div class="checklist-grid" id="checklistGrid">
+            <label class="checklist-item" id="ch1">
+                <input type="checkbox" class="check-box">
+                <span>🏠 Roof railing installed with L-feet into rafters</span>
+            </label>
+            <label class="checklist-item" id="ch2">
+                <input type="checkbox" class="check-box">
+                <span>🔌 MC4 connectors wired in SERIES (NEG to POS)</span>
+            </label>
+            <label class="checklist-item" id="ch3">
+                <input type="checkbox" class="check-box">
+                <span>⚡ MPPT connected: Battery FIRST, then Panels</span>
+            </label>
+            <label class="checklist-item" id="ch4">
+                <input type="checkbox" class="check-box">
+                <span>🔋 Batteries wired in series correctly (12V→24V/48V)</span>
+            </label>
+            <label class="checklist-item" id="ch5">
+                <input type="checkbox" class="check-box">
+                <span>🛡️ T-Class Fuse within 7 inches of battery positive</span>
+            </label>
+            <label class="checklist-item" id="ch6">
+                <input type="checkbox" class="check-box">
+                <span>🔄 Inverter connected to battery bank</span>
+            </label>
+            <label class="checklist-item" id="ch7">
+                <input type="checkbox" class="check-box">
+                <span>⛓️ EARTHING: All metal frames connected to ground rod</span>
+            </label>
+            <label class="checklist-item" id="ch8">
+                <input type="checkbox" class="check-box">
+                <span>✅ Polarity verified with multimeter before startup</span>
+            </label>
         </div>
     </div>
 
-    <footer>© 2026 Anydiel IT Services · Complete Solar Installation Guide · Add your real photos in each step's image hero section</footer>
+    <footer>© 2026 Anydiel IT Services · Complete Solar Installation Guide · Video + 6-Step Visual Tutorial</footer>
 </div>
 
 <button class="btn-dark" id="darkModeBtn">🌙</button>
@@ -462,7 +532,6 @@
         }
         
         let pvWire = mpptCurrent <= 20 ? "12 AWG (4mm²)" : (mpptCurrent <= 30 ? "10 AWG (6mm²)" : (mpptCurrent <= 50 ? "8 AWG (10mm²)" : "6 AWG (16mm²)"));
-        
         let inverterWatts = Math.max(1000, Math.ceil(dailyWh / 8));
         inverterWatts = Math.ceil(inverterWatts / 100) * 100;
         const inverterCurrent = inverterWatts / sysVoltage;
@@ -505,7 +574,7 @@
             ambientTemp: document.getElementById('ambientTemp').value
         };
         localStorage.setItem('solar_inputs', JSON.stringify(inputs));
-        const checks = ['ch1','ch2','ch3','ch4','ch5','ch6','ch7','ch8'].map(id => document.getElementById(id)?.checked || false);
+        const checks = Array.from(document.querySelectorAll('.check-box')).map(cb => cb.checked);
         localStorage.setItem('solar_checklist', JSON.stringify(checks));
     }
     
@@ -523,8 +592,10 @@
             if(d.ambientTemp) document.getElementById('ambientTemp').value = d.ambientTemp;
         }
         const checks = localStorage.getItem('solar_checklist');
-        if(checks) { const chk = JSON.parse(checks);
-            ['ch1','ch2','ch3','ch4','ch5','ch6','ch7','ch8'].forEach((id,i) => { if(document.getElementById(id)) document.getElementById(id).checked = chk[i]; });
+        if(checks) {
+            const chk = JSON.parse(checks);
+            const checkboxes = document.querySelectorAll('.check-box');
+            checkboxes.forEach((cb, i) => { if(chk[i]) cb.checked = chk[i]; });
         }
     }
     
@@ -537,7 +608,7 @@
     document.getElementById('calcBtn').addEventListener('click', calculateSystem);
     document.querySelectorAll('input, select').forEach(el => el.addEventListener('change', calculateSystem));
     window.addEventListener('DOMContentLoaded', () => { loadInputs(); calculateSystem(); });
-    ['ch1','ch2','ch3','ch4','ch5','ch6','ch7','ch8'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).addEventListener('change', saveInputs); });
+    document.querySelectorAll('.check-box').forEach(cb => cb.addEventListener('change', saveInputs));
     
     document.getElementById('darkModeBtn').addEventListener('click', () => { document.body.classList.toggle('dark-mode'); localStorage.setItem('darkMode', document.body.classList.contains('dark-mode')); });
     if(localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark-mode');
