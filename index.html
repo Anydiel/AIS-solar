@@ -185,11 +185,12 @@
             <div class="api-config">
                 <input type="password" class="api-input" id="apiKeyInput" placeholder="OpenRouter API Key (sk-or-v1-...)">
                 <button class="btn-api" id="saveApiBtn">Save Key</button>
+                <button class="btn-api" id="clearApiBtn" style="background:#6c757d; margin-top:0.3rem;">Clear Key</button>
                 <div id="apiStatus" class="status-error">No API key</div>
                 <div id="apiErrorDetail" style="font-size:0.6rem; margin-top:0.3rem; color:#e67e22;"></div>
             </div>
             <div class="chat-messages" id="chatMessages">
-                <div class="message ai-msg">👋 Ask me about installation steps! Add your OpenRouter API key to get AI responses. Free models: Gemini Flash, Llama 3.2, Phi-3.5</div>
+                <div class="message ai-msg">👋 Ask me about installation steps! Add your OpenRouter API key to get AI responses.</div>
             </div>
             <div class="chat-input-area">
                 <input type="text" class="chat-input" id="chatInput" placeholder="Ask about your solar system...">
@@ -436,32 +437,29 @@
     });
     if (localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark-mode');
     
-    // AI Chat with working free models
+    // ========== FIXED AI CHAT - NO ENCRYPTION ==========
     let apiKey = '';
     const errorDetailDiv = document.getElementById('apiErrorDetail');
     
-    function encryptSimple(t) { if (!t) return ''; const s = 'AnydielSolar2024'; let r = ''; for (let i = 0; i < t.length; i++) r += String.fromCharCode(t.charCodeAt(i) ^ s.charCodeAt(i % s.length)); return btoa(r); }
-    function decryptSimple(e) { if (!e) return ''; try { const d = atob(e), s = 'AnydielSolar2024'; let r = ''; for (let i = 0; i < d.length; i++) r += String.fromCharCode(d.charCodeAt(i) ^ s.charCodeAt(i % s.length)); return r; } catch (e) { return ''; } }
-    
-    const storedEnc = localStorage.getItem('openrouter_key_encrypted');
-    if (storedEnc) {
-        apiKey = decryptSimple(storedEnc);
-        if (apiKey && apiKey.startsWith('sk-or-v1-')) {
-            document.getElementById('apiStatus').innerHTML = '✅ API key ready';
-            document.getElementById('apiStatus').className = 'status-ok';
-            document.getElementById('apiKeyInput').value = '••••••';
-        }
+    // Load API key from localStorage (plain text - safe for personal use)
+    const storedKey = localStorage.getItem('openrouter_api_key');
+    if (storedKey && storedKey.startsWith('sk-or-v1-')) {
+        apiKey = storedKey;
+        document.getElementById('apiStatus').innerHTML = '✅ API key loaded';
+        document.getElementById('apiStatus').className = 'status-ok';
+        document.getElementById('apiKeyInput').value = '••••••••••••••••';
     }
     
+    // Save API key (plain text - no encryption to avoid corruption)
     document.getElementById('saveApiBtn').onclick = () => {
         let k = document.getElementById('apiKeyInput').value.trim();
-        if (k === '••••••' && apiKey) k = apiKey;
+        if (k === '••••••••••••••••' && apiKey) k = apiKey;
         if (k && k.startsWith('sk-or-v1-')) {
             apiKey = k;
-            localStorage.setItem('openrouter_key_encrypted', encryptSimple(k));
+            localStorage.setItem('openrouter_api_key', k);
             document.getElementById('apiStatus').innerHTML = '✅ API key saved!';
             document.getElementById('apiStatus').className = 'status-ok';
-            document.getElementById('apiKeyInput').value = '••••••';
+            document.getElementById('apiKeyInput').value = '••••••••••••••••';
             errorDetailDiv.innerHTML = '';
         } else {
             document.getElementById('apiStatus').innerHTML = '❌ Invalid key format';
@@ -470,7 +468,17 @@
         }
     };
     
-    // Updated working free models that are actually free on OpenRouter
+    // Clear API key
+    document.getElementById('clearApiBtn').onclick = () => {
+        apiKey = '';
+        localStorage.removeItem('openrouter_api_key');
+        document.getElementById('apiKeyInput').value = '';
+        document.getElementById('apiStatus').innerHTML = '🗑️ API key cleared';
+        document.getElementById('apiStatus').className = 'status-error';
+        errorDetailDiv.innerHTML = '';
+    };
+    
+    // Working free models on OpenRouter
     const WORKING_FREE_MODELS = [
         'google/gemini-2.0-flash-lite-preview-02-05:free',
         'microsoft/phi-3.5-mini-128k-instruct:free',
@@ -478,12 +486,12 @@
     ];
     
     async function askAI(question) {
-        if (!apiKey) return '⚠️ Please add your OpenRouter API key above.\n\nGet a free key at: https://openrouter.ai/keys';
+        if (!apiKey) return '⚠️ Please add your OpenRouter API key above.\n\nGet a free key at: https://openrouter.ai/keys\n\nYour key works with your trade generator - use the same key here!';
         
         const specs = calculateSystem();
         const systemPrompt = `You are a friendly solar installation expert for the Philippines. 
-Current system: ${specs.dailyWh}Wh/day, ${specs.sysVoltage}V, ${specs.batteryChem === 'lithium' ? 'LiFePO4' : 'Lead-Acid'}, ${specs.panelCount}x630W panels.
-Provide helpful, practical DIY solar advice for Philippine conditions (typhoon-proof mounting, 5 sun hours, budget options).`;
+Current system: ${specs.dailyWh}Wh/day, ${specs.sysVoltage}V, ${specs.batteryChem === 'lithium' ? 'LiFePO4' : 'Lead-Acid'}, ${specs.panelCount} x 630W panels.
+Provide helpful, practical DIY solar advice for Philippine conditions (typhoon-proof mounting, budget options, safety).`;
         
         for (const model of WORKING_FREE_MODELS) {
             try {
@@ -508,10 +516,18 @@ Provide helpful, practical DIY solar advice for Philippine conditions (typhoon-p
                     errorDetailDiv.innerHTML = '';
                     return data.choices[0].message.content;
                 }
-            } catch (e) { continue; }
+                if (data.error) {
+                    console.log(`Model ${model} error:`, data.error.message);
+                    continue;
+                }
+            } catch (e) {
+                console.log(`Model ${model} failed:`, e.message);
+                continue;
+            }
         }
-        errorDetailDiv.innerHTML = 'API error. Your key may need credits or is invalid.';
-        return `⚠️ Unable to reach AI service. Your OpenRouter key may need credits.\n\n💡 The calculator and visual guide still work perfectly for your installation!`;
+        
+        errorDetailDiv.innerHTML = '⚠️ API error. Your key may need credits at openrouter.ai/keys';
+        return `⚠️ Unable to reach AI service. Your OpenRouter API key may need credits.\n\n💡 The calculator and visual guide still work perfectly! Check your key at: https://openrouter.ai/keys`;
     }
     
     async function handleSend() {
