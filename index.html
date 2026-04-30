@@ -703,7 +703,7 @@
 
     <button class="btn-dark" id="darkModeBtn">🌙</button>
 
-    <script>
+   <script>
         // ============================================
         // SOLAR CALCULATOR SCRIPT - ENHANCED WITH BMS PRODUCT MATCHING & REAL-WORLD BUFFER
         // ============================================
@@ -711,7 +711,7 @@
         const SECRET_ACCESS_CODE = 'ANYDIEL2026';
         
         // PROXY SETUP - API key is hidden in proxy.html
-        const PROXY_URL = 'proxy.html';  // Make sure proxy.html is in the same folder
+        const PROXY_URL = 'proxy.html';
         
         const savedAccess = localStorage.getItem('solar_access_granted');
         if (savedAccess === 'true') {
@@ -796,36 +796,29 @@
             matches.sort((a,b) => a.score - b.score);
             return matches.slice(0, 3);
         }
-
-                 // ============================================
+        
+        // ============================================
         // NEW: STRING VOLTAGE & PARALLEL CONFIGURATION RECOMMENDATION
         // ============================================
         function getStringConfiguration(panelCount, panelVoc, sysVoltage) {
-            // Determine max string voltage based on system voltage
             let maxStringVoltage = (sysVoltage === 24) ? 100 : 250;
-            
-            // Calculate max panels per string
             let maxPanelsPerString = Math.floor(maxStringVoltage / panelVoc);
             if (maxPanelsPerString < 1) maxPanelsPerString = 1;
             
-            // Calculate optimal configuration
             let strings = Math.ceil(panelCount / maxPanelsPerString);
             let panelsPerString = Math.ceil(panelCount / strings);
             let actualStringVoltage = panelsPerString * panelVoc;
             
-            // Try to balance strings if possible
             let bestConfig = {
                 config: `${panelsPerString}S${strings}P`,
                 strings: strings,
                 panelsPerString: panelsPerString,
                 stringVoltage: actualStringVoltage,
                 isSafe: actualStringVoltage <= maxStringVoltage,
-                warning: actualStringVoltage > maxStringVoltage ? 
-                    `⚠️ String voltage ${actualStringVoltage}V exceeds ${maxStringVoltage}V limit! Reconfigure.` : "",
+                warning: actualStringVoltage > maxStringVoltage ? `⚠️ String voltage ${actualStringVoltage}V exceeds ${maxStringVoltage}V limit! Reconfigure.` : "",
                 details: []
             };
             
-            // Generate detailed string breakdown
             for (let i = 1; i <= strings; i++) {
                 let pCount = (i <= (panelCount % strings)) ? panelsPerString : (panelsPerString - 1);
                 if (pCount <= 0) pCount = panelsPerString;
@@ -833,16 +826,18 @@
                 bestConfig.details.push(`String ${i}: ${pCount} panels × ${panelVoc}V = ${vString}V`);
             }
             
-            // If unbalanced, show balanced alternative
             if (panelCount % strings !== 0 && strings > 1) {
-                bestConfig.alternative = `For balanced strings: ${Math.floor(panelCount/strings)}S${strings}P (${Math.floor(panelCount/strings)} panels per string at ${Math.floor(panelCount/strings) * panelVoc}V)`;
+                let balancedPanels = Math.floor(panelCount / strings);
+                if (balancedPanels > 0) {
+                    bestConfig.alternative = `For balanced strings: ${balancedPanels}S${strings}P (${balancedPanels} panels per string at ${balancedPanels * panelVoc}V)`;
+                }
             }
             
             return bestConfig;
-        } 
+        }
         
         // ============================================
-        // MAIN CALCULATION FUNCTION - FIXED INVERTER SIZING
+        // MAIN CALCULATION FUNCTION - FIXED INVERTER SIZING WITH STRING CONFIG
         // ============================================
         function calculateSystem() {
             let dailyWh = parseFloat(document.getElementById('dailyWh')?.value) || 5000;
@@ -868,7 +863,6 @@
             if (idealPanelCount < 1) idealPanelCount = 1;
             if (idealPanelCount > 30) idealPanelCount = 30;
             
-            // Real-world panel recommendation (minimum vs recommended)
             let minPanelCount = idealPanelCount;
             let recPanelCount = idealPanelCount + 2;
             if (recPanelCount > 30) recPanelCount = 30;
@@ -877,24 +871,25 @@
             const totalArrayWattsRec = recPanelCount * panelWatt;
             const roofSpaceMin = (minPanelCount * panelArea * 1.1).toFixed(1);
             
-            // MPPT sizing (this handles battery charging)
             let mpptCurrentRec = totalArrayWattsRec / sysVoltage;
             let mpptRating = Math.ceil(mpptCurrentRec * 1.25);
             if (mpptRating < 10) mpptRating = 10;
             if (mpptRating > 150) mpptRating = 150;
             
-            const stringVoltageRec = recPanelCount * panelVoc;
+            // Use new string configuration function
+            const stringConfig = getStringConfiguration(recPanelCount, panelVoc, sysVoltage);
+            const stringVoltageRec = stringConfig.stringVoltage;
             
             let recommendationHtml = "";
-            if (sysVoltage === 24 && stringVoltageRec > 100) {
-                recommendationHtml = `⚠️ Your ${recPanelCount} panels create ${stringVoltageRec}V string voltage, which exceeds safe limits for 24V systems.<br><br>
-                <strong>✅ SOLUTIONS:</strong><br>
-                1. <strong>Switch to 48V system</strong> - Click dropdown above and change to 48V.<br>
-                2. <strong>Split into 2 parallel strings</strong> - Wire as 2 strings of ${Math.ceil(recPanelCount/2)} panels each.<br>
-                3. <strong>Use 250V MPPT</strong> - Victron 250/100 (₱44,900) or Epever Tracer 8420AN (₱18,500)`;
+            if (!stringConfig.isSafe) {
+                recommendationHtml = `⚠️ String voltage ${stringConfig.stringVoltage}V exceeds safe limit for ${sysVoltage}V system.<br><br>
+                <strong>✅ RECOMMENDED WIRING:</strong><br>
+                • ${stringConfig.config} configuration<br>
+                • ${stringConfig.details.join('<br>• ')}<br>
+                ${stringConfig.alternative ? `• ${stringConfig.alternative}` : ''}`;
                 document.getElementById('recommendationBox').style.display = 'block';
             } else if (sysVoltage === 48 && stringVoltageRec > 250) {
-                recommendationHtml = `⚠️ String voltage ${stringVoltageRec}V exceeds 250V limit. Split into 2 parallel strings.`;
+                recommendationHtml = `⚠️ String voltage ${stringVoltageRec}V exceeds 250V limit. ${stringConfig.config} recommended.`;
                 document.getElementById('recommendationBox').style.display = 'block';
             } else {
                 document.getElementById('recommendationBox').style.display = 'none';
@@ -903,42 +898,38 @@
                 document.getElementById('recommendationText').innerHTML = recommendationHtml;
             }
             
+            // Build detailed string voltage display
+            let stringVoltageDetails = `${stringConfig.stringVoltage}V (${stringConfig.config})<br><small>`;
+            for (let detail of stringConfig.details) {
+                stringVoltageDetails += `${detail}<br>`;
+            }
+            if (stringConfig.alternative) {
+                stringVoltageDetails += `💡 ${stringConfig.alternative}<br>`;
+            }
+            stringVoltageDetails += `</small>`;
+            
             let stringVoltageStatus = "";
             let stringVoltageClass = "value";
-            if (sysVoltage === 24 && stringVoltageRec > 100) {
-                stringVoltageStatus = `❌ HIGH: ${stringVoltageRec}V (Exceeds 100V limit)`;
-                stringVoltageClass = "warning-value";
-            } else if (sysVoltage === 48 && stringVoltageRec > 250) {
-                stringVoltageStatus = `❌ HIGH: ${stringVoltageRec}V (Exceeds 250V limit)`;
-                stringVoltageClass = "warning-value";
-            } else {
-                stringVoltageStatus = `✅ ${stringVoltageRec}V (Safe with ${recPanelCount} panels)`;
+            if (stringConfig.isSafe) {
+                stringVoltageStatus = `✅ ${stringVoltageDetails}`;
                 stringVoltageClass = "success-value";
+            } else {
+                stringVoltageStatus = `❌ HIGH: ${stringVoltageDetails}`;
+                stringVoltageClass = "warning-value";
             }
             if (document.getElementById('stringVoltage')) {
                 document.getElementById('stringVoltage').innerHTML = stringVoltageStatus;
                 document.getElementById('stringVoltage').className = stringVoltageClass;
             }
             
-            // PV Wire sizing based on MPPT current
             let pvWire = mpptCurrentRec <= 20 ? "12 AWG (4mm²)" : (mpptCurrentRec <= 30 ? "10 AWG (6mm²)" : (mpptCurrentRec <= 50 ? "8 AWG (10mm²)" : "6 AWG (16mm²)"));
             
-            // ============================================
-            // FIXED: INVERTER SIZING - Must handle BOTH load AND solar array
-            // ============================================
+            // FIXED: Inverter sizing based on BOTH load AND solar array
             let estimatedPeakLoad = Math.max(500, Math.ceil(dailyWh / 6));
-            
-            // Rule 1: Inverter must handle peak load with safety margin
             let inverterByLoad = Math.ceil(estimatedPeakLoad * 1.25);
-            
-            // Rule 2: Inverter must handle solar array output
-            // For hybrid inverters, the inverter rating should be at least 85% of solar array
             let inverterBySolar = Math.ceil(totalArrayWattsRec * 0.85);
-            
-            // Take the larger of the two
             let inverterWatts = Math.max(inverterByLoad, inverterBySolar);
             
-            // Round UP to common commercial sizes
             const commonSizes = [800, 1000, 1500, 2000, 2500, 3000, 4000, 5000, 6000, 8000, 10000, 12000, 15000];
             for (let size of commonSizes) { 
                 if (inverterWatts <= size) { 
@@ -947,10 +938,8 @@
                 }
             }
             
-            // Calculate inverter current for wire sizing
             const inverterCurrent = inverterWatts / sysVoltage;
             
-            // Battery cable sizing based on inverter current
             let batteryCable = "";
             if (inverterCurrent <= 30) batteryCable = "10 AWG (6mm²)";
             else if (inverterCurrent <= 50) batteryCable = "8 AWG (10mm²)";
@@ -959,27 +948,23 @@
             else if (inverterCurrent <= 160) batteryCable = "2 AWG (35mm²)";
             else batteryCable = "1/0 AWG (50mm²)";
             
-            // Voltage drop calculation
             const wireResistancePerMeter = 0.00039;
             const voltageDropPercent = ((2 * wireDistance * mpptCurrentRec * wireResistancePerMeter) / sysVoltage) * 100;
             let voltDropStatus = voltageDropPercent > 3 ? `⚠️ ${voltageDropPercent.toFixed(1)}%` : `✅ ${voltageDropPercent.toFixed(1)}%`;
             if (document.getElementById('voltageDrop')) document.getElementById('voltageDrop').innerHTML = voltDropStatus;
             
-            // Breaker sizing
             let breakerValue = Math.ceil(mpptCurrentRec * 1.25);
             if (breakerValue > 150) breakerValue = 150;
             let inverterBreaker = Math.ceil(inverterCurrent * 1.25);
             let batteryBreaker = Math.min(Math.ceil(inverterCurrent * 1.25), 250);
             if (document.getElementById('breakers')) document.getElementById('breakers').innerHTML = `${breakerValue}A DC (PV/MPPT) | ${inverterBreaker}A DC (Inverter) | ${batteryBreaker}A T-Class (Battery)`;
             
-            // Battery sizing (based on consumption, not panels)
             const usablePercent = (batteryChem === 'lithium') ? 0.8 : 0.5;
             const requiredUsableWh = dailyWh * autonomy;
             const totalBatteryWh = requiredUsableWh / usablePercent;
             let requiredAh = Math.ceil(totalBatteryWh / sysVoltage);
             requiredAh = Math.ceil(requiredAh / 20) * 20;
             
-            // Find matching battery from BMS database
             const bestMatches = findBestBatteryMatch(requiredAh, sysVoltage);
             let batteryDisplayText = `${requiredAh}Ah @ ${sysVoltage}V — ${sysVoltage === 12 ? 1 : (sysVoltage === 24 ? 2 : 4)} x 12V in SERIES (theoretical)`;
             
@@ -996,7 +981,6 @@
                 }
             }
             
-            // Determine if inverter is properly matched to solar array
             let inverterMatchStatus = "";
             let inverterMatchClass = "";
             if (inverterWatts >= totalArrayWattsRec * 0.9) {
@@ -1010,7 +994,6 @@
                 inverterMatchClass = "warning-value";
             }
             
-            // Update all display elements
             if (document.getElementById('panelQty')) document.getElementById('panelQty').innerHTML = `${minPanelCount}-${recPanelCount} x 630W (${totalArrayWattsMin}-${totalArrayWattsRec}W total)<br><small>⚡ Minimum: ${minPanelCount} panels | ✅ Recommended: ${recPanelCount} panels (real-world buffer)</small>`;
             if (document.getElementById('roofSpace')) document.getElementById('roofSpace').innerHTML = `${roofSpaceMin} m² (for ${recPanelCount} panels)`;
             if (document.getElementById('mpptSpec')) document.getElementById('mpptSpec').innerHTML = `${mpptRating}A MPPT (controls battery charging)`;
@@ -1019,7 +1002,6 @@
             if (document.getElementById('invSpec')) document.getElementById('invSpec').innerHTML = `${inverterWatts}W Pure Sine Inverter<br><span class="${inverterMatchClass}" style="font-size:0.7rem;">${inverterMatchStatus}</span>`;
             if (document.getElementById('battSpec')) document.getElementById('battSpec').innerHTML = batteryDisplayText;
             
-            // Remove any existing warning box and add if needed
             const existingWarning = document.querySelector('#invSpec .inverter-warning');
             if (existingWarning) existingWarning.remove();
             
@@ -1028,7 +1010,7 @@
                 warningSpan.className = 'warning-box';
                 warningSpan.style.marginTop = '0.5rem';
                 warningSpan.style.fontSize = '0.7rem';
-                warningSpan.innerHTML = `⚠️ INVERTER WARNING: Your ${inverterWatts}W inverter is smaller than your ${totalArrayWattsRec}W solar array. This will limit battery charging. Upgrade to ${Math.ceil(totalArrayWattsRec * 0.9)}W+ inverter.`;
+                warningSpan.innerHTML = `⚠️ INVERTER WARNING: Your ${inverterWatts}W inverter is smaller than your ${totalArrayWattsRec}W solar array. Upgrade to ${Math.ceil(totalArrayWattsRec * 0.9)}W+ inverter.`;
                 const invSpecDiv = document.getElementById('invSpec');
                 if (invSpecDiv && !invSpecDiv.querySelector('.warning-box')) {
                     invSpecDiv.appendChild(warningSpan);
@@ -1073,50 +1055,21 @@
             }
         }
         
-        // ============================================
-        // AI CHAT USING PROXY (UNCHANGED)
-        // ============================================
         async function askAI(question) {
             const specs = calculateSystem();
             const systemPrompt = `You are a solar expert for Philippines. System: ${specs.dailyWh}Wh/day, ${specs.sysVoltage}V, ${specs.panelCount}x630W panels. Provide practical advice.`;
-            
             const proxyUrl = `https://anydiel.site/proxy.php?action=ask&q=${encodeURIComponent(question)}&system=${encodeURIComponent(systemPrompt)}`;
-            
-            console.log('Calling proxy:', proxyUrl);
-            
             try {
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 30000);
-                
-                const response = await fetch(proxyUrl, {
-                    signal: controller.signal,
-                    mode: 'cors'
-                });
-                
+                const response = await fetch(proxyUrl, { signal: controller.signal, mode: 'cors' });
                 clearTimeout(timeoutId);
-                
-                console.log('Response status:', response.status);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-                
+                if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 const answer = await response.text();
-                console.log('Answer received, length:', answer.length);
-                
-                if (answer.includes('Error') || answer.includes('⚠️')) {
-                    return `⚠️ Proxy error: ${answer.substring(0, 200)}`;
-                }
-                
+                if (answer.includes('Error') || answer.includes('⚠️')) return `⚠️ Proxy error: ${answer.substring(0, 200)}`;
                 return answer || 'No response from AI. Please try again.';
-                
             } catch (error) {
-                console.error('Fetch error:', error);
-                
-                if (error.name === 'AbortError') {
-                    return '⚠️ Request timed out. The proxy server is not responding.';
-                }
-                
+                if (error.name === 'AbortError') return '⚠️ Request timed out. The proxy server is not responding.';
                 return `⚠️ Cannot reach proxy server.\n\nError: ${error.message}\n\nMake sure proxy.php is uploaded to https://anydiel.site/`;
             }
         }
@@ -1139,10 +1092,7 @@
             chatDiv.scrollTop = chatDiv.scrollHeight;
         }
         
-        // ============================================
-        // BMS CONFIGURATOR FUNCTIONS (FULLY PRESERVED)
-        // ============================================
-        
+        // BMS Configurator Functions
         function populateBMSdropdown() {
             const select = document.getElementById("bmsSelect");
             if (!select) return;
@@ -1185,9 +1135,7 @@
             const limitingSelect = document.getElementById("limitingMethod");
             const manualGroup = document.getElementById("manualCurrentGroup");
             const noteSpan = document.getElementById("limitingMethodNote");
-            
             if (!limitingSelect) return;
-            
             if (!bms || bms.hasComms === false || bms.code === "USER") {
                 limitingSelect.value = "LC_SET";
                 limitingSelect.disabled = true;
@@ -1198,7 +1146,6 @@
                 }
                 return;
             }
-            
             if (bms.hasComms === true) {
                 limitingSelect.value = "LC_BMS";
                 limitingSelect.disabled = true;
@@ -1216,14 +1163,10 @@
             const count = parseInt(document.getElementById("batteryCount")?.value) || 1;
             const displayDiv = document.getElementById("bmsSpecsDisplay");
             const warningDiv = document.getElementById("bmsWarning");
-            
             setLimitingMethodByBMS(bms);
-            
             if (!displayDiv) return;
-            
             if (!bms || bms.code === "USER") {
-                displayDiv.innerHTML = `<div class="spec-row"><span class="spec-label">Mode:</span><span class="spec-value">🔧 USER MODE</span></div>
-                    <div class="spec-row"><span class="spec-label">Warning:</span><span class="spec-value">Manual voltage & current settings required</span></div>`;
+                displayDiv.innerHTML = `<div class="spec-row"><span class="spec-label">Mode:</span><span class="spec-value">🔧 USER MODE</span></div><div class="spec-row"><span class="spec-label">Warning:</span><span class="spec-value">Manual voltage & current settings required</span></div>`;
                 if (warningDiv) {
                     warningDiv.style.display = "block";
                     warningDiv.innerHTML = "⚠️ USER MODE: BMS communication is OFF. You must manually enter absorption, float, LVD, and current limits from your battery datasheet.";
@@ -1232,261 +1175,50 @@
                 updateInverterConfig();
                 return;
             }
-            
             if (warningDiv) warningDiv.style.display = "none";
-            
             const totalCharge = (typeof bms.chargeMax === "number") ? bms.chargeMax * count : "N/A";
             const totalDischarge = (typeof bms.dischargeMax === "number") ? bms.dischargeMax * count : "N/A";
-            
-            displayDiv.innerHTML = `
-                <div class="spec-row"><span class="spec-label">Brand:</span><span class="spec-value">${bms.brand} ${bms.model || ""}</span></div>
-                <div class="spec-row"><span class="spec-label">Protocol Code:</span><span class="spec-value">${bms.protocol}</span></div>
-                <div class="spec-row"><span class="spec-label">Interface:</span><span class="spec-value">${bms.interface}</span></div>
-                <div class="spec-row"><span class="spec-label">Chemistry:</span><span class="spec-value">${bms.chemistry}</span></div>
-                <div class="spec-row"><span class="spec-label">Nominal Voltage:</span><span class="spec-value">${bms.voltage}V</span></div>
-                <div class="spec-row"><span class="spec-label">Cells in Series:</span><span class="spec-value">${bms.cells || "?"}S</span></div>
-                <div class="spec-row"><span class="spec-label">Max Charge (${count}x parallel):</span><span class="spec-value">${totalCharge}A</span></div>
-                <div class="spec-row"><span class="spec-label">Max Discharge (${count}x parallel):</span><span class="spec-value">${totalDischarge}A</span></div>
-                <div class="spec-row"><span class="spec-label">Peak Current:</span><span class="spec-value">${bms.peakCurrent || bms.dischargeMax || "?"}A</span></div>
-                <div class="spec-row"><span class="spec-label">Absorption Voltage:</span><span class="spec-value">${bms.absorption}V</span></div>
-                <div class="spec-row"><span class="spec-label">Float Voltage:</span><span class="spec-value">${bms.float}V</span></div>
-                <div class="spec-row"><span class="spec-label">Low Voltage Disconnect:</span><span class="spec-value">${bms.lvd}V</span></div>
-                ${bms.lvr ? `<div class="spec-row"><span class="spec-label">Low Voltage Restart:</span><span class="spec-value">${bms.lvr}V</span></div>` : ''}
-                ${bms.hvd ? `<div class="spec-row"><span class="spec-label">High Voltage Disconnect:</span><span class="spec-value">${bms.hvd}V</span></div>` : ''}
-            `;
-            
+            displayDiv.innerHTML = `<div class="spec-row"><span class="spec-label">Brand:</span><span class="spec-value">${bms.brand} ${bms.model || ""}</span></div><div class="spec-row"><span class="spec-label">Protocol Code:</span><span class="spec-value">${bms.protocol}</span></div><div class="spec-row"><span class="spec-label">Interface:</span><span class="spec-value">${bms.interface}</span></div><div class="spec-row"><span class="spec-label">Chemistry:</span><span class="spec-value">${bms.chemistry}</span></div><div class="spec-row"><span class="spec-label">Nominal Voltage:</span><span class="spec-value">${bms.voltage}V</span></div><div class="spec-row"><span class="spec-label">Cells in Series:</span><span class="spec-value">${bms.cells || "?"}S</span></div><div class="spec-row"><span class="spec-label">Max Charge (${count}x parallel):</span><span class="spec-value">${totalCharge}A</span></div><div class="spec-row"><span class="spec-label">Max Discharge (${count}x parallel):</span><span class="spec-value">${totalDischarge}A</span></div><div class="spec-row"><span class="spec-label">Peak Current:</span><span class="spec-value">${bms.peakCurrent || bms.dischargeMax || "?"}A</span></div><div class="spec-row"><span class="spec-label">Absorption Voltage:</span><span class="spec-value">${bms.absorption}V</span></div><div class="spec-row"><span class="spec-label">Float Voltage:</span><span class="spec-value">${bms.float}V</span></div><div class="spec-row"><span class="spec-label">Low Voltage Disconnect:</span><span class="spec-value">${bms.lvd}V</span></div>${bms.lvr ? `<div class="spec-row"><span class="spec-label">Low Voltage Restart:</span><span class="spec-value">${bms.lvr}V</span></div>` : ''}${bms.hvd ? `<div class="spec-row"><span class="spec-label">High Voltage Disconnect:</span><span class="spec-value">${bms.hvd}V</span></div>` : ''}`;
             if (warningDiv && bms.handshake && bms.handshake > 0) {
                 warningDiv.style.display = "block";
                 warningDiv.innerHTML = `⏱️ Handshake Required: Set BMS Wake Up Delay = ${bms.handshake} seconds to prevent "BMS Lost Communication" error.`;
                 warningDiv.classList.remove("warning-danger");
                 warningDiv.classList.add("warning");
             }
-            
             if (warningDiv && bms.warning) {
                 warningDiv.style.display = "block";
                 warningDiv.innerHTML = `⚠️ ${bms.warning}`;
                 warningDiv.classList.add("warning-danger");
             }
-            
             updateInverterConfig();
         }
         
-        function updateInverterConfig() {
-            const bms = getBMSData();
-            const mode = document.getElementById("modeSelect")?.value || "offgrid";
-            const inverterBrand = document.getElementById("inverterBrand")?.value || "";
-            const isOffGrid = (mode === "offgrid");
-            const isHybrid = (mode === "hybrid");
-            const isGridTie = (mode === "gridtie");
-            const count = parseInt(document.getElementById("batteryCount")?.value) || 1;
-            const limitingMethod = document.getElementById("limitingMethod")?.value || "LC_BMS";
-            const manualCurrent = parseInt(document.getElementById("manualCurrent")?.value) || 50;
-            const handshakeDelay = document.getElementById("handshakeDelay")?.value || 10;
-            
-            const hybridDiv = document.getElementById("hybridSettings");
-            const gridtieDiv = document.getElementById("gridtieSettings");
-            const manualGroupDiv = document.getElementById("manualCurrentGroup");
-            const exportGroupDiv = document.getElementById("exportLimitGroup");
-            
-            if (hybridDiv) hybridDiv.style.display = isHybrid ? "block" : "none";
-            if (gridtieDiv) gridtieDiv.style.display = isGridTie ? "block" : "none";
-            if (manualGroupDiv) manualGroupDiv.style.display = (limitingMethod === "LC_SET") ? "block" : "none";
-            
-            const minSOC = document.getElementById("minSOC")?.value || 20;
-            const cutoffSOC = document.getElementById("cutoffSOC")?.value || 5;
-            const gridCharge = document.getElementById("gridCharge")?.value || "disabled";
-            const feedIn = document.getElementById("feedIn")?.value || "disabled";
-            const exportLimit = document.getElementById("exportLimit")?.value || 1000;
-            
-            if (exportGroupDiv) exportGroupDiv.style.display = (feedIn === "limited") ? "block" : "none";
-            
-            let output = "";
-            output += `═══════════════════════════════════════════════════════════════\n`;
-            output += `⚡ ANYDIEL IT SERVICES · INVERTER CONFIGURATION\n`;
-            output += `📍 Philippines Standard: 230V / 60Hz\n`;
-            output += `📅 Generated: ${new Date().toLocaleString()}\n`;
-            output += `═══════════════════════════════════════════════════════════════\n\n`;
-            
-            if (inverterBrand) output += `🔌 INVERTER BRAND: ${inverterBrand}\n\n`;
-            
-            if (!bms || bms.code === "USER") {
-                output += `🔧 BMS MODE: USER (Manual Voltage Mode)\n`;
-                output += `⚠️  BMS Communication: DISABLED\n`;
-                output += `📝 All voltage/current values must be entered manually from battery datasheet.\n\n`;
-            } else {
-                output += `🔋 BATTERY: ${bms.brand} ${bms.model}\n`;
-                output += `📡 Protocol: ${bms.protocol} · Interface: ${bms.interface}\n`;
-                output += `🧪 Chemistry: ${bms.chemistry} · ${bms.voltage}V (${bms.cells || "?"}S)\n`;
-                let totalCharge = (typeof bms.chargeMax === "number") ? bms.chargeMax * count : "MANUAL";
-                let totalDischarge = (typeof bms.dischargeMax === "number") ? bms.dischargeMax * count : "MANUAL";
-                output += `🔁 Batteries in parallel: ${count}\n`;
-                output += `   → Total Max Charge Current: ${totalCharge}A\n`;
-                output += `   → Total Max Discharge Current: ${totalDischarge}A\n`;
-                if (bms.peakCurrent) output += `   → Peak Current (15 sec): ${bms.peakCurrent}A\n`;
-                output += `\n`;
-            }
-            
-            output += `🔄 SYSTEM MODE: `;
-            if (isOffGrid) output += `OFF-GRID (Island Mode)\n`;
-            else if (isHybrid) output += `HYBRID (Grid + Solar + Battery)\n`;
-            else output += `GRID-TIE (No Battery Backup)\n`;
-            
-            if (isHybrid) {
-                output += `   • Min SOC (Switch to Grid): ${minSOC}%\n`;
-                output += `   • Cut-off Discharge SOC: ${cutoffSOC}%\n`;
-                output += `   • Grid Charge: ${gridCharge === "enabled" ? "ENABLED" : "DISABLED (Solar only)"}\n`;
-                output += `   • Feed-in to Grid: ${feedIn === "enabled" ? "ENABLED (Unlimited)" : feedIn === "limited" ? `LIMITED (${exportLimit}W)` : "DISABLED"}\n`;
-            }
-            
-            output += `\n⚙️ LIMITING METHOD: ${limitingMethod} `;
-            if (limitingMethod === "LC_BMS") output += `(BMS Controlled - Auto)`;
-            else if (limitingMethod === "LC_SET") output += `(Manual - User Set)`;
-            else output += `(Inverter Logic)`;
-            output += `\n`;
-            
-            if (limitingMethod === "LC_BMS" && bms && bms.code !== "USER" && typeof bms.chargeMax === "number") {
-                let totalCharge = bms.chargeMax * count;
-                output += `   → Following BMS Max Amps: ${totalCharge}A (Automatic)\n`;
-                output += `   → Inverter will respect BMS charge/discharge limits\n`;
-            } else if (limitingMethod === "LC_SET") {
-                output += `   → Manual Current Limit: ${manualCurrent}A\n`;
-                output += `   → WARNING: Ensure this does not exceed BMS max rating!\n`;
-            } else {
-                output += `   → Inverter internal logic determines current\n`;
-            }
-            
-            if ((bms && bms.handshake > 0) || handshakeDelay > 0) {
-                output += `\n⏱️ BMS HANDSHAKE / WAKE-UP DELAY: ${handshakeDelay || bms?.handshake || 10} seconds\n`;
-            }
-            
-            output += `\n📊 CRITICAL VOLTAGE PARAMETERS:\n`;
-            if (!bms || bms.code === "USER") {
-                output += `   ⚠️  USER MODE: Enter these values from your battery datasheet!\n`;
-                output += `   • Bulk / Absorption Voltage: ______ V\n`;
-                output += `   • Float Voltage: ______ V\n`;
-                output += `   • Low Voltage Disconnect (LVD): ______ V\n`;
-            } else {
-                output += `   • Bulk / Absorption Voltage: ${bms.absorption}V\n`;
-                output += `   • Float Voltage: ${bms.float}V\n`;
-                output += `   • Low Voltage Disconnect (LVD): ${bms.lvd}V\n`;
-                if (bms.lvr) output += `   • Low Voltage Restart: ${bms.lvr}V\n`;
-            }
-            
-            output += `\n🇵🇭 PHILIPPINES GRID STANDARD:\n`;
-            output += `   • AC Output Voltage: 230V\n`;
-            output += `   • AC Frequency: 60Hz\n`;
-            output += `   • Grid Code: Set to "Philippines" or "Default 230V/60Hz"\n`;
-            
-            if (isOffGrid) {
-                output += `\n⚠️ OFF-GRID WARNING:\n`;
-                output += `   • No grid backup → System will shut down at LVD.\n`;
-            }
-            
-            if (isHybrid && gridCharge === "enabled") {
-                output += `\n⚡ GRID CHARGE ENABLED:\n`;
-                output += `   • Set "Charge from Grid Time" if supported (e.g., 2am-5am off-peak).\n`;
-            }
-            
-            output += `\n═══════════════════════════════════════════════════════════════\n`;
-            output += `✅ Configuration complete. Copy these settings to your inverter.\n`;
-            
-            const outputDiv = document.getElementById("inverterConfigOutput");
-            if (outputDiv) outputDiv.innerText = output;
-        }
+        function updateInverterConfig() { const bms = getBMSData(); const mode = document.getElementById("modeSelect")?.value || "offgrid"; const inverterBrand = document.getElementById("inverterBrand")?.value || ""; const isOffGrid = (mode === "offgrid"); const isHybrid = (mode === "hybrid"); const isGridTie = (mode === "gridtie"); const count = parseInt(document.getElementById("batteryCount")?.value) || 1; const limitingMethod = document.getElementById("limitingMethod")?.value || "LC_BMS"; const manualCurrent = parseInt(document.getElementById("manualCurrent")?.value) || 50; const handshakeDelay = document.getElementById("handshakeDelay")?.value || 10; const hybridDiv = document.getElementById("hybridSettings"); const gridtieDiv = document.getElementById("gridtieSettings"); const manualGroupDiv = document.getElementById("manualCurrentGroup"); const exportGroupDiv = document.getElementById("exportLimitGroup"); if (hybridDiv) hybridDiv.style.display = isHybrid ? "block" : "none"; if (gridtieDiv) gridtieDiv.style.display = isGridTie ? "block" : "none"; if (manualGroupDiv) manualGroupDiv.style.display = (limitingMethod === "LC_SET") ? "block" : "none"; const minSOC = document.getElementById("minSOC")?.value || 20; const cutoffSOC = document.getElementById("cutoffSOC")?.value || 5; const gridCharge = document.getElementById("gridCharge")?.value || "disabled"; const feedIn = document.getElementById("feedIn")?.value || "disabled"; const exportLimit = document.getElementById("exportLimit")?.value || 1000; if (exportGroupDiv) exportGroupDiv.style.display = (feedIn === "limited") ? "block" : "none"; let output = ""; output += `═══════════════════════════════════════════════════════════════\n⚡ ANYDIEL IT SERVICES · INVERTER CONFIGURATION\n📍 Philippines Standard: 230V / 60Hz\n📅 Generated: ${new Date().toLocaleString()}\n═══════════════════════════════════════════════════════════════\n\n`; if (inverterBrand) output += `🔌 INVERTER BRAND: ${inverterBrand}\n\n`; if (!bms || bms.code === "USER") { output += `🔧 BMS MODE: USER (Manual Voltage Mode)\n⚠️  BMS Communication: DISABLED\n📝 All voltage/current values must be entered manually from battery datasheet.\n\n`; } else { output += `🔋 BATTERY: ${bms.brand} ${bms.model}\n📡 Protocol: ${bms.protocol} · Interface: ${bms.interface}\n🧪 Chemistry: ${bms.chemistry} · ${bms.voltage}V (${bms.cells || "?"}S)\n`; let totalCharge = (typeof bms.chargeMax === "number") ? bms.chargeMax * count : "MANUAL"; let totalDischarge = (typeof bms.dischargeMax === "number") ? bms.dischargeMax * count : "MANUAL"; output += `🔁 Batteries in parallel: ${count}\n   → Total Max Charge Current: ${totalCharge}A\n   → Total Max Discharge Current: ${totalDischarge}A\n`; if (bms.peakCurrent) output += `   → Peak Current (15 sec): ${bms.peakCurrent}A\n`; output += `\n`; } output += `🔄 SYSTEM MODE: `; if (isOffGrid) output += `OFF-GRID (Island Mode)\n`; else if (isHybrid) output += `HYBRID (Grid + Solar + Battery)\n`; else output += `GRID-TIE (No Battery Backup)\n`; if (isHybrid) { output += `   • Min SOC (Switch to Grid): ${minSOC}%\n   • Cut-off Discharge SOC: ${cutoffSOC}%\n   • Grid Charge: ${gridCharge === "enabled" ? "ENABLED" : "DISABLED (Solar only)"}\n   • Feed-in to Grid: ${feedIn === "enabled" ? "ENABLED (Unlimited)" : feedIn === "limited" ? `LIMITED (${exportLimit}W)` : "DISABLED"}\n`; } output += `\n⚙️ LIMITING METHOD: ${limitingMethod} `; if (limitingMethod === "LC_BMS") output += `(BMS Controlled - Auto)`; else if (limitingMethod === "LC_SET") output += `(Manual - User Set)`; else output += `(Inverter Logic)`; output += `\n`; if (limitingMethod === "LC_BMS" && bms && bms.code !== "USER" && typeof bms.chargeMax === "number") { let totalCharge = bms.chargeMax * count; output += `   → Following BMS Max Amps: ${totalCharge}A (Automatic)\n   → Inverter will respect BMS charge/discharge limits\n`; } else if (limitingMethod === "LC_SET") { output += `   → Manual Current Limit: ${manualCurrent}A\n   → WARNING: Ensure this does not exceed BMS max rating!\n`; } else { output += `   → Inverter internal logic determines current\n`; } if ((bms && bms.handshake > 0) || handshakeDelay > 0) { output += `\n⏱️ BMS HANDSHAKE / WAKE-UP DELAY: ${handshakeDelay || bms?.handshake || 10} seconds\n`; } output += `\n📊 CRITICAL VOLTAGE PARAMETERS:\n`; if (!bms || bms.code === "USER") { output += `   ⚠️  USER MODE: Enter these values from your battery datasheet!\n   • Bulk / Absorption Voltage: ______ V\n   • Float Voltage: ______ V\n   • Low Voltage Disconnect (LVD): ______ V\n`; } else { output += `   • Bulk / Absorption Voltage: ${bms.absorption}V\n   • Float Voltage: ${bms.float}V\n   • Low Voltage Disconnect (LVD): ${bms.lvd}V\n`; if (bms.lvr) output += `   • Low Voltage Restart: ${bms.lvr}V\n`; } output += `\n🇵🇭 PHILIPPINES GRID STANDARD:\n   • AC Output Voltage: 230V\n   • AC Frequency: 60Hz\n   • Grid Code: Set to "Philippines" or "Default 230V/60Hz"\n`; if (isOffGrid) { output += `\n⚠️ OFF-GRID WARNING:\n   • No grid backup → System will shut down at LVD.\n`; } if (isHybrid && gridCharge === "enabled") { output += `\n⚡ GRID CHARGE ENABLED:\n   • Set "Charge from Grid Time" if supported (e.g., 2am-5am off-peak).\n`; } output += `\n═══════════════════════════════════════════════════════════════\n✅ Configuration complete. Copy these settings to your inverter.\n`; const outputDiv = document.getElementById("inverterConfigOutput"); if (outputDiv) outputDiv.innerText = output; }
         
-        function copyConfig() {
-            const text = document.getElementById("inverterConfigOutput")?.innerText;
-            if (!text) return;
-            navigator.clipboard.writeText(text).then(() => alert("✅ Copied!")).catch(() => alert("❌ Failed"));
-        }
+        function copyConfig() { const text = document.getElementById("inverterConfigOutput")?.innerText; if (!text) return; navigator.clipboard.writeText(text).then(() => alert("✅ Copied!")).catch(() => alert("❌ Failed")); }
+        function exportConfig() { const text = document.getElementById("inverterConfigOutput")?.innerText; if (!text) return; const blob = new Blob([text], { type: "text/plain" }); const a = document.createElement("a"); const url = URL.createObjectURL(blob); a.href = url; a.download = `solar_config_${new Date().toISOString().slice(0,19)}.txt`; a.click(); URL.revokeObjectURL(url); }
+        function toggleBMSDarkMode() { document.body.classList.toggle("dark-mode"); const btn = document.querySelector(".bms-header .theme-toggle"); if (btn) { btn.innerHTML = document.body.classList.contains("dark-mode") ? "☀️ Light Mode (BMS)" : "🌙 Dark Mode (BMS)"; } }
         
-        function exportConfig() {
-            const text = document.getElementById("inverterConfigOutput")?.innerText;
-            if (!text) return;
-            const blob = new Blob([text], { type: "text/plain" });
-            const a = document.createElement("a");
-            const url = URL.createObjectURL(blob);
-            a.href = url;
-            a.download = `solar_config_${new Date().toISOString().slice(0,19)}.txt`;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-        
-        function toggleBMSDarkMode() {
-            document.body.classList.toggle("dark-mode");
-            const btn = document.querySelector(".bms-header .theme-toggle");
-            if (btn) {
-                btn.innerHTML = document.body.classList.contains("dark-mode") ? "☀️ Light Mode (BMS)" : "🌙 Dark Mode (BMS)";
-            }
-        }
-        
-        // Initialize everything
-        const calcBtn = document.getElementById('calcBtn');
-        if (calcBtn) calcBtn.addEventListener('click', calculateSystem);
-        
+        const calcBtn = document.getElementById('calcBtn'); if (calcBtn) calcBtn.addEventListener('click', calculateSystem);
         document.querySelectorAll('.check-box').forEach(cb => cb.addEventListener('change', saveInputs));
-        
-        const darkModeBtn = document.getElementById('darkModeBtn');
-        if (darkModeBtn) {
-            darkModeBtn.addEventListener('click', () => {
-                document.body.classList.toggle('dark-mode');
-                localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-            });
-        }
+        const darkModeBtn = document.getElementById('darkModeBtn'); if (darkModeBtn) { darkModeBtn.addEventListener('click', () => { document.body.classList.toggle('dark-mode'); localStorage.setItem('darkMode', document.body.classList.contains('dark-mode')); }); }
         if (localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark-mode');
-        
-        const sendBtn = document.getElementById('sendBtn');
-        if (sendBtn) sendBtn.addEventListener('click', handleSend);
-        const chatInput = document.getElementById('chatInput');
-        if (chatInput) chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
-        
-        loadInputs();
-        if (savedAccess === 'true') {
-            calculateSystem();
-        }
-        
-        // Initialize BMS dropdown and event listeners
+        const sendBtn = document.getElementById('sendBtn'); if (sendBtn) sendBtn.addEventListener('click', handleSend);
+        const chatInput = document.getElementById('chatInput'); if (chatInput) chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
+        loadInputs(); if (savedAccess === 'true') { calculateSystem(); }
         populateBMSdropdown();
-        
-        const bmsSelect = document.getElementById('bmsSelect');
-        if (bmsSelect) bmsSelect.addEventListener('change', updateBMSspecs);
-        
-        const batteryCountInput = document.getElementById('batteryCount');
-        if (batteryCountInput) batteryCountInput.addEventListener('input', updateBMSspecs);
-        
-        const modeSelectBMS = document.getElementById('modeSelect');
-        if (modeSelectBMS) modeSelectBMS.addEventListener('change', updateInverterConfig);
-        
-        const manualCurrentInput = document.getElementById('manualCurrent');
-        if (manualCurrentInput) manualCurrentInput.addEventListener('input', updateInverterConfig);
-        
-        const minSOCInput = document.getElementById('minSOC');
-        if (minSOCInput) minSOCInput.addEventListener('input', updateInverterConfig);
-        
-        const cutoffSOCInput = document.getElementById('cutoffSOC');
-        if (cutoffSOCInput) cutoffSOCInput.addEventListener('input', updateInverterConfig);
-        
-        const gridChargeSelect = document.getElementById('gridCharge');
-        if (gridChargeSelect) gridChargeSelect.addEventListener('change', updateInverterConfig);
-        
-        const feedInSelect = document.getElementById('feedIn');
-        if (feedInSelect) feedInSelect.addEventListener('change', updateInverterConfig);
-        
-        const exportLimitInput = document.getElementById('exportLimit');
-        if (exportLimitInput) exportLimitInput.addEventListener('input', updateInverterConfig);
-        
-        const handshakeDelayInput = document.getElementById('handshakeDelay');
-        if (handshakeDelayInput) handshakeDelayInput.addEventListener('input', updateInverterConfig);
-        
-        const inverterBrandSelect = document.getElementById('inverterBrand');
-        if (inverterBrandSelect) inverterBrandSelect.addEventListener('change', updateInverterConfig);
-        
-        if (savedAccess === 'true') {
-            setTimeout(() => {
-                updateBMSspecs();
-                updateInverterConfig();
-            }, 500);
-        }
+        const bmsSelect = document.getElementById('bmsSelect'); if (bmsSelect) bmsSelect.addEventListener('change', updateBMSspecs);
+        const batteryCountInput = document.getElementById('batteryCount'); if (batteryCountInput) batteryCountInput.addEventListener('input', updateBMSspecs);
+        const modeSelectBMS = document.getElementById('modeSelect'); if (modeSelectBMS) modeSelectBMS.addEventListener('change', updateInverterConfig);
+        const manualCurrentInput = document.getElementById('manualCurrent'); if (manualCurrentInput) manualCurrentInput.addEventListener('input', updateInverterConfig);
+        const minSOCInput = document.getElementById('minSOC'); if (minSOCInput) minSOCInput.addEventListener('input', updateInverterConfig);
+        const cutoffSOCInput = document.getElementById('cutoffSOC'); if (cutoffSOCInput) cutoffSOCInput.addEventListener('input', updateInverterConfig);
+        const gridChargeSelect = document.getElementById('gridCharge'); if (gridChargeSelect) gridChargeSelect.addEventListener('change', updateInverterConfig);
+        const feedInSelect = document.getElementById('feedIn'); if (feedInSelect) feedInSelect.addEventListener('change', updateInverterConfig);
+        const exportLimitInput = document.getElementById('exportLimit'); if (exportLimitInput) exportLimitInput.addEventListener('input', updateInverterConfig);
+        const handshakeDelayInput = document.getElementById('handshakeDelay'); if (handshakeDelayInput) handshakeDelayInput.addEventListener('input', updateInverterConfig);
+        const inverterBrandSelect = document.getElementById('inverterBrand'); if (inverterBrandSelect) inverterBrandSelect.addEventListener('change', updateInverterConfig);
+        if (savedAccess === 'true') { setTimeout(() => { updateBMSspecs(); updateInverterConfig(); }, 500); }
     </script>
 </body>
 </html>
