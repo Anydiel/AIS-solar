@@ -796,6 +796,50 @@
             matches.sort((a,b) => a.score - b.score);
             return matches.slice(0, 3);
         }
+
+                 // ============================================
+        // NEW: STRING VOLTAGE & PARALLEL CONFIGURATION RECOMMENDATION
+        // ============================================
+        function getStringConfiguration(panelCount, panelVoc, sysVoltage) {
+            // Determine max string voltage based on system voltage
+            let maxStringVoltage = (sysVoltage === 24) ? 100 : 250;
+            
+            // Calculate max panels per string
+            let maxPanelsPerString = Math.floor(maxStringVoltage / panelVoc);
+            if (maxPanelsPerString < 1) maxPanelsPerString = 1;
+            
+            // Calculate optimal configuration
+            let strings = Math.ceil(panelCount / maxPanelsPerString);
+            let panelsPerString = Math.ceil(panelCount / strings);
+            let actualStringVoltage = panelsPerString * panelVoc;
+            
+            // Try to balance strings if possible
+            let bestConfig = {
+                config: `${panelsPerString}S${strings}P`,
+                strings: strings,
+                panelsPerString: panelsPerString,
+                stringVoltage: actualStringVoltage,
+                isSafe: actualStringVoltage <= maxStringVoltage,
+                warning: actualStringVoltage > maxStringVoltage ? 
+                    `⚠️ String voltage ${actualStringVoltage}V exceeds ${maxStringVoltage}V limit! Reconfigure.` : "",
+                details: []
+            };
+            
+            // Generate detailed string breakdown
+            for (let i = 1; i <= strings; i++) {
+                let pCount = (i <= (panelCount % strings)) ? panelsPerString : (panelsPerString - 1);
+                if (pCount <= 0) pCount = panelsPerString;
+                let vString = pCount * panelVoc;
+                bestConfig.details.push(`String ${i}: ${pCount} panels × ${panelVoc}V = ${vString}V`);
+            }
+            
+            // If unbalanced, show balanced alternative
+            if (panelCount % strings !== 0 && strings > 1) {
+                bestConfig.alternative = `For balanced strings: ${Math.floor(panelCount/strings)}S${strings}P (${Math.floor(panelCount/strings)} panels per string at ${Math.floor(panelCount/strings) * panelVoc}V)`;
+            }
+            
+            return bestConfig;
+        } 
         
         // ============================================
         // MAIN CALCULATION FUNCTION - FIXED INVERTER SIZING
