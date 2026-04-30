@@ -865,13 +865,26 @@
             const deratedPanelWatt = panelWatt * Math.max(0.7, tempDerateFactor);
             const dailyEnergyPerPanel = deratedPanelWatt * sunHours;
             const totalDailyNeeded = dailyWh / systemEfficiency;
-            let idealPanelCount = Math.ceil(totalDailyNeeded / dailyEnergyPerPanel);
+           let idealPanelCount = Math.ceil(totalDailyNeeded / dailyEnergyPerPanel);
             if (idealPanelCount < 1) idealPanelCount = 1;
             if (idealPanelCount > 30) idealPanelCount = 30;
-            
-            let minPanelCount = idealPanelCount;
-            let recPanelCount = idealPanelCount + 2;
-            if (recPanelCount > 30) recPanelCount = 30;
+
+            // ONLY ALLOW BALANCED PANEL COUNTS (even numbers for parallel strings)
+            const balancedCounts = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30];
+
+            // Find closest balanced count for minimum
+            let minPanelCount = balancedCounts.find(count => count >= idealPanelCount);
+            if (!minPanelCount) minPanelCount = 6;
+
+            // Find closest balanced count for recommended (ideal + 2 buffer)
+            let recTarget = idealPanelCount + 2;
+            let recPanelCount = balancedCounts.find(count => count >= recTarget);
+            if (!recPanelCount) recPanelCount = 8;
+
+            // Ensure recommended is at least minimum + 2
+            if (recPanelCount <= minPanelCount) {
+            recPanelCount = balancedCounts.find(count => count >= minPanelCount + 2) || minPanelCount + 2;
+            }
             
             const totalArrayWattsMin = minPanelCount * panelWatt;
             const totalArrayWattsRec = recPanelCount * panelWatt;
