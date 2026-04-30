@@ -761,18 +761,20 @@
         // AI CHAT USING PROXY (API KEY HIDDEN)
         // ============================================
         async function askAI(question) {
-            const specs = calculateSystem();
-            const systemPrompt = `You are a solar expert for Philippines. System: ${specs.dailyWh}Wh/day, ${specs.sysVoltage}V, ${specs.panelCount}x630W panels. Provide practical advice.`;
-            
-            try {
-                const proxyUrl = `${PROXY_URL}?action=ask&q=${encodeURIComponent(question)}&system=${encodeURIComponent(systemPrompt)}`;
-                const response = await fetch(proxyUrl);
-                const answer = await response.text();
-                return answer;
-            } catch (error) {
-                return '⚠️ Network error. Could not reach proxy server.';
-            }
-        }
+    const specs = calculateSystem();
+    const systemPrompt = `You are a solar expert for Philippines. System: ${specs.dailyWh}Wh/day, ${specs.sysVoltage}V, ${specs.panelCount}x630W panels. Provide practical advice.`;
+    
+    try {
+        // Use the full URL to the proxy on your main domain
+        const proxyUrl = `https://anydiel.site/proxy.html?action=ask&q=${encodeURIComponent(question)}&system=${encodeURIComponent(systemPrompt)}`;
+        const response = await fetch(proxyUrl);
+        const answer = await response.text();
+        return answer;
+    } catch (error) {
+        console.error('Proxy error:', error);
+        return '⚠️ Network error. Could not reach proxy server.';
+    }
+}
         
         async function handleSend() {
             const q = document.getElementById('chatInput').value.trim();
