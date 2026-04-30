@@ -272,6 +272,110 @@
             .spec-row { font-size: 0.7rem; }
             .step-header { font-size: 0.8rem; }
         }
+
+                /* ADDED: Mobile responsive fixes for BMS and Inverter sections */
+        @media (max-width: 768px) {
+            /* Stack all config grid columns vertically */
+            .config-grid {
+                grid-template-columns: 1fr !important;
+                gap: 1rem;
+            }
+            
+            /* Make BMS select dropdown more touch-friendly */
+            #bmsSelect {
+                font-size: 0.9rem;
+                min-height: 200px;
+            }
+            
+            /* Prevent config output from overflowing */
+            .config-output {
+                font-size: 0.65rem;
+                padding: 0.75rem;
+                white-space: pre-wrap;
+                word-break: break-word;
+            }
+            
+            /* Make buttons full width on mobile */
+            .config-grid button {
+                width: 100%;
+                margin: 0.25rem 0;
+            }
+            
+            /* Improve spacing for BMS header */
+            .bms-header {
+                padding: 1rem;
+                text-align: center;
+            }
+            
+            .bms-header h2 {
+                font-size: 1.1rem;
+            }
+            
+            .bms-header p {
+                font-size: 0.75rem;
+            }
+            
+            /* Make input groups easier to tap */
+            .input-group input,
+            .input-group select {
+                min-height: 44px;
+            }
+            
+            /* Fix specs box padding */
+            .specs-box {
+                font-size: 0.7rem;
+                padding: 0.6rem;
+            }
+            
+            .spec-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.2rem;
+            }
+            
+            .spec-row .spec-value {
+                text-align: left;
+                width: 100%;
+            }
+            
+            /* Warning boxes readability */
+            .warning, .warning-danger, .warning-success {
+                font-size: 0.7rem;
+                padding: 0.6rem;
+            }
+            
+            /* BMS theme toggle button */
+            .bms-header .theme-toggle {
+                font-size: 0.7rem;
+                padding: 0.4rem 0.8rem;
+            }
+        }
+        
+        /* Extra small phones */
+        @media (max-width: 480px) {
+            .config-output {
+                font-size: 0.55rem;
+            }
+            
+            .specs-box {
+                max-height: 300px;
+            }
+            
+            .bms-header h2 {
+                font-size: 1rem;
+            }
+        }
+        
+        /* Tablet landscape - 2 columns for config grid */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .config-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+            
+            .config-grid .card:last-child {
+                grid-column: span 2;
+            }
+        }
     </style>
 </head>
 <body>
