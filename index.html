@@ -765,7 +765,7 @@
             const systemPrompt = `You are a solar expert for Philippines. System: ${specs.dailyWh}Wh/day, ${specs.sysVoltage}V, ${specs.panelCount}x630W panels. Provide practical advice.`;
             
             try {
-                const proxyUrl = `${PROXY_URL}?action=ask&q=${encodeURIComponent(question)}&system=${encodeURIComponent(systemPrompt)}`;
+                const proxyUrl = `https://anydiel.site/proxy.php`;
                 const response = await fetch(proxyUrl);
                 const answer = await response.text();
                 return answer;
