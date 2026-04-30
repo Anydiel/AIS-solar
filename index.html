@@ -157,9 +157,7 @@
         body.dark-mode .checklist-item { background: #1e293b; }
         .checklist-item input[type="checkbox"] { width: 1.2rem; height: 1.2rem; accent-color: #1e6f3f; margin: 0; }
 
-        /* ============================================ */
-        /* BMS CONFIGURATOR STYLES (from your provided code) */
-        /* ============================================ */
+        /* BMS CONFIGURATOR STYLES */
         .bms-header {
             background: linear-gradient(135deg, #0b3b5f, #1b4f72);
             color: white;
@@ -231,6 +229,16 @@
             border: 1px solid #cbd5e1;
         }
         
+        /* Disabled select styling */
+        select:disabled {
+            background: #e2e8f0;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        body.dark-mode select:disabled {
+            background: #334155;
+        }
+        
         @media (max-width: 768px) {
             .config-grid { grid-template-columns: 1fr; }
             .bms-header h2 { font-size: 1.2rem; }
@@ -238,9 +246,7 @@
     </style>
 </head>
 <body>
-    <!-- ============================================ -->
-    <!-- PAYWALL SECTION (ORIGINAL) -->
-    <!-- ============================================ -->
+    <!-- PAYWALL SECTION -->
     <div id="paywall" class="paywall-container">
         <h2>⚡ Solar System Designer</h2>
         <p>Get accurate solar calculations + complete installation guide</p>
@@ -272,9 +278,7 @@
         </p>
     </div>
 
-    <!-- ============================================ -->
-    <!-- CALCULATOR CONTENT (ORIGINAL - FULLY PRESERVED) -->
-    <!-- ============================================ -->
+    <!-- CALCULATOR CONTENT -->
     <div id="calculator-content" class="calculator-content">
         <div class="container">
             <div class="hero-main">
@@ -350,7 +354,7 @@
                         <input type="text" class="chat-input" id="chatInput" placeholder="Ask about your solar system...">
                         <button class="btn-send" id="sendBtn">Send</button>
                     </div>
-                    <div id="aiStatus" style="font-size:0.65rem; margin-top:0.3rem; color:#e67e22;">⚠️ AI: Add API key below</div>
+                    <div id="aiStatus" style="font-size:0.65rem; margin-top:0.3rem; color:#16a34a;">✅ AI Assistant Ready via Proxy</div>
                 </div>
             </div>
 
@@ -427,9 +431,7 @@
                 </div>
             </div>
 
-            <!-- ============================================ -->
-            <!-- BMS CONFIGURATOR SECTION (APPENDED - FULLY PRESERVED) -->
-            <!-- ============================================ -->
+            <!-- BMS CONFIGURATOR SECTION -->
             <div class="bms-header">
                 <h2>🔋 BMS + Inverter Configuration Database</h2>
                 <p>Philippines Standard · 230V / 60Hz · 45+ Battery Models · Select your battery for correct inverter settings</p>
@@ -463,7 +465,7 @@
                     <div class="input-group">
                         <label>Number of Batteries in Parallel</label>
                         <input type="number" id="batteryCount" value="1" min="1" max="20" onchange="updateBMSspecs()">
-                        <small style="font-size: 0.7rem;">Total current = per-battery current × number of batteries</small>
+                        <small style="font-size: 0.7rem;">1 pack = 1 parallel. Total current = per-battery current × number of batteries</small>
                     </div>
                     <div id="bmsWarning" class="warning" style="display:none;"></div>
                 </div>
@@ -532,16 +534,18 @@
                         </div>
                     </div>
                     <div class="input-group">
-                        <label>Limiting Method</label>
-                        <select id="limitingMethod" onchange="updateInverterConfig()">
-                            <option value="LC_BMS">LC BMS (Follow BMS Current Limit)</option>
+                        <label>⚙️ Limiting Method (Auto-locked by BMS)</label>
+                        <select id="limitingMethod" disabled style="background: #e2e8f0; cursor: not-allowed;">
+                            <option value="LC_BMS">LC BMS (Follow BMS Current Limit) — Recommended</option>
                             <option value="LC_SET">LC SET (Manual Current Limit)</option>
                             <option value="LC_INV">LC INV (Inverter Logic)</option>
                         </select>
+                        <small id="limitingMethodNote" style="font-size: 0.7rem; color: #16a34a;">✓ BMS communication detected → LC BMS auto-selected</small>
                     </div>
                     <div class="input-group" id="manualCurrentGroup" style="display:none;">
                         <label>Manual Charge Current Limit (A)</label>
                         <input type="number" id="manualCurrent" value="50" step="5" onchange="updateInverterConfig()">
+                        <small style="font-size: 0.7rem; color: #e67e22;">⚠️ Only used when LC SET is active</small>
                     </div>
                     <div class="input-group">
                         <label>BMS Handshake / Wake-up Delay (seconds)</label>
@@ -568,14 +572,14 @@
 
     <script>
         // ============================================
-        // ORIGINAL SOLAR CALCULATOR SCRIPT (FULLY PRESERVED)
+        // ORIGINAL SOLAR CALCULATOR SCRIPT
         // ============================================
         
-        // CONFIGURATION
         const SECRET_ACCESS_CODE = 'ANYDIEL2026';
-        const OPENROUTER_API_KEY = 'REPLACE_WITH_YOUR_ACTUAL_API_KEY_HERE';
         
-        // PAYWALL
+        // PROXY SETUP - API key is hidden in proxy.html
+        const PROXY_URL = 'proxy.html';  // Make sure proxy.html is in the same folder
+        
         const savedAccess = localStorage.getItem('solar_access_granted');
         if (savedAccess === 'true') {
             document.getElementById('paywall').style.display = 'none';
@@ -753,33 +757,20 @@
             }
         }
         
+        // ============================================
+        // AI CHAT USING PROXY (API KEY HIDDEN)
+        // ============================================
         async function askAI(question) {
-            if (!OPENROUTER_API_KEY || OPENROUTER_API_KEY === 'REPLACE_WITH_YOUR_ACTUAL_API_KEY_HERE') {
-                return '⚠️ OpenRouter API key not configured.\n\nPlease edit the file and replace:\nconst OPENROUTER_API_KEY = \'REPLACE_WITH_YOUR_ACTUAL_API_KEY_HERE\';\n\nGet your free key at: https://openrouter.ai/keys';
-            }
-            
             const specs = calculateSystem();
             const systemPrompt = `You are a solar expert for Philippines. System: ${specs.dailyWh}Wh/day, ${specs.sysVoltage}V, ${specs.panelCount}x630W panels. Provide practical advice.`;
             
             try {
-                const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        model: 'meta-llama/llama-3.3-70b-instruct',
-                        messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: question }],
-                        temperature: 0.7,
-                        max_tokens: 800
-                    })
-                });
-                const data = await response.json();
-                if (response.ok && data.choices) return data.choices[0].message.content;
-                return `⚠️ API Error: ${data.error?.message || 'Unknown'}`;
+                const proxyUrl = `${PROXY_URL}?action=ask&q=${encodeURIComponent(question)}&system=${encodeURIComponent(systemPrompt)}`;
+                const response = await fetch(proxyUrl);
+                const answer = await response.text();
+                return answer;
             } catch (error) {
-                return '⚠️ Network error. Check your connection.';
+                return '⚠️ Network error. Could not reach proxy server.';
             }
         }
         
@@ -802,44 +793,44 @@
         }
         
         // ============================================
-        // BMS DATABASE & CONFIGURATOR SCRIPT (FULLY PRESERVED FROM YOUR CODE)
+        // BMS DATABASE & CONFIGURATOR
         // ============================================
         
         const bmsDatabase = {
-            "PYL_US2000": { brand: "Pylontech", model: "US2000", protocol: "PYL", interface: "RS485/CAN", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 25, dischargeMax: 25, peakCurrent: 50, absorption: 53.5, float: 53.0, lvd: 44.0, lvr: 48.0, hvd: 54.0, handshake: 10 },
-            "PYL_US3000": { brand: "Pylontech", model: "US3000", protocol: "PYL", interface: "RS485/CAN", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 37, dischargeMax: 37, peakCurrent: 74, absorption: 53.5, float: 53.0, lvd: 44.0, lvr: 48.0, hvd: 54.0, handshake: 10 },
-            "PYL_US5000": { brand: "Pylontech", model: "US5000", protocol: "PYL", interface: "RS485/CAN", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 50, dischargeMax: 50, peakCurrent: 100, absorption: 53.5, float: 53.0, lvd: 44.0, lvr: 48.0, hvd: 54.0, handshake: 10 },
-            "PYL_UP2500": { brand: "Pylontech", model: "UP2500", protocol: "PYL", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 25, dischargeMax: 25, absorption: 53.5, float: 53.0, lvd: 44.0, handshake: 10 },
-            "PYL_UP5000": { brand: "Pylontech", model: "UP5000", protocol: "PYL", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 50, dischargeMax: 50, absorption: 53.5, float: 53.0, lvd: 44.0, handshake: 10 },
-            "PYL_FORCE_H1": { brand: "Pylontech", model: "Force H1", protocol: "PYL", interface: "CAN", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 50, dischargeMax: 50, absorption: 53.5, float: 53.0, lvd: 44.0, handshake: 10 },
-            "WOW_SRNE": { brand: "SRNE", model: "SR-BP Series", protocol: "WOW", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 16, chargeMax: 50, dischargeMax: 50, peakCurrent: 100, absorption: 54.0, float: 53.6, lvd: 43.0, lvr: 49.0, hvd: 55.0, handshake: 5 },
-            "DAQ_B3": { brand: "Dyness", model: "B3", protocol: "DAQ", interface: "CAN/RS485", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 25, dischargeMax: 25, peakCurrent: 50, absorption: 53.5, float: 53.0, lvd: 45.0, lvr: 49.0, handshake: 8 },
-            "DAQ_B4850": { brand: "Dyness", model: "B4850", protocol: "DAQ", interface: "CAN/RS485", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 25, dischargeMax: 25, absorption: 53.5, float: 53.0, lvd: 45.0, handshake: 8 },
-            "DAQ_BX51100": { brand: "Dyness", model: "BX51100", protocol: "DAQ", interface: "CAN", chemistry: "LiFePO4", voltage: 51.2, cells: 16, chargeMax: 50, dischargeMax: 50, absorption: 57.6, float: 56.8, lvd: 48.0, handshake: 8 },
-            "DAQ_T30": { brand: "Dyness", model: "T30", protocol: "DAQ", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 30, dischargeMax: 30, absorption: 53.5, float: 53.0, lvd: 45.0, handshake: 8 },
-            "HUAWEI_LUNA": { brand: "Huawei", model: "LUNA2000", protocol: "HUAWEI", interface: "CAN (Proprietary)", chemistry: "LiFePO4", voltage: 48, cells: 16, chargeMax: 50, dischargeMax: 50, absorption: 54.0, float: 53.5, lvd: 44.0, handshake: 5, warning: "Check inverter compatibility - Huawei requires specific CAN protocol" },
-            "BYD_BBOX": { brand: "BYD", model: "Battery-Box HVS", protocol: "BYD", interface: "CAN", chemistry: "LiFePO4", voltage: 51.2, cells: 16, chargeMax: 50, dischargeMax: 50, absorption: 57.6, float: 56.8, lvd: 48.0, handshake: 10 },
-            "BYD_HVM": { brand: "BYD", model: "Battery-Box HVM", protocol: "BYD", interface: "CAN", chemistry: "LiFePO4", voltage: 51.2, cells: 16, chargeMax: 40, dischargeMax: 40, absorption: 57.6, float: 56.8, lvd: 48.0, handshake: 10 },
-            "BYD_LVS": { brand: "BYD", model: "Battery-Box LVS", protocol: "BYD", interface: "CAN", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 25, dischargeMax: 25, absorption: 53.5, float: 53.0, lvd: 44.0, handshake: 10 },
-            "GROWATT_ARES": { brand: "Growatt", model: "ARES", protocol: "GROWATT", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 50, dischargeMax: 50, absorption: 54.0, float: 53.5, lvd: 44.0, handshake: 5 },
-            "GROWATT_GBLI": { brand: "Growatt", model: "GBLI", protocol: "GROWATT", interface: "CAN", chemistry: "LiFePO4", voltage: 51.2, cells: 16, chargeMax: 50, dischargeMax: 50, absorption: 57.6, float: 56.8, lvd: 48.0, handshake: 5 },
-            "RDA_RITAR": { brand: "Ritar", model: "Rack Series", protocol: "RDA", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 16, chargeMax: 40, dischargeMax: 40, peakCurrent: 80, absorption: 54.0, float: 53.2, lvd: 44.0, lvr: 48.0, hvd: 55.0, handshake: 5 },
-            "RITAR_WALL": { brand: "Ritar", model: "Wall Mounted", protocol: "RDA", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 16, chargeMax: 50, dischargeMax: 50, absorption: 54.0, float: 53.5, lvd: 44.0, handshake: 5 },
-            "AOG_ALLGRAND": { brand: "Allgrand", model: "Rack Series", protocol: "AOG", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 30, dischargeMax: 30, absorption: 53.8, float: 53.0, lvd: 44.0, lvr: 48.0, handshake: 5 },
-            "PAC_PACE": { brand: "PACE", model: "BMS", protocol: "PAC", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 30, dischargeMax: 30, absorption: 53.5, float: 53.0, lvd: 44.0, lvr: 48.0, handshake: 5 },
-            "OLT_OLITER": { brand: "Oliter", model: "Rack Series", protocol: "OLT", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 25, dischargeMax: 25, absorption: 53.5, float: 53.0, lvd: 44.0, handshake: 5 },
-            "HWD_SUNWODA": { brand: "Sunwoda", model: "Rack Series", protocol: "HWD", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 16, chargeMax: 50, dischargeMax: 50, absorption: 54.0, float: 53.5, lvd: 44.0, handshake: 8 },
-            "UOL_WEILAN": { brand: "Weilan / Vilion", model: "Rack Series", protocol: "UOL", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 25, dischargeMax: 25, absorption: 53.5, float: 53.0, lvd: 44.0, handshake: 8 },
-            "POW_POWMR": { brand: "PowMr", model: "LiFePO4 Battery", protocol: "POW", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 16, chargeMax: 40, dischargeMax: 40, absorption: 54.0, float: 53.2, lvd: 43.0, handshake: 5 },
-            "CEF_CFE": { brand: "CFE", model: "5100S", protocol: "CEF", interface: "CAN", chemistry: "LiFePO4", voltage: 48, cells: 16, chargeMax: 50, dischargeMax: 50, absorption: 54.5, float: 54.0, lvd: 45.0, handshake: 8 },
-            "BSLBATT": { brand: "BSLBATT", model: "Powerwall", protocol: "BSL", interface: "CAN/RS485", chemistry: "LiFePO4", voltage: 51.2, cells: 16, chargeMax: 50, dischargeMax: 50, absorption: 57.6, float: 56.8, lvd: 48.0, handshake: 10 },
-            "LITIO": { brand: "Litio", model: "LFP Series", protocol: "LIT", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 30, dischargeMax: 30, absorption: 53.5, float: 53.0, lvd: 44.0, handshake: 5 },
-            "SOLARPRO": { brand: "SolarPro", model: "Lithium Series", protocol: "PRO", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 16, chargeMax: 35, dischargeMax: 35, absorption: 54.0, float: 53.5, lvd: 44.0, handshake: 5 },
-            "VOLTA": { brand: "Volta", model: "Stage Series", protocol: "VOL", interface: "CAN", chemistry: "LiFePO4", voltage: 51.2, cells: 16, chargeMax: 50, dischargeMax: 50, absorption: 57.6, float: 56.8, lvd: 48.0, handshake: 8 },
-            "REDARC": { brand: "Redarc", model: "Lithium Battery", protocol: "RED", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 16, chargeMax: 40, dischargeMax: 40, absorption: 54.0, float: 53.5, lvd: 44.0, handshake: 5 },
-            "LBS": { brand: "LBS Power", model: "Lithium Series", protocol: "LBS", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 25, dischargeMax: 25, absorption: 53.5, float: 53.0, lvd: 44.0, handshake: 8 },
-            "POWERBASE": { brand: "Powerbase", model: "LFP Series", protocol: "PWR", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 30, dischargeMax: 30, absorption: 53.8, float: 53.2, lvd: 44.0, handshake: 5 },
-            "USER": { brand: "USER MODE", model: "Manual Setup", protocol: "MANUAL", interface: "None (Voltage mode)", chemistry: "User Defined", voltage: 48, chargeMax: "MANUAL", dischargeMax: "MANUAL", absorption: "Enter from BMS sheet", float: "Enter from BMS sheet", lvd: "Enter from BMS sheet", handshake: 0 }
+            "PYL_US2000": { brand: "Pylontech", model: "US2000", protocol: "PYL", interface: "RS485/CAN", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 25, dischargeMax: 25, peakCurrent: 50, absorption: 53.5, float: 53.0, lvd: 44.0, lvr: 48.0, hvd: 54.0, handshake: 10, hasComms: true },
+            "PYL_US3000": { brand: "Pylontech", model: "US3000", protocol: "PYL", interface: "RS485/CAN", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 37, dischargeMax: 37, peakCurrent: 74, absorption: 53.5, float: 53.0, lvd: 44.0, lvr: 48.0, hvd: 54.0, handshake: 10, hasComms: true },
+            "PYL_US5000": { brand: "Pylontech", model: "US5000", protocol: "PYL", interface: "RS485/CAN", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 50, dischargeMax: 50, peakCurrent: 100, absorption: 53.5, float: 53.0, lvd: 44.0, lvr: 48.0, hvd: 54.0, handshake: 10, hasComms: true },
+            "PYL_UP2500": { brand: "Pylontech", model: "UP2500", protocol: "PYL", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 25, dischargeMax: 25, absorption: 53.5, float: 53.0, lvd: 44.0, handshake: 10, hasComms: true },
+            "PYL_UP5000": { brand: "Pylontech", model: "UP5000", protocol: "PYL", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 50, dischargeMax: 50, absorption: 53.5, float: 53.0, lvd: 44.0, handshake: 10, hasComms: true },
+            "PYL_FORCE_H1": { brand: "Pylontech", model: "Force H1", protocol: "PYL", interface: "CAN", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 50, dischargeMax: 50, absorption: 53.5, float: 53.0, lvd: 44.0, handshake: 10, hasComms: true },
+            "WOW_SRNE": { brand: "SRNE", model: "SR-BP Series", protocol: "WOW", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 16, chargeMax: 50, dischargeMax: 50, peakCurrent: 100, absorption: 54.0, float: 53.6, lvd: 43.0, lvr: 49.0, hvd: 55.0, handshake: 5, hasComms: true },
+            "DAQ_B3": { brand: "Dyness", model: "B3", protocol: "DAQ", interface: "CAN/RS485", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 25, dischargeMax: 25, peakCurrent: 50, absorption: 53.5, float: 53.0, lvd: 45.0, lvr: 49.0, handshake: 8, hasComms: true },
+            "DAQ_B4850": { brand: "Dyness", model: "B4850", protocol: "DAQ", interface: "CAN/RS485", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 25, dischargeMax: 25, absorption: 53.5, float: 53.0, lvd: 45.0, handshake: 8, hasComms: true },
+            "DAQ_BX51100": { brand: "Dyness", model: "BX51100", protocol: "DAQ", interface: "CAN", chemistry: "LiFePO4", voltage: 51.2, cells: 16, chargeMax: 50, dischargeMax: 50, absorption: 57.6, float: 56.8, lvd: 48.0, handshake: 8, hasComms: true },
+            "DAQ_T30": { brand: "Dyness", model: "T30", protocol: "DAQ", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 30, dischargeMax: 30, absorption: 53.5, float: 53.0, lvd: 45.0, handshake: 8, hasComms: true },
+            "HUAWEI_LUNA": { brand: "Huawei", model: "LUNA2000", protocol: "HUAWEI", interface: "CAN (Proprietary)", chemistry: "LiFePO4", voltage: 48, cells: 16, chargeMax: 50, dischargeMax: 50, absorption: 54.0, float: 53.5, lvd: 44.0, handshake: 5, hasComms: true, warning: "Check inverter compatibility - Huawei requires specific CAN protocol" },
+            "BYD_BBOX": { brand: "BYD", model: "Battery-Box HVS", protocol: "BYD", interface: "CAN", chemistry: "LiFePO4", voltage: 51.2, cells: 16, chargeMax: 50, dischargeMax: 50, absorption: 57.6, float: 56.8, lvd: 48.0, handshake: 10, hasComms: true },
+            "BYD_HVM": { brand: "BYD", model: "Battery-Box HVM", protocol: "BYD", interface: "CAN", chemistry: "LiFePO4", voltage: 51.2, cells: 16, chargeMax: 40, dischargeMax: 40, absorption: 57.6, float: 56.8, lvd: 48.0, handshake: 10, hasComms: true },
+            "BYD_LVS": { brand: "BYD", model: "Battery-Box LVS", protocol: "BYD", interface: "CAN", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 25, dischargeMax: 25, absorption: 53.5, float: 53.0, lvd: 44.0, handshake: 10, hasComms: true },
+            "GROWATT_ARES": { brand: "Growatt", model: "ARES", protocol: "GROWATT", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 50, dischargeMax: 50, absorption: 54.0, float: 53.5, lvd: 44.0, handshake: 5, hasComms: true },
+            "GROWATT_GBLI": { brand: "Growatt", model: "GBLI", protocol: "GROWATT", interface: "CAN", chemistry: "LiFePO4", voltage: 51.2, cells: 16, chargeMax: 50, dischargeMax: 50, absorption: 57.6, float: 56.8, lvd: 48.0, handshake: 5, hasComms: true },
+            "RDA_RITAR": { brand: "Ritar", model: "Rack Series", protocol: "RDA", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 16, chargeMax: 40, dischargeMax: 40, peakCurrent: 80, absorption: 54.0, float: 53.2, lvd: 44.0, lvr: 48.0, hvd: 55.0, handshake: 5, hasComms: true },
+            "RITAR_WALL": { brand: "Ritar", model: "Wall Mounted", protocol: "RDA", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 16, chargeMax: 50, dischargeMax: 50, absorption: 54.0, float: 53.5, lvd: 44.0, handshake: 5, hasComms: true },
+            "AOG_ALLGRAND": { brand: "Allgrand", model: "Rack Series", protocol: "AOG", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 30, dischargeMax: 30, absorption: 53.8, float: 53.0, lvd: 44.0, lvr: 48.0, handshake: 5, hasComms: true },
+            "PAC_PACE": { brand: "PACE", model: "BMS", protocol: "PAC", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 30, dischargeMax: 30, absorption: 53.5, float: 53.0, lvd: 44.0, lvr: 48.0, handshake: 5, hasComms: true },
+            "OLT_OLITER": { brand: "Oliter", model: "Rack Series", protocol: "OLT", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 25, dischargeMax: 25, absorption: 53.5, float: 53.0, lvd: 44.0, handshake: 5, hasComms: true },
+            "HWD_SUNWODA": { brand: "Sunwoda", model: "Rack Series", protocol: "HWD", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 16, chargeMax: 50, dischargeMax: 50, absorption: 54.0, float: 53.5, lvd: 44.0, handshake: 8, hasComms: true },
+            "UOL_WEILAN": { brand: "Weilan / Vilion", model: "Rack Series", protocol: "UOL", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 25, dischargeMax: 25, absorption: 53.5, float: 53.0, lvd: 44.0, handshake: 8, hasComms: true },
+            "POW_POWMR": { brand: "PowMr", model: "LiFePO4 Battery", protocol: "POW", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 16, chargeMax: 40, dischargeMax: 40, absorption: 54.0, float: 53.2, lvd: 43.0, handshake: 5, hasComms: true },
+            "CEF_CFE": { brand: "CFE", model: "5100S", protocol: "CEF", interface: "CAN", chemistry: "LiFePO4", voltage: 48, cells: 16, chargeMax: 50, dischargeMax: 50, absorption: 54.5, float: 54.0, lvd: 45.0, handshake: 8, hasComms: true },
+            "BSLBATT": { brand: "BSLBATT", model: "Powerwall", protocol: "BSL", interface: "CAN/RS485", chemistry: "LiFePO4", voltage: 51.2, cells: 16, chargeMax: 50, dischargeMax: 50, absorption: 57.6, float: 56.8, lvd: 48.0, handshake: 10, hasComms: true },
+            "LITIO": { brand: "Litio", model: "LFP Series", protocol: "LIT", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 30, dischargeMax: 30, absorption: 53.5, float: 53.0, lvd: 44.0, handshake: 5, hasComms: true },
+            "SOLARPRO": { brand: "SolarPro", model: "Lithium Series", protocol: "PRO", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 16, chargeMax: 35, dischargeMax: 35, absorption: 54.0, float: 53.5, lvd: 44.0, handshake: 5, hasComms: true },
+            "VOLTA": { brand: "Volta", model: "Stage Series", protocol: "VOL", interface: "CAN", chemistry: "LiFePO4", voltage: 51.2, cells: 16, chargeMax: 50, dischargeMax: 50, absorption: 57.6, float: 56.8, lvd: 48.0, handshake: 8, hasComms: true },
+            "REDARC": { brand: "Redarc", model: "Lithium Battery", protocol: "RED", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 16, chargeMax: 40, dischargeMax: 40, absorption: 54.0, float: 53.5, lvd: 44.0, handshake: 5, hasComms: true },
+            "LBS": { brand: "LBS Power", model: "Lithium Series", protocol: "LBS", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 25, dischargeMax: 25, absorption: 53.5, float: 53.0, lvd: 44.0, handshake: 8, hasComms: true },
+            "POWERBASE": { brand: "Powerbase", model: "LFP Series", protocol: "PWR", interface: "RS485", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 30, dischargeMax: 30, absorption: 53.8, float: 53.2, lvd: 44.0, handshake: 5, hasComms: true },
+            "USER": { brand: "USER MODE", model: "Manual Setup", protocol: "MANUAL", interface: "None (Voltage mode)", chemistry: "User Defined", voltage: 48, chargeMax: "MANUAL", dischargeMax: "MANUAL", absorption: "Enter from BMS sheet", float: "Enter from BMS sheet", lvd: "Enter from BMS sheet", handshake: 0, hasComms: false }
         };
         
         function populateBMSdropdown() {
@@ -880,11 +871,47 @@
             return { ...bmsDatabase[code], code: code };
         }
         
+        // NEW FUNCTION: Auto-set limiting method based on BMS
+        function setLimitingMethodByBMS(bms) {
+            const limitingSelect = document.getElementById("limitingMethod");
+            const manualGroup = document.getElementById("manualCurrentGroup");
+            const noteSpan = document.getElementById("limitingMethodNote");
+            
+            if (!limitingSelect) return;
+            
+            // Case 1: No BMS selected or USER MODE (no communication)
+            if (!bms || bms.hasComms === false || bms.code === "USER") {
+                limitingSelect.value = "LC_SET";
+                limitingSelect.disabled = true;
+                if (manualGroup) manualGroup.style.display = "block";
+                if (noteSpan) {
+                    noteSpan.innerHTML = "⚠️ No BMS communication detected → Manual mode (LC SET) REQUIRED";
+                    noteSpan.style.color = "#e67e22";
+                }
+                return;
+            }
+            
+            // Case 2: BMS has communication (hasComms = true)
+            if (bms.hasComms === true) {
+                limitingSelect.value = "LC_BMS";
+                limitingSelect.disabled = true;
+                if (manualGroup) manualGroup.style.display = "none";
+                if (noteSpan) {
+                    noteSpan.innerHTML = "✓ BMS communication detected → LC BMS auto-selected (SAFE & RECOMMENDED)";
+                    noteSpan.style.color = "#16a34a";
+                }
+                return;
+            }
+        }
+        
         function updateBMSspecs() {
             const bms = getBMSData();
             const count = parseInt(document.getElementById("batteryCount")?.value) || 1;
             const displayDiv = document.getElementById("bmsSpecsDisplay");
             const warningDiv = document.getElementById("bmsWarning");
+            
+            // Auto-set limiting method based on BMS
+            setLimitingMethodByBMS(bms);
             
             if (!displayDiv) return;
             
@@ -1005,10 +1032,16 @@
                 output += `   • Feed-in to Grid: ${feedIn === "enabled" ? "ENABLED (Unlimited)" : feedIn === "limited" ? `LIMITED (${exportLimit}W)` : "DISABLED"}\n`;
             }
             
-            output += `\n⚙️ LIMITING METHOD: ${limitingMethod}\n`;
+            output += `\n⚙️ LIMITING METHOD: ${limitingMethod} `;
+            if (limitingMethod === "LC_BMS") output += `(BMS Controlled - Auto)`;
+            else if (limitingMethod === "LC_SET") output += `(Manual - User Set)`;
+            else output += `(Inverter Logic)`;
+            output += `\n`;
+            
             if (limitingMethod === "LC_BMS" && bms && bms.code !== "USER" && typeof bms.chargeMax === "number") {
                 let totalCharge = bms.chargeMax * count;
                 output += `   → Following BMS Max Amps: ${totalCharge}A (Automatic)\n`;
+                output += `   → Inverter will respect BMS charge/discharge limits\n`;
             } else if (limitingMethod === "LC_SET") {
                 output += `   → Manual Current Limit: ${manualCurrent}A\n`;
                 output += `   → WARNING: Ensure this does not exceed BMS max rating!\n`;
@@ -1106,19 +1139,6 @@
             calculateSystem();
         }
         
-        const aiStatusDiv = document.getElementById('aiStatus');
-        if (OPENROUTER_API_KEY && OPENROUTER_API_KEY !== 'REPLACE_WITH_YOUR_ACTUAL_API_KEY_HERE') {
-            if (aiStatusDiv) {
-                aiStatusDiv.innerHTML = '✅ AI Assistant Ready (Llama 3.3 70B)';
-                aiStatusDiv.style.color = '#16a34a';
-            }
-        } else {
-            if (aiStatusDiv) {
-                aiStatusDiv.innerHTML = '⚠️ AI: Add your OpenRouter API key in the script (search for OPENROUTER_API_KEY)';
-                aiStatusDiv.style.color = '#e67e22';
-            }
-        }
-        
         // Initialize BMS dropdown and event listeners
         populateBMSdropdown();
         
@@ -1130,9 +1150,6 @@
         
         const modeSelectBMS = document.getElementById('modeSelect');
         if (modeSelectBMS) modeSelectBMS.addEventListener('change', updateInverterConfig);
-        
-        const limitingMethodSelect = document.getElementById('limitingMethod');
-        if (limitingMethodSelect) limitingMethodSelect.addEventListener('change', updateInverterConfig);
         
         const manualCurrentInput = document.getElementById('manualCurrent');
         if (manualCurrentInput) manualCurrentInput.addEventListener('input', updateInverterConfig);
