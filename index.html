@@ -366,8 +366,23 @@
             }
         });
         
-        // ========== COMPLETE 50+ BMS DATABASE (ALL 47 ENTRIES + USER MODE) ==========
+        // ========== COMPLETE 50+ BMS DATABASE WITH 12V, 24V, AND 48V OPTIONS ==========
         const bmsDatabase = {
+            // ========== 12V BATTERIES (For small 12V systems) ==========
+            "12V_100AH_LITHIUM": { brand: "LiTime", model: "12V 100Ah", protocol: "LIT", interface: "RS485", chemistry: "LiFePO4", voltage: 12, cells: 4, chargeMax: 50, dischargeMax: 50, peakCurrent: 100, absorption: 14.4, float: 13.8, lvd: 10.8, lvr: 12.0, hvd: 14.6, handshake: 5, hasComms: true, capacityAh: 100 },
+            "12V_120AH_LITHIUM": { brand: "LiTime", model: "12V 120Ah", protocol: "LIT", interface: "RS485", chemistry: "LiFePO4", voltage: 12, cells: 4, chargeMax: 60, dischargeMax: 60, peakCurrent: 120, absorption: 14.4, float: 13.8, lvd: 10.8, lvr: 12.0, hvd: 14.6, handshake: 5, hasComms: true, capacityAh: 120 },
+            "12V_200AH_LITHIUM": { brand: "LiTime", model: "12V 200Ah", protocol: "LIT", interface: "RS485", chemistry: "LiFePO4", voltage: 12, cells: 4, chargeMax: 100, dischargeMax: 100, peakCurrent: 200, absorption: 14.4, float: 13.8, lvd: 10.8, lvr: 12.0, hvd: 14.6, handshake: 5, hasComms: true, capacityAh: 200 },
+            "12V_100AH_AGM": { brand: "Amerisolar", model: "12V 100Ah AGM", protocol: "MANUAL", interface: "None", chemistry: "AGM", voltage: 12, cells: 6, chargeMax: 30, dischargeMax: 30, peakCurrent: 60, absorption: 14.4, float: 13.5, lvd: 11.0, lvr: 12.5, hvd: 14.8, handshake: 0, hasComms: false, capacityAh: 100 },
+            "12V_150AH_AGM": { brand: "Amerisolar", model: "12V 150Ah AGM", protocol: "MANUAL", interface: "None", chemistry: "AGM", voltage: 12, cells: 6, chargeMax: 45, dischargeMax: 45, peakCurrent: 90, absorption: 14.4, float: 13.5, lvd: 11.0, lvr: 12.5, hvd: 14.8, handshake: 0, hasComms: false, capacityAh: 150 },
+            
+            // ========== 24V BATTERIES (For medium 24V systems) ==========
+            "24V_50AH_LITHIUM": { brand: "LiTime", model: "24V 50Ah", protocol: "LIT", interface: "RS485", chemistry: "LiFePO4", voltage: 24, cells: 8, chargeMax: 25, dischargeMax: 25, peakCurrent: 50, absorption: 28.8, float: 27.6, lvd: 21.6, lvr: 24.0, hvd: 29.2, handshake: 5, hasComms: true, capacityAh: 50 },
+            "24V_100AH_LITHIUM": { brand: "LiTime", model: "24V 100Ah", protocol: "LIT", interface: "RS485", chemistry: "LiFePO4", voltage: 24, cells: 8, chargeMax: 50, dischargeMax: 50, peakCurrent: 100, absorption: 28.8, float: 27.6, lvd: 21.6, lvr: 24.0, hvd: 29.2, handshake: 5, hasComms: true, capacityAh: 100 },
+            "24V_150AH_LITHIUM": { brand: "LiTime", model: "24V 150Ah", protocol: "LIT", interface: "RS485", chemistry: "LiFePO4", voltage: 24, cells: 8, chargeMax: 75, dischargeMax: 75, peakCurrent: 150, absorption: 28.8, float: 27.6, lvd: 21.6, lvr: 24.0, hvd: 29.2, handshake: 5, hasComms: true, capacityAh: 150 },
+            "24V_100AH_AGM": { brand: "Amerisolar", model: "24V 100Ah AGM", protocol: "MANUAL", interface: "None", chemistry: "AGM", voltage: 24, cells: 12, chargeMax: 30, dischargeMax: 30, peakCurrent: 60, absorption: 28.8, float: 27.0, lvd: 22.0, lvr: 25.0, hvd: 29.6, handshake: 0, hasComms: false, capacityAh: 100 },
+            "24V_200AH_AGM": { brand: "Amerisolar", model: "24V 200Ah AGM", protocol: "MANUAL", interface: "None", chemistry: "AGM", voltage: 24, cells: 12, chargeMax: 60, dischargeMax: 60, peakCurrent: 120, absorption: 28.8, float: 27.0, lvd: 22.0, lvr: 25.0, hvd: 29.6, handshake: 0, hasComms: false, capacityAh: 200 },
+            
+            // ========== 48V BATTERIES (Original database - all intact) ==========
             "PYL_US2000": { brand: "Pylontech", model: "US2000", protocol: "PYL", interface: "RS485/CAN", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 25, dischargeMax: 25, peakCurrent: 50, absorption: 53.5, float: 53.0, lvd: 44.0, lvr: 48.0, hvd: 54.0, handshake: 10, hasComms: true, capacityAh: 50 },
             "PYL_US3000": { brand: "Pylontech", model: "US3000", protocol: "PYL", interface: "RS485/CAN", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 37, dischargeMax: 37, peakCurrent: 74, absorption: 53.5, float: 53.0, lvd: 44.0, lvr: 48.0, hvd: 54.0, handshake: 10, hasComms: true, capacityAh: 74 },
             "PYL_US5000": { brand: "Pylontech", model: "US5000", protocol: "PYL", interface: "RS485/CAN", chemistry: "LiFePO4", voltage: 48, cells: 15, chargeMax: 50, dischargeMax: 50, peakCurrent: 100, absorption: 53.5, float: 53.0, lvd: 44.0, lvr: 48.0, hvd: 54.0, handshake: 10, hasComms: true, capacityAh: 100 },
@@ -442,14 +457,25 @@
             return "2 AWG (35mm²) - Phelips / Royal";
         }
         
+        // UPDATED: Enhanced findBestBattery function to match 12V, 24V, and 48V systems
         function findBestBattery(requiredAh, targetVoltage) {
             let matches = [];
             for (let [key, bms] of Object.entries(bmsDatabase)) {
                 if (key === "USER") continue;
-                if (Math.abs(bms.voltage - targetVoltage) > 6) continue;
+                
+                // Flexible voltage matching for 12V, 24V, and 48V systems
+                let voltageMatch = false;
+                if (targetVoltage === 12 && Math.abs(bms.voltage - 12) <= 2) voltageMatch = true;
+                else if (targetVoltage === 24 && Math.abs(bms.voltage - 24) <= 4) voltageMatch = true;
+                else if (targetVoltage === 48 && Math.abs(bms.voltage - 48) <= 5) voltageMatch = true;
+                else if (Math.abs(bms.voltage - targetVoltage) <= 3) voltageMatch = true;
+                
+                if (!voltageMatch) continue;
                 if (!bms.capacityAh || bms.capacityAh <= 0) continue;
+                
                 matches.push({ ...bms, key, score: Math.abs(requiredAh - bms.capacityAh) });
             }
+            
             matches.sort((a,b) => a.score - b.score);
             return matches.slice(0, 3);
         }
