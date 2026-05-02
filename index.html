@@ -84,7 +84,7 @@
         .chat-messages { background: #f8fafc; border-radius: 1rem; height: 200px; overflow-y: auto; padding: 0.5rem; margin: 0.5rem 0; }
         .message { margin-bottom: 0.4rem; padding: 0.4rem; border-radius: 1rem; font-size: 0.75rem; max-width: 90%; }
         .user-msg { background: #0059b3; color: white; margin-left: auto; text-align: right; }
-        .ai-msg { background: #e9ecef; color: #1e2a3a; }
+        .ai-msg { background: #e9ecef; color: #1e2a3a; word-break: break-word; white-space: pre-wrap; }
         .chat-input-area { display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
         .chat-input { flex: 1; padding: 0.5rem; border-radius: 1.5rem; border: 1px solid #ccc; font-size: 0.8rem; min-width: 120px; }
         .btn-send { background: #1e6f3f; color: white; border: none; padding: 0.5rem 1rem; border-radius: 1.5rem; cursor: pointer; }
@@ -299,7 +299,7 @@
                 <div class="card">
                     <h3 style="font-size:1rem;">🤖 AI Solar Assistant (OpenRouter Llama 3.3 70B)</h3>
                     <div class="chat-messages" id="chatMessages">
-                        <div class="message ai-msg">👋 Connected to OpenRouter Llama 3.3 70B via proxy.<br><br>💡 Try:<br>• <em>"I can only afford a 50Ah 12V LiFePO4 battery"</em><br>• <em>"What MPPT do I need?"</em><br>• <em>"Explain what LVD means"</em><br>• <em>"How much does a 2kW system cost in PHP?"</em></div>
+                        <div class="message ai-msg">👋 Connected to OpenRouter Llama 3.3 70B via proxy.<br><br>💡 Try:<br>• <em>"I can only afford a 50Ah 12V LiFePO4 battery"</em><br>• <em>"What MPPT do I need?"</em><br>• <em>"Make my system cheaper"</em><br>• <em>"How much does a 2kW system cost in PHP?"</em></div>
                     </div>
                     <div class="chat-input-area">
                         <input type="text" class="chat-input" id="chatInput" placeholder="Ask anything about solar...">
@@ -868,27 +868,16 @@
             calculateSystem();
         }
         
-        // ========== AI WITH OPENROUTER (NO FALLBACK) ==========
-        
+        // ========== AI WITH OPENROUTER ==========
         const PROXY_URL = 'https://anydiel.site/proxy.html';
         
         async function askOpenRouter(question, systemContext) {
-            const systemPrompt = `You are SolarAssistant Pro, an expert solar energy consultant for the Philippines market (230V/60Hz). Current system: ${systemContext.substring(0, 400)}. Keep answers concise (2-4 sentences). Be helpful and practical.`;
-            
+            const systemPrompt = `You are SolarAssistant Pro, an expert solar energy consultant for the Philippines market (230V/60Hz). Current system: ${systemContext.substring(0, 400)}. Keep answers very concise (2-3 sentences). Be helpful and practical.`;
             const url = `${PROXY_URL}?action=ask&q=${encodeURIComponent(question)}&system=${encodeURIComponent(systemPrompt)}`;
-            
-            console.log('📡 Calling proxy:', url);
-            
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: { 'Content-Type': 'text/plain' }
-            });
-            
+            console.log('📡 Fetching:', url);
+            const response = await fetch(url);
             const text = await response.text();
-            console.log('📥 Raw response:', text);
-            console.log('📊 Response length:', text.length);
-            console.log('🔍 First 100 chars:', text.substring(0, 100));
-            
+            console.log('📥 Response:', text.substring(0, 300));
             return text;
         }
         
@@ -898,18 +887,8 @@
             const batteryMatch = message.match(/(\d+)\s*(?:ah|Ah|AH)\s*(?:@?\s*(\d+)\s*v|volt)?/i);
             if (batteryMatch) {
                 constraints.batteryAh = parseInt(batteryMatch[1]);
-                if (batteryMatch[2]) {
-                    constraints.batteryVoltage = parseInt(batteryMatch[2]);
-                } else {
-                    constraints.batteryVoltage = 12;
-                }
-                if (lowerMsg.includes('lifepo4') || lowerMsg.includes('lithium') || lowerMsg.includes('li-ion')) {
-                    constraints.batteryType = 'lithium';
-                } else if (lowerMsg.includes('lead') || lowerMsg.includes('agm') || lowerMsg.includes('gel')) {
-                    constraints.batteryType = 'lead';
-                } else {
-                    constraints.batteryType = 'lithium';
-                }
+                constraints.batteryVoltage = batteryMatch[2] ? parseInt(batteryMatch[2]) : 12;
+                constraints.batteryType = (lowerMsg.includes('lifepo4') || lowerMsg.includes('lithium')) ? 'lithium' : 'lithium';
                 constraints.hasBatteryChange = true;
             }
             const budgetMatch = message.match(/₱?(\d+(?:,\d+)?)(?:\s*k)?\s*(?:budget|pesos|php|only|max|afford)/i);
@@ -917,53 +896,42 @@
                 let amount = parseInt(budgetMatch[1].replace(/,/g, ''));
                 if (budgetMatch[0].includes('k') && amount < 1000) amount = amount * 1000;
                 constraints.budgetPHP = amount;
-                constraints.hasBudget = true;
             }
-            constraints.needsCheaper = /(cheaper|budget|economy|affordable|less expensive|minimal|lowest cost|make it cheaper)/i.test(lowerMsg);
+            constraints.needsCheaper = /(cheaper|budget|economy|affordable|make it cheaper)/i.test(lowerMsg);
             return constraints;
         }
         
         function applyBudgetConstraints(constraints) {
             const changes = [];
             const dailyWh = parseFloat(document.getElementById('dailyWh')?.value) || 5000;
-            
             if (constraints.batteryAh) {
                 const battVoltage = constraints.batteryVoltage || 12;
-                const usablePercent = constraints.batteryType === 'lithium' ? 0.8 : 0.5;
+                const usablePercent = 0.8;
                 let newAutonomy = (constraints.batteryAh * battVoltage * usablePercent) / dailyWh;
                 newAutonomy = Math.max(0.3, Math.min(3, newAutonomy));
                 document.getElementById('autonomy').value = newAutonomy.toFixed(1);
-                changes.push(`🔋 Using ${constraints.batteryAh}Ah @ ${battVoltage}V ${constraints.batteryType === 'lithium' ? 'LiFePO4' : 'Lead-Acid'} battery → Backup time: ${newAutonomy.toFixed(1)} days`);
+                changes.push(`🔋 Using ${constraints.batteryAh}Ah @ ${battVoltage}V LiFePO4 battery → Backup: ${newAutonomy.toFixed(1)} days`);
                 if (battVoltage === 12 && parseInt(document.getElementById('sysVoltage')?.value) !== 12) {
                     document.getElementById('sysVoltage').value = '12';
                     changes.push(`⚡ System voltage set to 12V`);
                 }
-                if (constraints.batteryType && document.getElementById('batteryType')?.value !== constraints.batteryType) {
-                    document.getElementById('batteryType').value = constraints.batteryType;
-                    changes.push(`🧪 Battery chemistry set to ${constraints.batteryType === 'lithium' ? 'LiFePO4' : 'Lead-Acid'}`);
-                }
-                constraints.batteryApplied = true;
-            }
-            
-            if (constraints.budgetPHP && constraints.budgetPHP < 50000) {
-                if (document.getElementById('batteryType')?.value !== 'lead') {
-                    document.getElementById('batteryType').value = 'lead';
-                    changes.push(`💰 Budget ₱${constraints.budgetPHP.toLocaleString()} → Using Lead-Acid`);
-                }
-                if (parseFloat(document.getElementById('autonomy')?.value) > 1) {
-                    document.getElementById('autonomy').value = '1';
-                    changes.push(`📉 Autonomy reduced to 1 day`);
+                const bmsSelect = document.getElementById('bmsSelect');
+                if (bmsSelect) {
+                    for (let i = 0; i < bmsSelect.options.length; i++) {
+                        const opt = bmsSelect.options[i];
+                        if (opt.text.toLowerCase().includes(`${constraints.batteryAh}ah`) && opt.text.toLowerCase().includes(`${battVoltage}v`)) {
+                            bmsSelect.value = opt.value;
+                            if (typeof updateBMSspecs === 'function') updateBMSspecs();
+                            changes.push(`🔋 Selected: ${opt.text}`);
+                            break;
+                        }
+                    }
                 }
             }
-            
-            if (constraints.needsCheaper && !constraints.batteryApplied) {
+            if (constraints.needsCheaper && !constraints.batteryAh) {
                 if (parseInt(document.getElementById('sysVoltage')?.value) !== 12) {
                     document.getElementById('sysVoltage').value = '12';
                     changes.push(`⚡ Switched to 12V system`);
-                }
-                if (document.getElementById('batteryType')?.value !== 'lead') {
-                    document.getElementById('batteryType').value = 'lead';
-                    changes.push(`🧪 Switched to Lead-Acid battery`);
                 }
             }
             return changes;
@@ -974,10 +942,8 @@
             const panelWatt = document.getElementById('panelWattage')?.value || '?';
             const dailyWh = document.getElementById('dailyWh')?.value || '?';
             const sysVoltage = document.getElementById('sysVoltage')?.value || '?';
-            const batteryChem = document.getElementById('batteryType')?.value === 'lithium' ? 'LiFePO4' : 'Lead-Acid';
             const battSpec = document.getElementById('battSpec')?.innerText || 'Not calculated';
-            const mpptSpec = document.getElementById('mpptSpec')?.innerText || 'Not calculated';
-            return `${panels}x${panelWatt}W panels, ${dailyWh}Wh/day need, ${sysVoltage}V system, ${batteryChem} battery. Battery: ${battSpec.substring(0, 100)}. MPPT: ${mpptSpec}`;
+            return `${panels}x${panelWatt}W panels, ${dailyWh}Wh/day, ${sysVoltage}V system. Battery: ${battSpec.substring(0, 80)}`;
         }
         
         function escapeHtml(text) {
@@ -986,68 +952,55 @@
             return div.innerHTML;
         }
         
-        // ========== MAIN AI SEND BUTTON - NO FALLBACK ==========
+        // ========== MAIN AI SEND BUTTON ==========
         document.getElementById('sendBtn')?.addEventListener('click', async () => {
             const question = document.getElementById('chatInput')?.value.trim();
             if (!question) return;
-            
             const chat = document.getElementById('chatMessages');
-            if (!chat) return;
-            
             chat.innerHTML += `<div class="message user-msg">${escapeHtml(question)}</div>`;
             document.getElementById('chatInput').value = '';
-            chat.innerHTML += `<div class="message ai-msg" id="typingIndicator">🤔 Contacting OpenRouter Llama 3.3 70B via proxy... <span class="dot-animation">⚡</span></div>`;
+            chat.innerHTML += `<div class="message ai-msg" id="typingIndicator">🤔 Contacting OpenRouter Llama 3.3 70B... <span class="dot-animation">⚡</span></div>`;
             chat.scrollTop = chat.scrollHeight;
             
-            // Check for budget constraints locally
             const constraints = parseBudgetConstraints(question);
             let localChanges = [];
             let didLocalUpdate = false;
-            
             if (Object.keys(constraints).length > 0) {
                 localChanges = applyBudgetConstraints(constraints);
                 if (localChanges.length > 0) {
                     didLocalUpdate = true;
                     calculateSystem();
+                    await new Promise(r => setTimeout(r, 100));
                 }
             }
             
             const systemContext = getSystemContext();
             let aiResponse = null;
-            let errorMessage = null;
-            
+            let errorMsg = null;
             try {
                 aiResponse = await askOpenRouter(question, systemContext);
-            } catch (error) {
-                errorMessage = error.message;
-                console.error('Fetch error:', error);
+            } catch (e) {
+                errorMsg = e.message;
             }
             
             const typingIndicator = document.getElementById('typingIndicator');
             if (typingIndicator) typingIndicator.remove();
             
             let finalResponse = '';
-            
             if (didLocalUpdate && localChanges.length > 0) {
-                finalResponse += `<strong>🔄 System Updated Based on Your Request!</strong><br><br>`;
+                finalResponse += `<strong>🔄 System Updated!</strong><br><br>`;
                 finalResponse += localChanges.join('<br>');
-                finalResponse += `<br><br><strong>✅ Updated System:</strong><br>`;
-                finalResponse += `• Battery: ${document.getElementById('battSpec')?.innerText.split('<br>')[0] || 'Updated'}<br>`;
-                finalResponse += `• Solar Array: ${document.getElementById('arraySpec')?.innerText.split('<br>')[0] || 'Updated'}<br>`;
-                finalResponse += `• MPPT: ${document.getElementById('mpptSpec')?.innerText || 'Updated'}<br>`;
-                finalResponse += `• Inverter: ${document.getElementById('invSpec')?.innerText.split('<br>')[0] || 'Updated'}<br><br>`;
+                finalResponse += `<br><br><strong>✅ New System:</strong><br>`;
+                finalResponse += `• Battery: ${document.getElementById('battSpec')?.innerText.split('<br>')[0]}<br>`;
+                finalResponse += `• Solar: ${document.getElementById('arraySpec')?.innerText.split('<br>')[0]}<br>`;
+                finalResponse += `• MPPT: ${document.getElementById('mpptSpec')?.innerText}<br><br>`;
             }
             
-            if (aiResponse) {
-                finalResponse += `<strong>🤖 OpenRouter Llama 3.3 70B Response:</strong><br><br>${escapeHtml(aiResponse)}`;
+            if (aiResponse && aiResponse.length > 10 && !aiResponse.includes('⚠️') && !aiResponse.includes('Error')) {
+                finalResponse += `<strong>🤖 AI Response:</strong><br><br>${escapeHtml(aiResponse)}`;
             } else {
-                finalResponse += `<strong>❌ OpenRouter Connection Failed!</strong><br><br>`;
-                finalResponse += `Your proxy at ${PROXY_URL} did not return a valid response.<br><br>`;
-                finalResponse += `<strong>Debug Info:</strong><br>`;
-                finalResponse += `• Check browser console (F12) for details<br>`;
-                finalResponse += `• Verify proxy.php exists at ${PROXY_URL}<br>`;
-                finalResponse += `• Error: ${errorMessage || 'No response from proxy'}<br><br>`;
-                finalResponse += `<strong>Budget changes were still applied locally.</strong>`;
+                finalResponse += `<strong>⚠️ Proxy returned:</strong><br>${escapeHtml(aiResponse || errorMsg || 'No response')}<br><br>`;
+                finalResponse += `📌 Budget changes applied. Calculator updated.`;
             }
             
             chat.innerHTML += `<div class="message ai-msg">${finalResponse}</div>`;
