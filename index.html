@@ -169,6 +169,29 @@
             .spec-row { flex-direction: column; align-items: flex-start; gap: 0.2rem; }
             .config-output { font-size: 0.65rem; white-space: pre-wrap; word-break: break-word; }
         }
+        
+        /* ATS Section Styles */
+        .ats-card {
+            background: #f0f9ff;
+            border-left: 4px solid #0059b3;
+            margin-top: 1rem;
+            padding: 0.8rem;
+            border-radius: 0.8rem;
+        }
+        body.dark-mode .ats-card {
+            background: #0c4a6e;
+        }
+        .ats-warning {
+            background: #fee2e2;
+            border-left: 4px solid #dc2626;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.7rem;
+            margin-top: 0.5rem;
+        }
+        body.dark-mode .ats-warning {
+            background: #7f1d1d;
+        }
     </style>
 </head>
 <body>
@@ -275,6 +298,13 @@
                     <label>🌡️ Ambient Temperature (°C)</label>
                     <input type="number" id="ambientTemp" value="35" step="5">
                     
+                    <!-- NEW: System Mode Dropdown -->
+                    <label>🔌 System Mode</label>
+                    <select id="systemMode">
+                        <option value="offgrid">🔋 Off-Grid (No Grid Connection)</option>
+                        <option value="hybrid">🏠 Hybrid (Grid + Solar + Battery)</option>
+                    </select>
+                    
                     <button class="btn-calc" id="calcBtn">⚙️ Calculate System</button>
                     
                     <div class="spec-card">
@@ -289,10 +319,27 @@
                         <div class="spec-row"><span>🛡️ Breakers (Market Available):</span><span class="value" id="breakers">--</span></div>
                         <div class="spec-row"><span>🔄 Inverter (Pure Sine Wave):</span><span class="value" id="invSpec">--</span></div>
                         <div class="spec-row"><span>🔋 Battery Bank:</span><span class="value" id="battSpec">--</span></div>
+                        <!-- NEW: ATS Row -->
+                        <div class="spec-row" id="atsRow" style="display:none;"><span>🔄 Transfer Switch (ATS):</span><span class="value" id="atsSpec">--</span></div>
                     </div>
                     <div id="recommendationBox" class="recommendation-box" style="display:none;">
                         <strong>💡 SYSTEM NOTE:</strong><br>
                         <span id="recommendationText"></span>
+                    </div>
+                    
+                    <!-- NEW: ATS Configuration Card -->
+                    <div id="atsConfigCard" class="ats-card" style="display:none;">
+                        <strong>🔌 AUTOMATIC TRANSFER SWITCH (ATS) CONFIGURATION</strong><br><br>
+                        <div class="spec-row"><span>📊 ATS Rating:</span><span class="value" id="atsRating">--</span></div>
+                        <div class="spec-row"><span>🔌 ATS Type:</span><span class="value" id="atsType">2-Pole Automatic Transfer Switch</span></div>
+                        <div class="spec-row"><span>🛡️ Input Breaker (Grid → ATS):</span><span class="value" id="atsInputBreaker">--</span></div>
+                        <div class="spec-row"><span>🛡️ Output Breaker (ATS → Loads):</span><span class="value" id="atsOutputBreaker">--</span></div>
+                        <div class="spec-row"><span>🔌 Wire Size (Grid to ATS):</span><span class="value" id="atsWireSize">--</span></div>
+                        <div class="spec-row"><span>📦 Recommended Brands (Philippines):</span><span class="value" id="atsBrands">--</span></div>
+                        <div class="ats-warning" id="atsWarning">
+                            ⚠️ ATS is REQUIRED for hybrid/grid-tie systems to prevent backfeed!<br>
+                            Backfeed can electrocute linemen during brownouts.
+                        </div>
                     </div>
                 </div>
 
@@ -546,6 +593,63 @@
             }
         }
         
+        // NEW: Update ATS Specifications based on inverter wattage
+        function updateATSSpecs() {
+            const systemMode = document.getElementById('systemMode')?.value || 'offgrid';
+            const atsRow = document.getElementById('atsRow');
+            const atsConfigCard = document.getElementById('atsConfigCard');
+            const isHybrid = systemMode === 'hybrid';
+            
+            if (atsRow) atsRow.style.display = isHybrid ? 'flex' : 'none';
+            if (atsConfigCard) atsConfigCard.style.display = isHybrid ? 'block' : 'none';
+            
+            if (!isHybrid) return;
+            
+            // Get inverter wattage from the spec display
+            const invSpecText = document.getElementById('invSpec')?.innerText || '800W';
+            const inverterWattsMatch = invSpecText.match(/(\d+)W/);
+            const inverterWatts = inverterWattsMatch ? parseInt(inverterWattsMatch[1]) : 800;
+            
+            // Calculate ATS rating (AC side, 230V)
+            const atsAmps = Math.ceil((inverterWatts / 230) * 1.25); // 25% headroom
+            const atsRating = `${atsAmps}A (${Math.round(atsAmps * 230)}W @ 230V)`;
+            
+            // Determine ATS type
+            const atsType = atsAmps <= 63 ? "2-Pole (63A max) - Standard for homes" : "4-Pole (100A+) - For large systems";
+            
+            // Breaker sizing
+            const inputBreaker = `${atsAmps}A / 230V AC`;
+            const outputBreaker = `${atsAmps}A / 230V AC`;
+            
+            // Wire sizing based on amps (AC side)
+            let wireSize = "";
+            if (atsAmps <= 15) wireSize = "14 AWG (2.0mm²) THHN - Phelips / Royal";
+            else if (atsAmps <= 20) wireSize = "12 AWG (3.5mm²) THHN - Phelips / Royal";
+            else if (atsAmps <= 30) wireSize = "10 AWG (5.5mm²) THHN - Phelips / Royal";
+            else if (atsAmps <= 40) wireSize = "8 AWG (8.0mm²) THHN - Phelips / Royal";
+            else if (atsAmps <= 50) wireSize = "6 AWG (14mm²) THHN - Phelips / Royal";
+            else if (atsAmps <= 70) wireSize = "4 AWG (22mm²) THHN - Phelips / Royal";
+            else wireSize = "2 AWG (35mm²) THHN - Phelips / Royal";
+            
+            // Brand recommendations with PH pricing
+            let brands = "";
+            if (atsAmps <= 63) {
+                brands = "• Generic (China) - ₱1,500-3,000<br>• Hager - ₱4,000-6,000<br>• Schneider Electric - ₱6,000-10,000<br>• CHINT - ₱3,000-5,000";
+            } else {
+                brands = "• Schneider Electric - ₱15,000-25,000<br>• Mitsubishi - ₱20,000-35,000<br>• ABB - ₱25,000-40,000<br>• Consult licensed electrician for >100A";
+            }
+            
+            document.getElementById('atsRating').innerHTML = atsRating;
+            document.getElementById('atsType').innerHTML = atsType;
+            document.getElementById('atsInputBreaker').innerHTML = inputBreaker;
+            document.getElementById('atsOutputBreaker').innerHTML = outputBreaker;
+            document.getElementById('atsWireSize').innerHTML = wireSize;
+            document.getElementById('atsBrands').innerHTML = brands;
+            
+            // Also update the spec row display
+            document.getElementById('atsSpec').innerHTML = `${atsAmps}A ATS (required for grid connection)`;
+        }
+        
         function calculateSystem() {
             let dailyWh = parseFloat(document.getElementById('dailyWh')?.value) || 5000;
             if (dailyWh > 30000) dailyWh = 30000;
@@ -607,6 +711,10 @@
             } else {
                 document.getElementById('recommendationBox').style.display = 'none';
             }
+            
+            // Update ATS specs after calculator runs
+            updateATSSpecs();
+            
             saveInputs();
         }
         
@@ -619,7 +727,8 @@
                 batteryType: document.getElementById('batteryType')?.value,
                 wiringMode: document.getElementById('wiringMode')?.value,
                 autonomy: document.getElementById('autonomy')?.value,
-                sunHoursSelect: document.getElementById('sunHoursSelect')?.value
+                sunHoursSelect: document.getElementById('sunHoursSelect')?.value,
+                systemMode: document.getElementById('systemMode')?.value
             }));
         }
         
@@ -635,8 +744,10 @@
                 if (d.wiringMode) document.getElementById('wiringMode').value = d.wiringMode;
                 if (d.autonomy) document.getElementById('autonomy').value = d.autonomy;
                 if (d.sunHoursSelect) document.getElementById('sunHoursSelect').value = d.sunHoursSelect;
+                if (d.systemMode) document.getElementById('systemMode').value = d.systemMode;
             }
             updatePanelRecommendation();
+            updateATSSpecs();
         }
         
         function populateBMS() {
@@ -943,7 +1054,8 @@
             const dailyWh = document.getElementById('dailyWh')?.value || '?';
             const sysVoltage = document.getElementById('sysVoltage')?.value || '?';
             const battSpec = document.getElementById('battSpec')?.innerText || 'Not calculated';
-            return `${panels}x${panelWatt}W panels, ${dailyWh}Wh/day, ${sysVoltage}V system. Battery: ${battSpec.substring(0, 80)}`;
+            const systemMode = document.getElementById('systemMode')?.value || 'offgrid';
+            return `${panels}x${panelWatt}W panels, ${dailyWh}Wh/day, ${sysVoltage}V system, ${systemMode} mode. Battery: ${battSpec.substring(0, 80)}`;
         }
         
         function escapeHtml(text) {
@@ -1015,6 +1127,10 @@
         document.getElementById('sunHoursSelect')?.addEventListener('change', updatePanelRecommendation);
         document.getElementById('ambientTemp')?.addEventListener('input', updatePanelRecommendation);
         document.getElementById('panelCount')?.addEventListener('change', calculateSystem);
+        document.getElementById('systemMode')?.addEventListener('change', () => {
+            calculateSystem();
+            updateATSSpecs();
+        });
         document.getElementById('darkModeBtn')?.addEventListener('click', () => { 
             document.body.classList.toggle('dark-mode'); 
             localStorage.setItem('darkMode', document.body.classList.contains('dark-mode')); 
@@ -1039,6 +1155,7 @@
             document.getElementById('handshakeDelay')?.addEventListener('input', updateInverterConfig);
             document.getElementById('inverterBrand')?.addEventListener('change', updateInverterConfig);
             updateInverterConfig();
+            updateATSSpecs();
         }
     </script>
 </body>
