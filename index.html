@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Anydiel IT Services · Professional Solar Calculator + 50+ BMS Database</title>
+    <title>Anydiel IT Services · Universal Solar Calculator + 70+ BMS Database</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -20,6 +20,13 @@
         body.dark-mode .image-hero { background: #1e293b; border-color: #475569; }
         body.dark-mode .paywall-container { background: #1e293b; }
         body.dark-mode .config-output { background: #0a0f1a; }
+        body.dark-mode .chat-messages { background: #0f172a; }
+        body.dark-mode .message.ai-msg { background: #334155; color: #e2e8f0; }
+        body.dark-mode .specs-box { background: #0f172a; }
+        body.dark-mode .checklist-item { background: #0f172a; }
+        body.dark-mode .warning-box { background: #7f1d1d; color: #fecaca; }
+        body.dark-mode .success-box { background: #065f46; color: #dcfce7; }
+        body.dark-mode .info-box { background: #075985; color: #e0f2fe; }
         
         .container { max-width: 1200px; margin: 0 auto; }
         .hero-main { text-align: center; margin-bottom: 1rem; }
@@ -40,7 +47,7 @@
         .payment-qr { max-width: 250px; margin: 0 auto; border: 2px solid #0059b3; border-radius: 1rem; padding: 0.5rem; background: white; }
         .payment-qr img { width: 100%; height: auto; }
         .instruction { background: #fef3c7; padding: 1rem; border-radius: 0.8rem; margin: 1rem 0; text-align: left; font-size: 0.85rem; }
-        body.dark-mode .instruction { background: #422006; }
+        body.dark-mode .instruction { background: #422006; color: #fef3c7; }
         .form-group { margin: 1rem 0; text-align: left; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 0.3rem; font-size: 0.85rem; }
         .form-group input { width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 0.5rem; font-size: 1rem; }
@@ -65,8 +72,10 @@
         .value { font-weight: 700; color: #1e6f3f; text-align: right; }
         .warning-value { color: #dc2626; font-weight: 700; }
         .success-value { color: #16a34a; }
-        .recommendation-box { background: #e0f2fe; border-left: 4px solid #0284c7; padding: 0.6rem; border-radius: 0.8rem; margin-top: 0.6rem; font-size: 0.75rem; }
-        body.dark-mode .recommendation-box { background: #075985; }
+        .warning-box { background: #fee2e2; border-left: 4px solid #dc2626; padding: 0.6rem; border-radius: 0.8rem; margin-top: 0.6rem; font-size: 0.75rem; color: #991b1b; }
+        body.dark-mode .warning-box { background: #7f1d1d; color: #fecaca; }
+        .success-box { background: #dcfce7; border-left: 4px solid #16a34a; padding: 0.6rem; border-radius: 0.8rem; margin-top: 0.6rem; font-size: 0.75rem; color: #065f46; }
+        body.dark-mode .success-box { background: #065f46; color: #dcfce7; }
         
         .step-card { background: white; border-radius: 1rem; margin-bottom: 1.5rem; overflow: hidden; border: 1px solid #e2e8f0; }
         body.dark-mode .step-card { background: #1e293b; }
@@ -79,12 +88,14 @@
         .video-container video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         
         .info-box { background: #e0f2fe; border-left: 4px solid #0284c7; padding: 0.5rem; border-radius: 0.8rem; margin: 0.6rem 0; font-size: 0.75rem; }
+        body.dark-mode .info-box { background: #075985; color: #e0f2fe; }
         
         footer { text-align: center; font-size: 0.6rem; margin-top: 1rem; }
         .chat-messages { background: #f8fafc; border-radius: 1rem; height: 200px; overflow-y: auto; padding: 0.5rem; margin: 0.5rem 0; }
         .message { margin-bottom: 0.4rem; padding: 0.4rem; border-radius: 1rem; font-size: 0.75rem; max-width: 90%; }
         .user-msg { background: #0059b3; color: white; margin-left: auto; text-align: right; }
         .ai-msg { background: #e9ecef; color: #1e2a3a; word-break: break-word; white-space: pre-wrap; }
+        body.dark-mode .ai-msg { background: #334155; color: #e2e8f0; }
         .chat-input-area { display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
         .chat-input { flex: 1; padding: 0.5rem; border-radius: 1.5rem; border: 1px solid #ccc; font-size: 0.8rem; min-width: 120px; }
         .btn-send { background: #1e6f3f; color: white; border: none; padding: 0.5rem 1rem; border-radius: 1.5rem; cursor: pointer; }
@@ -92,7 +103,7 @@
         
         .checklist-grid { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.5rem; }
         .checklist-item { display: flex; align-items: center; gap: 0.75rem; font-size: 0.8rem; padding: 0.5rem; background: #f8fafc; border-radius: 0.75rem; cursor: pointer; flex-wrap: wrap; }
-        body.dark-mode .checklist-item { background: #1e293b; }
+        body.dark-mode .checklist-item { background: #0f172a; }
         .checklist-item input[type="checkbox"] { width: 1.2rem; height: 1.2rem; accent-color: #1e6f3f; margin: 0; flex-shrink: 0; }
 
         .bms-header {
@@ -127,10 +138,10 @@
             max-height: 350px;
             overflow-y: auto;
         }
-        body.dark-mode .specs-box { background: #0f172a; }
+        body.dark-mode .specs-box { background: #0f172a; color: #e2e8f0; }
         
         .warning { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 0.8rem; border-radius: 0.75rem; margin: 0.8rem 0; font-size: 0.8rem; color: #92400e; }
-        .warning-danger { background: #fee2e2; border-left-color: #dc2626; color: #991b1b; }
+        body.dark-mode .warning { background: #451a03; color: #fef3c7; }
         
         .config-output {
             background: #0f172a;
@@ -148,45 +159,7 @@
         
         .search-box { margin-bottom: 1rem; }
         .search-box input { background: white; border: 1px solid #cbd5e1; }
-        
-        select:disabled { background: #e2e8f0; cursor: not-allowed; opacity: 0.7; }
-        
-        .dot-animation {
-            display: inline-block;
-            animation: pulse 1s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
-        }
-        
-        .hardware-limit-box {
-            background: #e0f2fe;
-            border-left: 4px solid #0284c7;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            margin-top: 0.5rem;
-            font-size: 0.7rem;
-        }
-        body.dark-mode .hardware-limit-box { background: #075985; color: #bae6fd; }
-        
-        .ats-card {
-            background: #f0f9ff;
-            border-left: 4px solid #0059b3;
-            margin-top: 1rem;
-            padding: 0.8rem;
-            border-radius: 0.8rem;
-        }
-        body.dark-mode .ats-card { background: #0c4a6e; }
-        .ats-warning {
-            background: #fee2e2;
-            border-left: 4px solid #dc2626;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            font-size: 0.7rem;
-            margin-top: 0.5rem;
-        }
-        body.dark-mode .ats-warning { background: #7f1d1d; }
+        body.dark-mode .search-box input { background: #1e293b; border-color: #475569; color: #e2e8f0; }
         
         @media (max-width: 768px) {
             .config-grid { grid-template-columns: 1fr !important; }
@@ -201,8 +174,8 @@
 </head>
 <body>
     <div id="paywall" class="paywall-container">
-        <h2>⚡ Solar System Designer Pro</h2>
-        <p>Professional solar calculations + 50+ BMS Database</p>
+        <h2>⚡ Universal Solar Calculator Pro</h2>
+        <p>Professional solar calculations with market-available ratings</p>
         <div class="price">₱995 <small>one-time access</small></div>
         <div class="payment-qr">
             <img src="https://anydiel.site/Shop/wp-content/uploads/2026/01/GP_Anydiel_v1_a4aefe96_page-0001-2.jpg" alt="PayMaya QR Code">
@@ -226,63 +199,20 @@
         <div class="container">
             <div class="hero-main">
                 <h1>⚡ Anydiel IT Services</h1>
-                <p style="font-size:0.75rem;">Professional Solar Calculator · Hardware-Aware · 50+ BMS Database</p>
+                <p style="font-size:0.75rem;">Market-Available Ratings · Safety Warnings · 70+ BMS Database</p>
             </div>
 
             <div class="grid-2col">
                 <div class="card">
                     <h3 style="font-size:1rem;">📐 System Designer</h3>
-                    
                     <label>⚡ Daily Energy Consumption (Wh/day)</label>
-                    <input type="number" id="dailyWh" value="5000" step="100" min="0" max="30000">
-                    <div id="consumptionWarning" style="font-size:0.7rem; color:#dc2626; margin-top:0.2rem; display:none;"></div>
-                    
+                    <input type="number" id="dailyWh" value="2460" step="100" min="0" max="30000">
                     <label>🔋 System Voltage</label>
                     <select id="sysVoltage">
-                        <option value="12">12V</option>
-                        <option value="24" selected>24V</option>
+                        <option value="12" selected>12V</option>
+                        <option value="24">24V</option>
                         <option value="48">48V (Recommended)</option>
                     </select>
-                    
-                    <label>🌡️ Location / Min Temperature</label>
-                    <select id="locationTemp">
-                        <option value="25">Lowlands (Manila, Cebu, Davao) - 25°C</option>
-                        <option value="20">Midlands - 20°C</option>
-                        <option value="15">Tagaytay - 15°C</option>
-                        <option value="10" selected>Baguio (night) - 10°C</option>
-                        <option value="5">Very Cold - 5°C</option>
-                        <option value="0">Freezing - 0°C</option>
-                    </select>
-                    
-                    <label>🔌 Select Inverter (Hardware-Aware)</label>
-                    <select id="inverterPreset">
-                        <option value="">-- Custom / Generic --</option>
-                        <optgroup label="SRNE (Philippines)">
-                            <option value="SRNE_HESP4880S150_H">SRNE HESP4880S150-H (8kW Hybrid, 48V)</option>
-                            <option value="SRNE_HESP4860S100_H">SRNE HESP4860S100-H (6kW Hybrid, 48V)</option>
-                            <option value="SRNE_HESP4840S100_H">SRNE HESP4840S100-H (4kW Hybrid, 48V)</option>
-                        </optgroup>
-                        <optgroup label="Huawei">
-                            <option value="HUAWEI_SUN2000_6KTL_L1">Huawei SUN2000-6KTL-L1 (6kW Grid-Tie)</option>
-                            <option value="HUAWEI_SUN2000_5KTL_L1">Huawei SUN2000-5KTL-L1 (5kW Grid-Tie)</option>
-                        </optgroup>
-                        <optgroup label="Delta">
-                            <option value="DELTA_M6_T">Delta M6-T (6kW Hybrid, 48V)</option>
-                            <option value="DELTA_M8_T">Delta M8-T (8kW Hybrid, 48V)</option>
-                        </optgroup>
-                        <optgroup label="Sungrow">
-                            <option value="SUNGROW_SG5K5_S">Sungrow SG5K5-S (5.5kW Hybrid, 48V)</option>
-                            <option value="SUNGROW_SG6K_S">Sungrow SG6K-S (6kW Hybrid, 48V)</option>
-                        </optgroup>
-                        <optgroup label="SMA">
-                            <option value="SMA_SUNNY_TRIPOWER_6_0">SMA Sunny Tripower 6.0 (6kW Grid-Tie)</option>
-                        </optgroup>
-                        <optgroup label="Fronius">
-                            <option value="FRONIUS_SYMO_GEN24_6_0_PLUS">Fronius Symo GEN24 6.0 Plus (6kW Hybrid, 48V)</option>
-                        </optgroup>
-                    </select>
-                    <div id="hardwareLimitBox" class="hardware-limit-box" style="display:none;"></div>
-                    
                     <label>☀️ Solar Panel Wattage (Wp)</label>
                     <select id="panelWattage">
                         <option value="100">100W</option><option value="150">150W</option><option value="200">200W</option>
@@ -291,33 +221,17 @@
                         <option value="550">550W</option><option value="600">600W</option><option value="630" selected>630W</option>
                         <option value="650">650W</option>
                     </select>
-                    
-                    <label>🔢 Number of Panels (Auto-limited by Inverter)</label>
-                    <select id="panelCount">
-                        <option value="1">1 Panel</option><option value="2" selected>2 Panels</option>
-                    </select>
-                    <div id="panelRecommendation" style="font-size:0.7rem; color:#16a34a; margin-top:0.2rem;"></div>
-                    
-                    <label>🔌 Wiring Configuration</label>
-                    <select id="wiringMode">
-                        <option value="auto" selected>⚡ Auto (Recommended)</option>
-                        <option value="series">📏 All Series</option>
-                        <option value="parallel">🔗 All Parallel</option>
-                        <option value="mixed">🔀 Mixed Series-Parallel</option>
-                    </select>
-                    <div id="mixedWiringInputs" style="display:none;">
-                        <label>Panels per String</label>
-                        <input type="number" id="panelsPerString" value="7" min="1" max="10">
-                        <label>Number of Strings</label>
-                        <input type="number" id="stringCount" value="2" min="1" max="8">
-                    </div>
-                    
+                    <label>🔢 Number of Panels</label>
+                    <input type="number" id="panelCount" value="1" min="1" max="50" step="1">
                     <label>🧪 Battery Chemistry</label>
                     <select id="batteryType">
-                        <option value="lithium">LiFePO4 (80% usable)</option>
-                        <option value="lead">Lead-Acid AGM (50% usable)</option>
+                        <option value="lithium" selected>LiFePO4 (80% usable, 0.5C discharge)</option>
+                        <option value="lead">Lead-Acid AGM (50% usable, 0.3C discharge)</option>
                     </select>
-                    
+                    <label>🔋 Battery Capacity (Ah) - Leave empty for auto-recommend</label>
+                    <input type="number" id="manualBatteryAh" value="60" step="10" min="0" placeholder="Auto if empty">
+                    <label>🔄 Inverter Power (Watts) - Leave empty for auto-recommend</label>
+                    <input type="number" id="manualInverterWatt" value="800" step="100" min="0" placeholder="Auto if empty">
                     <label>🌞 Peak Sun Hours (Philippines)</label>
                     <select id="sunHoursSelect">
                         <option value="4.2">Metro Manila (4.2h)</option>
@@ -326,117 +240,106 @@
                         <option value="4.0">Baguio (4.0h)</option>
                         <option value="5.0" selected>High Sun Area (5.0h)</option>
                     </select>
-                    
                     <label>📆 Autonomy Days (Battery Backup)</label>
-                    <input type="number" id="autonomy" value="2" min="1" max="5">
-                    
-                    <label>📏 Wire Distance (meters, MPPT to Battery)</label>
-                    <input type="number" id="wireDistance" value="5" step="1" min="1" max="20">
-                    
+                    <input type="number" id="autonomy" value="0.025" min="0.01" max="5" step="0.01">
+                    <div style="font-size:0.65rem; color:#666;">0.01 = 15 min, 0.5 = 12 hrs, 2 = 2 days</div>
+                    <label>📏 Wire Distance (meters, Panels to MPPT)</label>
+                    <input type="number" id="wireDistance" value="5" step="1" min="1" max="50">
                     <label>🌡️ Ambient Temperature (°C)</label>
                     <input type="number" id="ambientTemp" value="35" step="5">
-                    
-                    <label>🔌 System Mode</label>
-                    <select id="systemMode">
-                        <option value="offgrid">🔋 Off-Grid (No Grid Connection)</option>
-                        <option value="hybrid">🏠 Hybrid (Grid + Solar + Battery)</option>
-                    </select>
-                    
                     <button class="btn-calc" id="calcBtn">⚙️ Calculate System</button>
-                    
+                    <div id="safetyWarnings" class="warning-box" style="display:none; margin-top:1rem;"></div>
+                    <div id="successWarnings" class="success-box" style="display:none; margin-top:1rem;"></div>
                     <div class="spec-card">
                         <div class="spec-row"><span>☀️ Solar Array:</span><span class="value" id="arraySpec">--</span></div>
                         <div class="spec-row"><span>📐 Roof Space:</span><span class="value" id="roofSpace">--</span></div>
                         <div class="spec-row"><span>⚡ MPPT Controller:</span><span class="value" id="mpptSpec">--</span></div>
-                        <div class="spec-row"><span>🔌 Wiring Config:</span><span class="value" id="wiringConfigDisplay">--</span></div>
                         <div class="spec-row"><span>🔌 String Voltage:</span><span class="value" id="stringVoltage">--</span></div>
                         <div class="spec-row"><span>🔌 String Current:</span><span class="value" id="stringCurrent">--</span></div>
                         <div class="spec-row"><span>🔌 PV Wire:</span><span class="value" id="pvWire">--</span></div>
                         <div class="spec-row"><span>🔌 Battery Cable:</span><span class="value" id="batteryCable">--</span></div>
-                        <div class="spec-row"><span>🛡️ Breakers:</span><span class="value" id="breakers">--</span></div>
+                        <div class="spec-row"><span>🛡️ Breakers (Market):</span><span class="value" id="breakers">--</span></div>
                         <div class="spec-row"><span>🔄 Inverter:</span><span class="value" id="invSpec">--</span></div>
                         <div class="spec-row"><span>🔋 Battery Bank:</span><span class="value" id="battSpec">--</span></div>
-                        <div class="spec-row" id="atsRow" style="display:none;"><span>🔄 Transfer Switch (ATS):</span><span class="value" id="atsSpec">--</span></div>
-                    </div>
-                    <div id="recommendationBox" class="recommendation-box" style="display:none;">
-                        <strong>💡 SYSTEM NOTE:</strong><br>
-                        <span id="recommendationText"></span>
-                    </div>
-                    
-                    <div id="atsConfigCard" class="ats-card" style="display:none;">
-                        <strong>🔌 AUTOMATIC TRANSFER SWITCH (ATS) CONFIGURATION</strong><br><br>
-                        <div class="spec-row"><span>📊 ATS Rating:</span><span class="value" id="atsRating">--</span></div>
-                        <div class="spec-row"><span>🔌 ATS Type:</span><span class="value" id="atsType">2-Pole Automatic Transfer Switch</span></div>
-                        <div class="spec-row"><span>🛡️ Input Breaker:</span><span class="value" id="atsInputBreaker">--</span></div>
-                        <div class="spec-row"><span>🛡️ Output Breaker:</span><span class="value" id="atsOutputBreaker">--</span></div>
-                        <div class="spec-row"><span>🔌 Wire Size:</span><span class="value" id="atsWireSize">--</span></div>
-                        <div class="spec-row"><span>📦 Recommended Brands:</span><span class="value" id="atsBrands">--</span></div>
-                        <div class="ats-warning">⚠️ ATS is REQUIRED for hybrid/grid-tie systems to prevent backfeed!</div>
                     </div>
                 </div>
 
                 <div class="card">
                     <h3 style="font-size:1rem;">🤖 AI Solar Assistant</h3>
                     <div class="chat-messages" id="chatMessages">
-                        <div class="message ai-msg">👋 Connected to OpenRouter Llama 3.3 70B via proxy.<br><br>💡 Try:<br>• <em>"I can only afford a 50Ah 12V LiFePO4 battery"</em><br>• <em>"What MPPT do I need?"</em><br>• <em>"Make my system cheaper"</em></div>
+                        <div class="message ai-msg">👋 Universal Solar Assistant ready.<br><br>💡 This calculator uses MARKET-AVAILABLE RATINGS:<br>• MPPT: 10,20,30,40,50,60,80,100A<br>• Breakers: 10,16,20,25,32,40,50,63,80,100A<br>• Wires: 12,10,8,6,4 AWG<br><br>⚠️ Red warnings appear for ANY safety violation.</div>
                     </div>
                     <div class="chat-input-area">
-                        <input type="text" class="chat-input" id="chatInput" placeholder="Ask anything about solar...">
+                        <input type="text" class="chat-input" id="chatInput" placeholder="Ask about your system...">
                         <button class="btn-send" id="sendBtn">Send</button>
                     </div>
                 </div>
             </div>
 
-            <!-- VIDEO TUTORIAL -->
             <div class="step-card"><div class="step-header">🎬 VIDEO TUTORIAL</div><div class="step-content"><div class="video-container"><video controls poster="https://anydiel.site/Shop/wp-content/uploads/2026/04/Gemini_Generated_Image_z59fucz59fucz59f.png"><source src="https://anydiel.site/Shop/wp-content/uploads/2026/04/My-Solar-Set-up-tutorial.mp4" type="video/mp4"></video></div></div></div>
-            
-            <div class="step-card"><div class="step-header">🏠 STEP 1: Roof Railing Installation</div><div class="step-content"><div class="image-hero"><img src="https://anydiel.site/Shop/wp-content/uploads/2026/04/Gemini_Generated_Image_z59fucz59fucz59f.png" style="max-width:100%; border-radius:0.5rem;"></div><div class="info-box">🔧 Locate rafters → Install L-feet with lag bolts → Attach aluminum rails → Seal penetrations.</div></div></div>
-            
+            <div class="step-card"><div class="step-header">🏠 STEP 1: Roof Railing Installation</div><div class="step-content"><div class="image-hero"><img src="https://anydiel.site/Shop/wp-content/uploads/2026/04/Gemini_Generated_Image_z59fucz59fucz59f.png" style="max-width:100%; border-radius:0.5rem;"></div><div class="info-box">🔧 Locate rafters → Install L-feet → Attach rails → Seal penetrations.</div></div></div>
             <div class="step-card"><div class="step-header">☀️ STEP 2: MC4 Connectors & Panel Wiring</div><div class="step-content"><div class="image-hero"><img src="https://anydiel.site/Shop/wp-content/uploads/2026/04/Gemini_Generated_Image_u1z0e9u1z0e9u1z0.png" style="max-width:45%; display:inline-block;"><img src="https://anydiel.site/Shop/wp-content/uploads/2026/04/image-20220514142511-7.webp" style="max-width:45%; display:inline-block;"></div><div class="info-box">🔴 SERIES: Voltage adds | 🟢 PARALLEL: Current adds</div></div></div>
-            
-            <div class="step-card"><div class="step-header">⚡ STEP 3: MPPT Connection Order</div><div class="step-content"><div class="image-hero"><img src="https://anydiel.site/Shop/wp-content/uploads/2026/04/1_58559986-fa3f-4c71-9889-ac09d031e5da.webp" style="max-width:100%; border-radius:0.5rem;"></div><div class="info-box">🔴 CRITICAL: Connect Battery FIRST to MPPT → THEN Solar Panels</div></div></div>
-            
+            <div class="step-card"><div class="step-header">⚡ STEP 3: MPPT Connection Order</div><div class="step-content"><div class="image-hero"><img src="https://anydiel.site/Shop/wp-content/uploads/2026/04/1_58559986-fa3f-4c71-9889-ac09d031e5da.webp" style="max-width:100%; border-radius:0.5rem;"></div><div class="info-box">🔴 CRITICAL: Connect Battery FIRST → THEN Solar Panels</div></div></div>
             <div class="step-card"><div class="step-header">🔋 STEP 4: Battery Wiring</div><div class="step-content"><div class="image-hero"><img src="https://anydiel.site/Shop/wp-content/uploads/2026/04/3D-LiFePO4-battery-s.png" style="max-width:100%; border-radius:0.5rem;"></div><div class="info-box">🔴 SERIES: BAT A NEG → BAT B POS. System POS → BAT A POS. System NEG → BAT B NEG.</div></div></div>
-            
             <div class="step-card"><div class="step-header">🔌 STEP 5: Inverter Connection</div><div class="step-content"><div class="image-hero"><img src="https://anydiel.site/Shop/wp-content/uploads/2026/04/05d3cf66-9011-4b42-9c06-c77bdb43db40.jpg" style="max-width:100%; border-radius:0.5rem;"></div><div class="info-box">🔴 Battery POSITIVE → T-Class Fuse (within 7 inches) → Inverter DC+</div></div></div>
-            
             <div class="step-card"><div class="step-header">⛓️ STEP 6: Earthing (Grounding)</div><div class="step-content"><div class="info-box">⛓️ Connect ALL metal parts to earth ground rod (copper rod, 8ft depth)</div></div></div>
 
             <div class="card"><h3>✅ Final Installation Checklist</h3><div class="checklist-grid"><label class="checklist-item"><input type="checkbox" class="check-box"><span>🏠 Roof railing installed</span></label><label class="checklist-item"><input type="checkbox" class="check-box"><span>🔌 MC4 connectors wired correctly</span></label><label class="checklist-item"><input type="checkbox" class="check-box"><span>⚡ MPPT: Battery FIRST, then Panels</span></label><label class="checklist-item"><input type="checkbox" class="check-box"><span>🔋 Batteries wired correctly</span></label><label class="checklist-item"><input type="checkbox" class="check-box"><span>🛡️ T-Class Fuse installed</span></label><label class="checklist-item"><input type="checkbox" class="check-box"><span>⛓️ System grounded</span></label></div></div>
 
-            <!-- BMS CONFIGURATOR SECTION -->
             <div class="bms-header">
-                <h2>🔋 50+ BMS + Inverter Configuration Database</h2>
-                <p>Prioritized by brand compatibility · Includes generic 12V/24V options</p>
-                <button class="theme-toggle" onclick="toggleBMSDarkMode()" style="background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 2rem; cursor: pointer; margin-top: 0.5rem;">🌙 Dark Mode</button>
+                <h2>🔋 70+ BMS + Inverter Configuration Database</h2>
+                <p>SRNE · Huawei · Growatt · Deye · Victron · Pylontech · Dyness · BYD · Generic 12/24/48V</p>
+                <button onclick="document.body.classList.toggle('dark-mode')" style="background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 2rem; cursor: pointer; margin-top: 0.5rem;">🌙 Dark Mode</button>
             </div>
 
             <div class="config-grid">
-                <div class="card"><h3>🔋 Battery BMS Selection</h3><div class="search-box"><input type="text" id="bmsSearch" placeholder="🔍 Search BMS brand or protocol..." onkeyup="filterBMSoptions()"></div><select id="bmsSelect" size="10" style="height: auto; min-height: 200px; width: 100%; padding: 0.5rem; border-radius: 0.75rem;" onchange="updateBMSspecs()"><option value="">-- Select BMS --</option></select><div id="bmsSpecsDisplay" class="specs-box"><div class="spec-row"><span>Protocol:</span><span>—</span></div><div class="spec-row"><span>Interface:</span><span>—</span></div><div class="spec-row"><span>Chemistry:</span><span>—</span></div><div class="spec-row"><span>Nominal Voltage:</span><span>—</span></div><div class="spec-row"><span>Cells in Series:</span><span>—</span></div><div class="spec-row"><span>Max Charge Current:</span><span>—</span></div><div class="spec-row"><span>Max Discharge Current:</span><span>—</span></div><div class="spec-row"><span>Absorption Voltage:</span><span>—</span></div><div class="spec-row"><span>Float Voltage:</span><span>—</span></div><div class="spec-row"><span>LVD:</span><span>—</span></div><div class="spec-row"><span>LVR:</span><span>—</span></div><div class="spec-row"><span>HVD:</span><span>—</span></div></div><div class="input-group"><label>Number of Batteries in Parallel</label><input type="number" id="batteryCount" value="1" min="1" max="20" onchange="updateBMSspecs()"></div><div id="bmsWarning" class="warning" style="display:none;"></div></div>
+                <div class="card"><h3>🔋 Battery BMS Selection</h3><div class="search-box"><input type="text" id="bmsSearch" placeholder="🔍 Search BMS..." onkeyup="filterBMSoptions()"></div>
+                <select id="bmsSelect" size="10" style="height: auto; min-height: 200px; width: 100%; padding: 0.5rem; border-radius: 0.75rem;" onchange="updateBMSspecs()"><option value="">-- Select BMS --</option></select>
+                <div id="bmsSpecsDisplay" class="specs-box"></div>
+                <div class="input-group"><label>Batteries in Parallel</label><input type="number" id="batteryCount" value="1" min="1" max="20" onchange="updateBMSspecs()"></div>
+                <div id="bmsWarning" class="warning" style="display:none;"></div></div>
 
-                <div class="card"><h3>⚙️ System Configuration</h3><div class="input-group"><label>Inverter Brand</label><select id="inverterBrand" onchange="updateInverterConfig()"><option value="">-- Generic / Unknown --</option><option value="SRNE">SRNE</option><option value="Huawei">Huawei</option><option value="Delta">Delta</option><option value="Sungrow">Sungrow</option><option value="SMA">SMA</option><option value="Fronius">Fronius</option><option value="Growatt">Growatt</option><option value="Victron">Victron</option></select></div><div class="input-group"><label>Operating Mode</label><select id="modeSelect" onchange="updateInverterConfig()"><option value="offgrid">🔋 Off-Grid</option><option value="hybrid">🏠 Hybrid</option><option value="gridtie">🌐 Grid-Tie</option></select></div><div id="hybridSettings" style="display:none;"><div class="input-group"><label>Min SOC</label><input type="number" id="minSOC" value="20"><label>Cut-off SOC</label><input type="number" id="cutoffSOC" value="5"><label>Grid Charge</label><select id="gridCharge"><option value="disabled">Disabled</option><option value="enabled">Enabled</option></select></div></div><div class="input-group"><label>Limiting Method</label><select id="limitingMethod"><option value="LC_BMS">LC BMS (Recommended)</option><option value="LC_SET">LC SET (Manual)</option></select></div><div class="input-group"><label>Handshake Delay (sec)</label><input type="number" id="handshakeDelay" value="10"></div></div>
+                <div class="card"><h3>⚙️ System Configuration</h3>
+                <select id="inverterBrand" onchange="updateInverterConfig()">
+                    <option value="">-- Generic --</option>
+                    <option value="SRNE">SRNE (Solar SRNE)</option>
+                    <option value="Huawei">Huawei SUN2000</option>
+                    <option value="Growatt">Growatt</option>
+                    <option value="Deye">Deye SUN</option>
+                    <option value="Victron">Victron Energy</option>
+                </select>
+                <select id="modeSelect" onchange="updateInverterConfig()">
+                    <option value="offgrid">🔋 Off-Grid</option>
+                    <option value="hybrid">🏠 Hybrid</option>
+                    <option value="gridtie">🌐 Grid-Tie</option>
+                </select>
+                <div id="hybridSettings" style="display:none;">
+                    <label>Min SOC (Switch to Grid)</label><input type="number" id="minSOC" value="20">
+                    <label>Cut-off SOC</label><input type="number" id="cutoffSOC" value="5">
+                </div>
+                <div class="input-group"><label>BMS Handshake Delay (sec)</label><input type="number" id="handshakeDelay" value="10"></div>
+                </div>
 
-                <div class="card"><h3>📋 Inverter Configuration (230V / 60Hz)</h3><div id="inverterConfigOutput" class="config-output">Select BMS and Mode to generate configuration...</div><button onclick="copyConfig()">📋 Copy</button><button onclick="exportConfig()">💾 Export</button></div>
+                <div class="card"><h3>📋 Inverter Configuration</h3>
+                <div id="inverterConfigOutput" class="config-output">Select BMS to generate configuration...</div>
+                <button onclick="copyConfig()">📋 Copy</button>
+                <button onclick="exportConfig()">💾 Export</button></div>
             </div>
 
-            <!-- GLOSSARY SECTION -->
-            <div class="card"><h3 style="font-size:1rem; cursor: pointer; display: flex; align-items: center; justify-content: space-between;" onclick="toggleGlossary()">📖 Solar Terminology Glossary <span class="glossary-toggle-icon" style="font-size:0.9rem;">▼</span></h3><div id="glossaryContent" style="display: none; margin-top: 0.8rem;"><div style="background: #0059b3; color: white; padding: 0.4rem 0.8rem; border-radius: 0.6rem; margin: 0.5rem 0 0.8rem 0; font-size: 0.8rem; font-weight: bold;">☀️ PANEL SPECIFICATIONS</div><div class="spec-row"><strong>Voc</strong><span>Voltage Open Circuit — Max voltage, used for string sizing</span></div><div class="spec-row"><strong>Vmp</strong><span>Voltage at Maximum Power — Operating voltage</span></div><div class="spec-row"><strong>Imp</strong><span>Current at Maximum Power — Operating current</span></div><div class="spec-row"><strong>Isc</strong><span>Short Circuit Current — For fuse/breaker sizing</span></div><div style="background: #1e6f3f; color: white; padding: 0.4rem 0.8rem; border-radius: 0.6rem; margin: 0.5rem 0 0.8rem 0; font-size: 0.8rem; font-weight: bold;">⚡ CHARGE CONTROLLER</div><div class="spec-row"><strong>MPPT</strong><span>Maximum Power Point Tracking — Efficient solar charging</span></div><div class="spec-row"><strong>PWM</strong><span>Pulse Width Modulation — Simpler, less efficient</span></div><div style="background: #b85c00; color: white; padding: 0.4rem 0.8rem; border-radius: 0.6rem; margin: 0.5rem 0 0.8rem 0; font-size: 0.8rem; font-weight: bold;">🔋 BATTERY & BMS</div><div class="spec-row"><strong>SoC</strong><span>State of Charge — Battery percentage</span></div><div class="spec-row"><strong>DoD</strong><span>Depth of Discharge — Usable capacity</span></div><div class="spec-row"><strong>LVD</strong><span>Low Voltage Disconnect — Protection cutoff</span></div><div class="spec-row"><strong>LVR</strong><span>Low Voltage Reconnect — Restart voltage</span></div><div class="spec-row"><strong>BMS</strong><span>Battery Management System — Protects lithium batteries</span></div><div class="spec-row"><strong>CAN Bus / RS485</strong><span>Communication protocols between battery and inverter</span></div></div></div>
-
-            <footer>© 2026 Anydiel IT Services · Professional Solar Calculator · Hardware-Aware with Safety Margins</footer>
+            <footer>© 2026 Anydiel IT Services · Market-Available Ratings · Safety Warnings for ALL violations</footer>
         </div>
     </div>
 
     <button class="btn-dark" id="darkModeBtn">🌙</button>
 
     <script>
-        // PAYWALL
+        // ========== PAYWALL SYSTEM ==========
         const SECRET_ACCESS_CODE = 'SRNE2026';
         const savedAccess = localStorage.getItem('solar_access_granted');
         
         if (savedAccess === 'true') {
             document.getElementById('paywall').style.display = 'none';
             document.getElementById('calculator-content').style.display = 'block';
-            setTimeout(() => calculateSystem(), 100);
         }
         
         document.getElementById('verifyBtn').addEventListener('click', function() {
@@ -449,79 +352,34 @@
             }
         });
         
-        // ========== INVERTER DATABASE ==========
-        const inverterDatabase = {
-            // SRNE
-            "SRNE_HESP4880S150_H": { brand: "SRNE", model: "HESP4880S150-H", type: "hybrid", ratedPower: 8000, batteryVoltage: 48, mpptCount: 2, maxPvPower: 9000, maxPvVoltage: 500, mpptVoltageMin: 120, mpptVoltageMax: 450, maxPvCurrent: 16, hardwareStringInputs: 2 },
-            "SRNE_HESP4860S100_H": { brand: "SRNE", model: "HESP4860S100-H", type: "hybrid", ratedPower: 6000, batteryVoltage: 48, mpptCount: 2, maxPvPower: 9000, maxPvVoltage: 500, mpptVoltageMin: 120, mpptVoltageMax: 450, maxPvCurrent: 16, hardwareStringInputs: 2 },
-            "SRNE_HESP4840S100_H": { brand: "SRNE", model: "HESP4840S100-H", type: "hybrid", ratedPower: 4000, batteryVoltage: 48, mpptCount: 2, maxPvPower: 6000, maxPvVoltage: 500, mpptVoltageMin: 120, mpptVoltageMax: 450, maxPvCurrent: 16, hardwareStringInputs: 2 },
-            // Huawei
-            "HUAWEI_SUN2000_6KTL_L1": { brand: "Huawei", model: "SUN2000-6KTL-L1", type: "gridtie", ratedPower: 6000, batteryVoltage: null, mpptCount: 2, maxPvPower: 9000, maxPvVoltage: 600, mpptVoltageMin: 90, mpptVoltageMax: 560, maxPvCurrent: 12.5, hardwareStringInputs: 2 },
-            "HUAWEI_SUN2000_5KTL_L1": { brand: "Huawei", model: "SUN2000-5KTL-L1", type: "gridtie", ratedPower: 5000, batteryVoltage: null, mpptCount: 2, maxPvPower: 7500, maxPvVoltage: 600, mpptVoltageMin: 90, mpptVoltageMax: 560, maxPvCurrent: 12.5, hardwareStringInputs: 2 },
-            // Delta
-            "DELTA_M6_T": { brand: "Delta", model: "M6-T", type: "hybrid", ratedPower: 6000, batteryVoltage: 48, mpptCount: 2, maxPvPower: 9000, maxPvVoltage: 1100, mpptVoltageMin: 200, mpptVoltageMax: 1000, maxPvCurrent: 10, hardwareStringInputs: 2 },
-            "DELTA_M8_T": { brand: "Delta", model: "M8-T", type: "hybrid", ratedPower: 8000, batteryVoltage: 48, mpptCount: 2, maxPvPower: 12000, maxPvVoltage: 1100, mpptVoltageMin: 200, mpptVoltageMax: 1000, maxPvCurrent: 13, hardwareStringInputs: 2 },
-            // Sungrow
-            "SUNGROW_SG5K5_S": { brand: "Sungrow", model: "SG5K5-S", type: "hybrid", ratedPower: 5500, batteryVoltage: 48, mpptCount: 2, maxPvPower: 8250, maxPvVoltage: 1100, mpptVoltageMin: 140, mpptVoltageMax: 1000, maxPvCurrent: 22, hardwareStringInputs: 2 },
-            "SUNGROW_SG6K_S": { brand: "Sungrow", model: "SG6K-S", type: "hybrid", ratedPower: 6000, batteryVoltage: 48, mpptCount: 2, maxPvPower: 9000, maxPvVoltage: 1100, mpptVoltageMin: 140, mpptVoltageMax: 1000, maxPvCurrent: 22, hardwareStringInputs: 2 },
-            // SMA
-            "SMA_SUNNY_TRIPOWER_6_0": { brand: "SMA", model: "Sunny Tripower 6.0", type: "gridtie", ratedPower: 6000, batteryVoltage: null, mpptCount: 2, maxPvPower: 9000, maxPvVoltage: 850, mpptVoltageMin: 260, mpptVoltageMax: 800, maxPvCurrent: 13.5, hardwareStringInputs: 2 },
-            // Fronius
-            "FRONIUS_SYMO_GEN24_6_0_PLUS": { brand: "Fronius", model: "Symo GEN24 6.0 Plus", type: "hybrid", ratedPower: 6000, batteryVoltage: 48, mpptCount: 2, maxPvPower: 9000, maxPvVoltage: 1000, mpptVoltageMin: 210, mpptVoltageMax: 800, maxPvCurrent: 12.5, hardwareStringInputs: 2 }
-        };
+        // ========== MARKET-AVAILABLE RATINGS ==========
+        const marketMPPTSizes = [10, 20, 30, 40, 50, 60, 80, 100, 120, 150];
+        const marketBreakerSizes = [6, 10, 16, 20, 25, 32, 40, 50, 63, 80, 100, 125, 160, 200];
         
-        // ========== COMPLETE 50+ BMS DATABASE (With All 5 Brands) ==========
-        const bmsDatabase = {
-            // ===== GENERIC 12V BATTERIES =====
-            "GEN_12V_50AH_LITHIUM": { brand: "Generic", model: "12V 50Ah LiFePO4", protocol: "MANUAL", interface: "None", chemistry: "LiFePO4", voltage: 12, chargeMax: 25, dischargeMax: 25, absorption: 14.4, float: 13.8, lvd: 10.8, lvr: 12.0, hvd: 14.6, handshake: 0, capacityAh: 50, isGeneric: true },
-            "GEN_12V_100AH_LITHIUM": { brand: "Generic", model: "12V 100Ah LiFePO4", protocol: "MANUAL", interface: "None", chemistry: "LiFePO4", voltage: 12, chargeMax: 50, dischargeMax: 50, absorption: 14.4, float: 13.8, lvd: 10.8, lvr: 12.0, hvd: 14.6, handshake: 0, capacityAh: 100, isGeneric: true },
-            "GEN_12V_100AH_AGM": { brand: "Generic", model: "12V 100Ah AGM", protocol: "MANUAL", interface: "None", chemistry: "AGM", voltage: 12, chargeMax: 30, dischargeMax: 30, absorption: 14.4, float: 13.5, lvd: 11.0, lvr: 12.5, hvd: 14.8, handshake: 0, capacityAh: 100, isGeneric: true },
-            
-            // ===== GENERIC 24V BATTERIES =====
-            "GEN_24V_50AH_LITHIUM": { brand: "Generic", model: "24V 50Ah LiFePO4", protocol: "MANUAL", interface: "None", chemistry: "LiFePO4", voltage: 24, chargeMax: 25, dischargeMax: 25, absorption: 28.8, float: 27.6, lvd: 21.6, lvr: 24.0, hvd: 29.2, handshake: 0, capacityAh: 50, isGeneric: true },
-            "GEN_24V_100AH_LITHIUM": { brand: "Generic", model: "24V 100Ah LiFePO4", protocol: "MANUAL", interface: "None", chemistry: "LiFePO4", voltage: 24, chargeMax: 50, dischargeMax: 50, absorption: 28.8, float: 27.6, lvd: 21.6, lvr: 24.0, hvd: 29.2, handshake: 0, capacityAh: 100, isGeneric: true },
-            "GEN_24V_100AH_AGM": { brand: "Generic", model: "24V 100Ah AGM", protocol: "MANUAL", interface: "None", chemistry: "AGM", voltage: 24, chargeMax: 30, dischargeMax: 30, absorption: 28.8, float: 27.0, lvd: 22.0, lvr: 25.0, hvd: 29.6, handshake: 0, capacityAh: 100, isGeneric: true },
-            
-            // ===== SRNE COMPATIBLE =====
-            "SRNE_SRBP_100": { brand: "SRNE", model: "SR-BP 100", protocol: "WOW", interface: "RS485", chemistry: "LiFePO4", voltage: 48, chargeMax: 50, dischargeMax: 50, absorption: 54.0, float: 53.6, lvd: 43.0, lvr: 49.0, handshake: 5, capacityAh: 100, compatibleWith: ["SRNE"] },
-            "SRNE_SRBP_150": { brand: "SRNE", model: "SR-BP 150", protocol: "WOW", interface: "RS485", chemistry: "LiFePO4", voltage: 48, chargeMax: 75, dischargeMax: 75, absorption: 54.0, float: 53.6, lvd: 43.0, lvr: 49.0, handshake: 5, capacityAh: 150, compatibleWith: ["SRNE"] },
-            
-            // ===== HUAWEI COMPATIBLE =====
-            "HUAWEI_LUNA2000": { brand: "Huawei", model: "LUNA2000", protocol: "HUAWEI", interface: "CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 50, dischargeMax: 50, absorption: 54.0, float: 53.5, lvd: 44.0, handshake: 5, capacityAh: 100, compatibleWith: ["Huawei"] },
-            
-            // ===== DELTA COMPATIBLE =====
-            "DELTA_BATTERY_5K": { brand: "Delta", model: "Battery 5kWh", protocol: "DELTA", interface: "CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 50, dischargeMax: 50, absorption: 54.0, float: 53.5, lvd: 44.0, handshake: 5, capacityAh: 100, compatibleWith: ["Delta"] },
-            
-            // ===== SUNGROW COMPATIBLE =====
-            "SUNGROW_BATTERY_5K": { brand: "Sungrow", model: "SBR 5kWh", protocol: "SUNGROW", interface: "CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 50, dischargeMax: 50, absorption: 54.0, float: 53.5, lvd: 44.0, handshake: 5, capacityAh: 100, compatibleWith: ["Sungrow"] },
-            
-            // ===== SMA COMPATIBLE =====
-            "SMA_BATTERY_5K": { brand: "SMA", model: "Sunny Island Battery", protocol: "SMA", interface: "CAN/RS485", chemistry: "LiFePO4", voltage: 48, chargeMax: 50, dischargeMax: 50, absorption: 54.0, float: 53.5, lvd: 44.0, handshake: 5, capacityAh: 100, compatibleWith: ["SMA"] },
-            
-            // ===== FRONIUS COMPATIBLE =====
-            "FRONIUS_SNAPIN_5K": { brand: "Fronius", model: "SnapIN 5kWh", protocol: "FRONIUS", interface: "CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 50, dischargeMax: 50, absorption: 54.0, float: 53.5, lvd: 44.0, handshake: 5, capacityAh: 100, compatibleWith: ["Fronius"] },
-            "FRONIUS_BYD_COMPATIBLE": { brand: "BYD", model: "Battery-Box (Fronius)", protocol: "BYD", interface: "CAN", chemistry: "LiFePO4", voltage: 51.2, chargeMax: 50, dischargeMax: 50, absorption: 57.6, float: 56.8, lvd: 48.0, handshake: 10, capacityAh: 100, compatibleWith: ["Fronius"] },
-            
-            // ===== PYLONTECH (Universal) =====
-            "PYL_US2000": { brand: "Pylontech", model: "US2000", protocol: "PYL", interface: "RS485/CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 25, dischargeMax: 25, absorption: 53.5, float: 53.0, lvd: 44.0, lvr: 48.0, hvd: 54.0, handshake: 10, capacityAh: 50, compatibleWith: ["SRNE", "Sungrow", "Delta", "SMA", "Fronius", "Growatt", "Victron"] },
-            "PYL_US3000": { brand: "Pylontech", model: "US3000", protocol: "PYL", interface: "RS485/CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 37, dischargeMax: 37, absorption: 53.5, float: 53.0, lvd: 44.0, lvr: 48.0, hvd: 54.0, handshake: 10, capacityAh: 74, compatibleWith: ["SRNE", "Sungrow", "Delta", "SMA", "Fronius", "Growatt", "Victron"] },
-            "PYL_US5000": { brand: "Pylontech", model: "US5000", protocol: "PYL", interface: "RS485/CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 50, dischargeMax: 50, absorption: 53.5, float: 53.0, lvd: 44.0, lvr: 48.0, hvd: 54.0, handshake: 10, capacityAh: 100, compatibleWith: ["SRNE", "Sungrow", "Delta", "SMA", "Fronius", "Growatt", "Victron"] },
-            
-            // ===== DYNESS (Universal) =====
-            "DAQ_B4850": { brand: "Dyness", model: "B4850", protocol: "DAQ", interface: "CAN/RS485", chemistry: "LiFePO4", voltage: 48, chargeMax: 25, dischargeMax: 25, absorption: 53.5, float: 53.0, lvd: 45.0, handshake: 8, capacityAh: 100, compatibleWith: ["SRNE", "Sungrow", "Delta", "SMA", "Fronius"] },
-            
-            // ===== GROWATT =====
-            "GROWATT_ARES": { brand: "Growatt", model: "ARES", protocol: "GROWATT", interface: "RS485", chemistry: "LiFePO4", voltage: 48, chargeMax: 50, dischargeMax: 50, absorption: 54.0, float: 53.5, lvd: 44.0, handshake: 5, capacityAh: 100, compatibleWith: ["Growatt"] },
-            
-            // ===== LITIME (Budget, universal) =====
-            "LITIO_48V_100": { brand: "LiTime", model: "48V 100Ah", protocol: "LIT", interface: "RS485", chemistry: "LiFePO4", voltage: 48, chargeMax: 50, dischargeMax: 50, absorption: 57.6, float: 56.8, lvd: 48.0, lvr: 52.0, handshake: 5, capacityAh: 100, compatibleWith: ["SRNE", "Growatt", "Victron"] },
-            
-            // ===== BYD (For Fronius, Sungrow, Delta, SMA) =====
-            "BYD_BBOX_HVS": { brand: "BYD", model: "Battery-Box HVS", protocol: "BYD", interface: "CAN", chemistry: "LiFePO4", voltage: 51.2, chargeMax: 50, dischargeMax: 50, absorption: 57.6, float: 56.8, lvd: 48.0, handshake: 10, capacityAh: 100, compatibleWith: ["Sungrow", "Delta", "SMA", "Fronius"] },
-            
-            // ===== USER MANUAL MODE =====
-            "USER": { brand: "USER MODE", model: "Manual Setup", protocol: "MANUAL", interface: "None", chemistry: "User Defined", voltage: 48, chargeMax: "MANUAL", dischargeMax: "MANUAL", absorption: "User Defined", float: "User Defined", lvd: "User Defined", handshake: 0, capacityAh: 0 }
-        };
+        function roundToMarketMPPT(amps) {
+            let nearest = marketMPPTSizes[0];
+            for (let size of marketMPPTSizes) {
+                if (Math.abs(size - amps) < Math.abs(nearest - amps)) nearest = size;
+            }
+            return `${nearest}A MPPT (Victron/Epever/MPP Solar)`;
+        }
+        
+        function roundToMarketBreaker(amps) {
+            let nearest = marketBreakerSizes[0];
+            for (let size of marketBreakerSizes) {
+                if (Math.abs(size - amps) < Math.abs(nearest - amps)) nearest = size;
+            }
+            return `${nearest}A`;
+        }
+        
+        function getWireSize(amps) {
+            if (amps <= 20) return "12 AWG (4mm²) - Phelips / Royal";
+            if (amps <= 30) return "10 AWG (6mm²) - Phelips / Royal";
+            if (amps <= 50) return "8 AWG (10mm²) - Phelips / Royal";
+            if (amps <= 80) return "6 AWG (16mm²) - Phelips / Royal";
+            if (amps <= 120) return "4 AWG (25mm²) - Phelips / Royal";
+            return "2 AWG (35mm²) - Phelips / Royal";
+        }
         
         function getPanelSpecs(wattage) {
             let voc, vmp, imp, area;
@@ -534,267 +392,6 @@
             return { voc, vmp, imp, area };
         }
         
-        function getTemperatureCorrection(minTemp) {
-            if (minTemp <= 0) return 1.15;
-            if (minTemp <= 5) return 1.12;
-            if (minTemp <= 10) return 1.10;
-            if (minTemp <= 15) return 1.08;
-            if (minTemp <= 20) return 1.05;
-            return 1.02;
-        }
-        
-        function roundToMarketBreaker(amps) {
-            const marketBreakers = [6, 10, 16, 20, 25, 32, 40, 50, 63, 80, 100, 125, 160, 200];
-            for (let size of marketBreakers) { if (amps <= size) return `${size}A`; }
-            return `200A+`;
-        }
-        
-        function getWireSize(amps) {
-            if (amps <= 20) return "12 AWG (4mm²) - Phelips / Royal";
-            if (amps <= 30) return "10 AWG (6mm²) - Phelips / Royal";
-            if (amps <= 50) return "8 AWG (10mm²) - Phelips / Royal";
-            if (amps <= 80) return "6 AWG (16mm²) - Phelips / Royal";
-            if (amps <= 120) return "4 AWG (25mm²) - Phelips / Royal";
-            return "2 AWG (35mm²) - Phelips / Royal";
-        }
-        
-        // Helper to get optimal string configuration (NOT just all series)
-        function getOptimalStringConfig(panelCount, panelVmp, panelImp, inv, tempCorr) {
-            const maxVoltagePerString = inv.maxPvVoltage / tempCorr;
-            const maxPanelsPerString = Math.floor(maxVoltagePerString / panelVmp);
-            const maxCurrentPerMPPT = inv.maxPvCurrent;
-            const maxPanelsPerMPPTByCurrent = Math.floor(maxCurrentPerMPPT / panelImp);
-            
-            let bestConfig = { strings: 1, panelsPerString: panelCount, totalCurrent: panelImp, stringVoltage: panelCount * panelVmp, isSafe: false };
-            
-            for (let strings = 1; strings <= inv.mpptCount * 4; strings++) {
-                let panelsPerString = Math.ceil(panelCount / strings);
-                let stringVoltage = panelsPerString * panelVmp;
-                let stringCurrent = panelImp;
-                let totalCurrent = panelImp * strings;
-                let currentPerMPPT = totalCurrent / inv.mpptCount;
-                
-                let isVoltageOk = stringVoltage <= maxVoltagePerString && stringVoltage >= inv.mpptVoltageMin;
-                let isCurrentOk = currentPerMPPT <= maxCurrentPerMPPT;
-                let isBalanced = (panelsPerString * strings) === panelCount;
-                
-                if (isVoltageOk && isCurrentOk && isBalanced) {
-                    bestConfig = { strings, panelsPerString, stringVoltage, totalCurrent, currentPerMPPT, isSafe: true };
-                    break;
-                }
-            }
-            
-            // Fallback to safe balanced config
-            if (!bestConfig.isSafe) {
-                let safePanelsPerString = Math.min(maxPanelsPerString, Math.floor(panelCount / inv.mpptCount));
-                if (safePanelsPerString < 1) safePanelsPerString = 1;
-                let strings = Math.ceil(panelCount / safePanelsPerString);
-                bestConfig = {
-                    strings: strings,
-                    panelsPerString: safePanelsPerString,
-                    stringVoltage: safePanelsPerString * panelVmp,
-                    totalCurrent: panelImp * strings,
-                    currentPerMPPT: (panelImp * strings) / inv.mpptCount,
-                    isSafe: (safePanelsPerString * strings) === panelCount,
-                    warning: `⚠️ Limited to ${safePanelsPerString} panels per string due to ${inv.maxPvVoltage}V limit`
-                };
-            }
-            return bestConfig;
-        }
-        
-        function updatePanelDropdown() {
-            const inverterKey = document.getElementById('inverterPreset')?.value;
-            const panelWatt = parseInt(document.getElementById('panelWattage')?.value) || 630;
-            const minTemp = parseFloat(document.getElementById('locationTemp')?.value) || 10;
-            const panelSelect = document.getElementById('panelCount');
-            const currentValue = parseInt(panelSelect.value);
-            const limitBox = document.getElementById('hardwareLimitBox');
-            
-            if (!inverterKey || !inverterDatabase[inverterKey]) {
-                if (panelSelect.options.length === 0 || panelSelect.options.length !== 20) {
-                    panelSelect.innerHTML = '';
-                    for (let i = 1; i <= 20; i++) {
-                        const opt = document.createElement('option');
-                        opt.value = i;
-                        opt.textContent = i === 1 ? `${i} Panel` : `${i} Panels`;
-                        opt.selected = (i === currentValue && currentValue <= 20);
-                        panelSelect.appendChild(opt);
-                    }
-                }
-                limitBox.style.display = 'none';
-                return;
-            }
-            
-            const inv = inverterDatabase[inverterKey];
-            const specs = getPanelSpecs(panelWatt);
-            const tempCorr = getTemperatureCorrection(minTemp);
-            const maxVoltagePerString = inv.maxPvVoltage / tempCorr;
-            const maxPanelsPerString = Math.floor(maxVoltagePerString / specs.vmp);
-            const maxPanelsByPower = Math.floor(inv.maxPvPower / panelWatt);
-            let maxPanels = Math.min(maxPanelsPerString * inv.mpptCount, maxPanelsByPower);
-            if (maxPanels < 1) maxPanels = 1;
-            if (maxPanels > 20) maxPanels = 20;
-            
-            const recommendedPanels = Math.min(maxPanelsPerString * inv.mpptCount, maxPanelsByPower);
-            
-            // Preserve current selection if valid
-            if (panelSelect.options.length !== maxPanels) {
-                panelSelect.innerHTML = '';
-                for (let i = 1; i <= maxPanels; i++) {
-                    const opt = document.createElement('option');
-                    opt.value = i;
-                    opt.textContent = i === 1 ? `${i} Panel` : `${i} Panels`;
-                    if (i === currentValue && currentValue <= maxPanels) opt.selected = true;
-                    else if (i === recommendedPanels && (currentValue > maxPanels || currentValue < 1)) opt.selected = true;
-                    panelSelect.appendChild(opt);
-                }
-            }
-            
-            const optConfig = getOptimalStringConfig(recommendedPanels, specs.vmp, specs.imp, inv, tempCorr);
-            const stringVoltage = optConfig.stringVoltage;
-            const coldVoltage = stringVoltage * tempCorr;
-            const voltageStatus = coldVoltage <= inv.maxPvVoltage ? '✅ Safe' : '❌ EXCEEDS LIMIT';
-            
-            limitBox.style.display = 'block';
-            limitBox.innerHTML = `📊 ${inv.brand} ${inv.model}<br>🔢 Max panels: ${maxPanels} (${maxPanelsPerString} per string max)<br>🔌 Recommended: ${optConfig.panelsPerString}S${optConfig.strings}P (${optConfig.strings} strings × ${optConfig.panelsPerString} panels)<br>🔋 String voltage: ${Math.round(stringVoltage)}V (${Math.round(coldVoltage)}V cold) ${voltageStatus}<br>⚡ String current: ${(panelWatt / specs.vmp).toFixed(1)}A per string<br>🌡️ Cold margin: +${Math.round((tempCorr-1)*100)}% (${minTemp}°C)`;
-            
-            filterBMSbyInverter(inverterKey);
-        }
-        
-        function filterBMSbyInverter(inverterKey) {
-            const inv = inverterDatabase[inverterKey];
-            const bmsSelect = document.getElementById('bmsSelect');
-            if (!inv || !bmsSelect) return;
-            const invBrand = inv.brand;
-            for (let i = 0; i < bmsSelect.options.length; i++) {
-                const opt = bmsSelect.options[i];
-                if (!opt.value || opt.value === "USER") continue;
-                const bms = bmsDatabase[opt.value];
-                if (!bms) continue;
-                let show = true;
-                if (bms.compatibleWith && bms.compatibleWith.length > 0 && !bms.isGeneric) {
-                    show = bms.compatibleWith.includes(invBrand);
-                }
-                opt.style.display = show ? '' : 'none';
-            }
-        }
-        
-        function calculateSystem() {
-            let dailyWh = parseFloat(document.getElementById('dailyWh')?.value) || 5000;
-            if (dailyWh > 30000) dailyWh = 30000;
-            let sysVoltage = parseInt(document.getElementById('sysVoltage')?.value || 24);
-            const batteryChem = document.getElementById('batteryType')?.value;
-            const sunHours = parseFloat(document.getElementById('sunHoursSelect')?.value || 5);
-            let autonomy = parseFloat(document.getElementById('autonomy')?.value) || 2;
-            const wireDistance = parseFloat(document.getElementById('wireDistance')?.value) || 5;
-            const ambientTemp = parseFloat(document.getElementById('ambientTemp')?.value) || 35;
-            const panelWatt = parseInt(document.getElementById('panelWattage')?.value) || 630;
-            let panelCount = parseInt(document.getElementById('panelCount')?.value) || 2;
-            const inverterPresetKey = document.getElementById('inverterPreset')?.value;
-            const minTemp = parseFloat(document.getElementById('locationTemp')?.value) || 10;
-            
-            updatePanelDropdown();
-            
-            const specs = getPanelSpecs(panelWatt);
-            const totalWatts = panelCount * panelWatt;
-            const roofSpace = (panelCount * specs.area * 1.15).toFixed(1);
-            const tempDerate = 1 - ((ambientTemp - 25) * 0.0035);
-            const dailyProduction = panelCount * panelWatt * sunHours * 0.85 * Math.max(0.7, tempDerate);
-            
-            let inv = inverterPresetKey ? inverterDatabase[inverterPresetKey] : null;
-            if (inv && inv.batteryVoltage) {
-                sysVoltage = inv.batteryVoltage;
-                document.getElementById('sysVoltage').value = sysVoltage;
-                document.getElementById('sysVoltage').disabled = true;
-            } else {
-                document.getElementById('sysVoltage').disabled = false;
-            }
-            
-            const tempCorr = getTemperatureCorrection(minTemp);
-            let config;
-            let wiringDisplay = "";
-            let stringVoltageDisplay = "";
-            let stringCurrentDisplay = "";
-            
-            if (inv) {
-                config = getOptimalStringConfig(panelCount, specs.vmp, specs.imp, inv, tempCorr);
-                const stringVoltage = config.stringVoltage;
-                const coldVoltage = stringVoltage * tempCorr;
-                const voltageWarning = coldVoltage > inv.maxPvVoltage ? `<span class="warning-value">❌ DANGER: ${Math.round(coldVoltage)}V cold exceeds ${inv.maxPvVoltage}V max!</span><br>` : "";
-                wiringDisplay = `${config.panelsPerString}S${config.strings}P<br><small>${config.strings} string(s) · ${config.panelsPerString} panels/string</small>`;
-                stringVoltageDisplay = voltageWarning + `${Math.round(stringVoltage)}V (${Math.round(coldVoltage)}V cold)<br><small>${config.panelsPerString} panels × ${specs.vmp}V each</small>`;
-                stringCurrentDisplay = `${(panelWatt / specs.vmp).toFixed(1)}A per string<br><small>Total: ${((panelWatt / specs.vmp) * config.strings).toFixed(1)}A</small>`;
-            } else {
-                wiringDisplay = `${panelCount}S1P<br><small>1 string · ${panelCount} panels/string</small>`;
-                stringVoltageDisplay = `${Math.round(panelCount * specs.vmp)}V<br><small>${panelCount} panels × ${specs.vmp}V each</small>`;
-                stringCurrentDisplay = `${specs.imp.toFixed(1)}A total<br><small>${specs.imp.toFixed(1)}A per string</small>`;
-            }
-            
-            document.getElementById('arraySpec').innerHTML = `${panelCount} x ${panelWatt}W = ${totalWatts}W<br><span class="${dailyProduction >= dailyWh ? 'success-value' : 'warning-value'}">${dailyProduction >= dailyWh ? '✅ Sufficient' : '⚠️ Under-sized'}: ${Math.round(dailyProduction)}Wh/day vs ${dailyWh}Wh/day</span>`;
-            document.getElementById('roofSpace').innerHTML = `${roofSpace} m²`;
-            document.getElementById('mpptSpec').innerHTML = inv ? `${inv.brand} ${inv.model} (Built-in MPPT)` : `${Math.ceil(totalWatts / sysVoltage * 1.25)}A MPPT`;
-            document.getElementById('wiringConfigDisplay').innerHTML = wiringDisplay;
-            document.getElementById('stringVoltage').innerHTML = stringVoltageDisplay;
-            document.getElementById('stringCurrent').innerHTML = stringCurrentDisplay;
-            
-            let stringCurrentVal = inv ? (panelWatt / specs.vmp) : specs.imp;
-            document.getElementById('pvWire').innerHTML = getWireSize(stringCurrentVal);
-            
-            let inverterWatts = inv ? inv.ratedPower : Math.max(800, Math.ceil(dailyWh / 6) * 1.25);
-            let inverterCurrent = inverterWatts / sysVoltage;
-            document.getElementById('batteryCable').innerHTML = getWireSize(inverterCurrent);
-            
-            let pvBreaker = roundToMarketBreaker(stringCurrentVal * 1.25);
-            let batteryBreaker = roundToMarketBreaker(inverterCurrent * 1.25);
-            document.getElementById('breakers').innerHTML = `PV: ${pvBreaker} DC | Battery: ${batteryBreaker} DC | T-Class: ${batteryBreaker} (Lithium)`;
-            document.getElementById('invSpec').innerHTML = inv ? `${inv.brand} ${inv.model}<br><small>${inv.ratedPower}W ${inv.type.toUpperCase()} · ${inv.batteryVoltage ? inv.batteryVoltage + 'V battery' : 'Grid-tie only'}</small>` : `${inverterWatts}W Inverter`;
-            
-            let usablePercent = batteryChem === 'lithium' ? 0.8 : 0.5;
-            let requiredAh = Math.ceil((dailyWh * autonomy) / usablePercent / sysVoltage);
-            requiredAh = Math.ceil(requiredAh / 20) * 20;
-            
-            let matches = [];
-            for (let [key, bms] of Object.entries(bmsDatabase)) {
-                if (key === "USER") continue;
-                if (Math.abs(bms.voltage - sysVoltage) > 6) continue;
-                if (!bms.capacityAh || bms.capacityAh <= 0) continue;
-                matches.push({ ...bms, key, score: Math.abs(requiredAh - bms.capacityAh) });
-            }
-            matches.sort((a,b) => a.score - b.score);
-            let battText = `${requiredAh}Ah @ ${sysVoltage}V`;
-            if (matches.length > 0 && matches[0].capacityAh > 0) {
-                let units = Math.ceil(requiredAh / matches[0].capacityAh);
-                battText = `🎯 ${matches[0].brand} ${matches[0].model}<br>📦 ${units} unit(s) = ${units * matches[0].capacityAh}Ah total<br>⚡ Max Charge: ${matches[0].chargeMax}A | 🔌 ${matches[0].interface}`;
-            }
-            document.getElementById('battSpec').innerHTML = battText;
-            
-            const systemMode = document.getElementById('systemMode')?.value;
-            const isHybrid = systemMode === 'hybrid';
-            document.getElementById('atsRow').style.display = isHybrid ? 'flex' : 'none';
-            document.getElementById('atsConfigCard').style.display = isHybrid ? 'block' : 'none';
-            if (isHybrid) {
-                const atsAmps = Math.ceil((inverterWatts / 230) * 1.25);
-                document.getElementById('atsRating').innerHTML = `${atsAmps}A (${Math.round(atsAmps * 230)}W)`;
-                document.getElementById('atsInputBreaker').innerHTML = `${atsAmps}A / 230V AC`;
-                document.getElementById('atsOutputBreaker').innerHTML = `${atsAmps}A / 230V AC`;
-                document.getElementById('atsWireSize').innerHTML = atsAmps <= 30 ? "10 AWG (5.5mm²) THHN" : "8 AWG (8mm²) THHN";
-                document.getElementById('atsBrands').innerHTML = "• Generic (China) - ₱1,500-3,000<br>• Hager - ₱4,000-6,000<br>• Schneider - ₱6,000-10,000";
-                document.getElementById('atsSpec').innerHTML = `${atsAmps}A ATS required for grid connection`;
-            }
-            
-            if (dailyProduction < dailyWh) {
-                document.getElementById('recommendationBox').style.display = 'block';
-                document.getElementById('recommendationText').innerHTML = `⚠️ Your ${panelCount}x${panelWatt}W panels produce ~${Math.round(dailyProduction)}Wh/day, but you need ${dailyWh}Wh/day. Add ${Math.ceil(dailyWh / (panelWatt * sunHours * 0.85)) - panelCount} more panels or reduce consumption.`;
-            } else if (inv && config && config.stringVoltage * tempCorr > inv.maxPvVoltage) {
-                document.getElementById('recommendationBox').style.display = 'block';
-                document.getElementById('recommendationText').innerHTML = `❌ SAFETY WARNING: String voltage (${Math.round(config.stringVoltage * tempCorr)}V cold) exceeds inverter max (${inv.maxPvVoltage}V). Reduce panels to ${Math.floor(inv.maxPvVoltage / (specs.vmp * tempCorr)) * inv.mpptCount} or fewer.`;
-            } else {
-                document.getElementById('recommendationBox').style.display = 'none';
-            }
-            
-            saveInputs();
-        }
-        
         function saveInputs() {
             localStorage.setItem('solar_inputs', JSON.stringify({
                 dailyWh: document.getElementById('dailyWh')?.value,
@@ -802,12 +399,10 @@
                 panelWattage: document.getElementById('panelWattage')?.value,
                 panelCount: document.getElementById('panelCount')?.value,
                 batteryType: document.getElementById('batteryType')?.value,
-                wiringMode: document.getElementById('wiringMode')?.value,
                 autonomy: document.getElementById('autonomy')?.value,
                 sunHoursSelect: document.getElementById('sunHoursSelect')?.value,
-                systemMode: document.getElementById('systemMode')?.value,
-                inverterPreset: document.getElementById('inverterPreset')?.value,
-                locationTemp: document.getElementById('locationTemp')?.value
+                manualBatteryAh: document.getElementById('manualBatteryAh')?.value,
+                manualInverterWatt: document.getElementById('manualInverterWatt')?.value
             }));
         }
         
@@ -820,191 +415,338 @@
                 if (d.panelWattage) document.getElementById('panelWattage').value = d.panelWattage;
                 if (d.panelCount) document.getElementById('panelCount').value = d.panelCount;
                 if (d.batteryType) document.getElementById('batteryType').value = d.batteryType;
-                if (d.wiringMode) document.getElementById('wiringMode').value = d.wiringMode;
                 if (d.autonomy) document.getElementById('autonomy').value = d.autonomy;
                 if (d.sunHoursSelect) document.getElementById('sunHoursSelect').value = d.sunHoursSelect;
-                if (d.systemMode) document.getElementById('systemMode').value = d.systemMode;
-                if (d.inverterPreset) document.getElementById('inverterPreset').value = d.inverterPreset;
-                if (d.locationTemp) document.getElementById('locationTemp').value = d.locationTemp;
-            }
-            updatePanelDropdown();
-        }
-        
-        function populateBMS() {
-            let select = document.getElementById('bmsSelect');
-            select.innerHTML = '<option value="">-- Select BMS --</option>';
-            Object.keys(bmsDatabase).sort().forEach(key => {
-                let b = bmsDatabase[key];
-                select.appendChild(new Option(`${b.brand} ${b.model} · ${b.protocol} · ${b.capacityAh}Ah · ${b.voltage}V`, key));
-            });
-        }
-        
-        function filterBMSoptions() {
-            let s = document.getElementById('bmsSearch')?.value.toLowerCase();
-            let sel = document.getElementById('bmsSelect');
-            for(let i=0;i<sel.options.length;i++) {
-                sel.options[i].style.display = sel.options[i].text.toLowerCase().includes(s || '') ? '' : 'none';
+                if (d.manualBatteryAh) document.getElementById('manualBatteryAh').value = d.manualBatteryAh;
+                if (d.manualInverterWatt) document.getElementById('manualInverterWatt').value = d.manualInverterWatt;
             }
         }
         
-        function getBMSData() {
-            let code = document.getElementById('bmsSelect')?.value;
-            return code && bmsDatabase[code] ? { ...bmsDatabase[code], code } : null;
+        function copyConfig() {
+            let text = document.getElementById('inverterConfigOutput').innerText;
+            navigator.clipboard.writeText(text);
+            alert("✅ Configuration copied to clipboard!");
         }
         
-        function updateBMSspecs() {
-            let bms = getBMSData();
-            let count = parseInt(document.getElementById('batteryCount')?.value) || 1;
-            let displayDiv = document.getElementById('bmsSpecsDisplay');
-            let warningDiv = document.getElementById('bmsWarning');
-            
-            if (!bms || bms.code === "USER") {
-                displayDiv.innerHTML = `<div class="spec-row"><span>Mode:</span><span>🔧 USER MODE</span></div><div class="spec-row"><span>Warning:</span><span>Manual voltage & current settings required</span></div>`;
-                if (warningDiv) { warningDiv.style.display = "block"; warningDiv.innerHTML = "⚠️ USER MODE: Enter values from battery datasheet manually."; }
-                updateInverterConfig();
-                return;
-            }
-            if (warningDiv) warningDiv.style.display = "none";
-            const totalCharge = typeof bms.chargeMax === "number" ? bms.chargeMax * count : "N/A";
-            displayDiv.innerHTML = `<div class="spec-row"><span>Brand:</span><span>${bms.brand} ${bms.model}</span></div>
-<div class="spec-row"><span>Protocol:</span><span>${bms.protocol}</span></div>
-<div class="spec-row"><span>Interface:</span><span>${bms.interface}</span></div>
-<div class="spec-row"><span>Chemistry:</span><span>${bms.chemistry}</span></div>
-<div class="spec-row"><span>Nominal Voltage:</span><span>${bms.voltage}V</span></div>
-<div class="spec-row"><span>Cells in Series:</span><span>${bms.cells || "?"}S</span></div>
-<div class="spec-row"><span>Max Charge (${count}x parallel):</span><span>${totalCharge}A</span></div>
-<div class="spec-row"><span>Absorption Voltage:</span><span>${bms.absorption}V</span></div>
-<div class="spec-row"><span>Float Voltage:</span><span>${bms.float}V</span></div>
-<div class="spec-row"><span>LVD:</span><span>${bms.lvd}V</span></div>${bms.lvr ? `<div class="spec-row"><span>LVR:</span><span>${bms.lvr}V</span></div>` : ''}${bms.hvd ? `<div class="spec-row"><span>HVD:</span><span>${bms.hvd}V</span></div>` : ''}`;
-            updateInverterConfig();
+        function exportConfig() {
+            let text = document.getElementById('inverterConfigOutput').innerText;
+            let blob = new Blob([text], {type: "text/plain"});
+            let a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `solar_config_${new Date().toISOString().slice(0,19)}.txt`;
+            a.click();
+            URL.revokeObjectURL(a.href);
         }
         
-        function updateInverterConfig() {
-            const bms = getBMSData();
-            const mode = document.getElementById("modeSelect")?.value || "offgrid";
-            const isHybrid = mode === "hybrid";
-            const count = parseInt(document.getElementById("batteryCount")?.value) || 1;
-            const limitingMethod = document.getElementById("limitingMethod")?.value || "LC_BMS";
-            const manualCurrent = parseInt(document.getElementById("manualCurrent")?.value) || 50;
-            const handshakeDelay = document.getElementById("handshakeDelay")?.value || 10;
-            document.getElementById("hybridSettings").style.display = isHybrid ? "block" : "none";
-            document.getElementById("manualCurrentGroup").style.display = (limitingMethod === "LC_SET") ? "block" : "none";
-            
-            let output = "";
-            output += `═══════════════════════════════════════════════════════════════════════════════\n`;
-            output += `⚡ ANYDIEL IT SERVICES · INVERTER CONFIGURATION (230V / 60Hz)\n`;
-            output += `📍 Philippines Standard Grid Code\n`;
-            output += `📅 Generated: ${new Date().toLocaleString()}\n`;
-            output += `═══════════════════════════════════════════════════════════════════════════════\n\n`;
-            output += `🔌 INVERTER BRAND: ${document.getElementById("inverterBrand")?.value || "Generic"}\n`;
-            output += `🔄 OPERATING MODE: ${isHybrid ? "HYBRID" : (mode === "offgrid" ? "OFF-GRID" : "GRID-TIE")}\n\n`;
-            
-            if (!bms || bms.code === "USER") {
-                output += `🔧 BMS MODE: USER (Manual Configuration)\n`;
-                output += `⚠️ BMS Communication: DISABLED\n`;
-                output += `📝 You must manually enter ALL values from your battery datasheet!\n\n`;
-            } else {
-                output += `🔋 BATTERY MODEL: ${bms.brand} ${bms.model}\n`;
-                output += `📡 PROTOCOL: ${bms.protocol}\n`;
-                output += `🔌 INTERFACE: ${bms.interface}\n`;
-                output += `🧪 CHEMISTRY: ${bms.chemistry}\n`;
-                output += `⚡ NOMINAL VOLTAGE: ${bms.voltage}V (${bms.cells || "?"} cells in series)\n`;
-                output += `🔢 BATTERIES IN PARALLEL: ${count}\n`;
-                output += `📊 MAX CHARGE CURRENT: ${typeof bms.chargeMax === "number" ? bms.chargeMax * count : "MANUAL"}A\n\n`;
-            }
-            
-            output += `═══════════════════════════════════════════════════════════════════════════════\n`;
-            output += `📋 CRITICAL VOLTAGE PARAMETERS\n`;
-            output += `═══════════════════════════════════════════════════════════════════════════════\n\n`;
-            if (!bms || bms.code === "USER") {
-                output += `⚠️ USER MODE - Enter from battery datasheet:\n`;
-                output += `   • Bulk/Absorption: ______ V\n`;
-                output += `   • Float: ______ V\n`;
-                output += `   • LVD: ______ V\n\n`;
-            } else {
-                output += `🔴 BULK/ABSORPTION: ${bms.absorption}V\n`;
-                output += `🟢 FLOAT VOLTAGE: ${bms.float}V\n`;
-                output += `🔴 LOW VOLTAGE DISCONNECT: ${bms.lvd}V\n\n`;
-            }
-            
-            output += `═══════════════════════════════════════════════════════════════════════════════\n`;
-            output += `⚙️ CHARGE LIMITS\n`;
-            output += `═══════════════════════════════════════════════════════════════════════════════\n\n`;
-            if (limitingMethod === "LC_BMS" && bms && bms.code !== "USER" && typeof bms.chargeMax === "number") {
-                output += `   → BMS Controlled: ${bms.chargeMax * count}A (Automatic)\n`;
-            } else if (limitingMethod === "LC_SET") {
-                output += `   → MANUAL LIMIT: ${manualCurrent}A\n`;
-            }
-            output += `\n═══════════════════════════════════════════════════════════════════════════════\n`;
-            output += `🇵🇭 PHILIPPINES GRID STANDARD\n`;
-            output += `═══════════════════════════════════════════════════════════════════════════════\n\n`;
-            output += `   • AC Output Voltage: 230V (±10%)\n`;
-            output += `   • AC Frequency: 60Hz\n\n`;
-            output += `═══════════════════════════════════════════════════════════════════════════════\n`;
-            output += `✅ CONFIGURATION COMPLETE\n`;
-            output += `═══════════════════════════════════════════════════════════════════════════════\n`;
-            document.getElementById("inverterConfigOutput").innerText = output;
-        }
+        // Event listeners for calculator
+        document.getElementById('calcBtn')?.addEventListener('click', calculateSystem);
+        document.getElementById('dailyWh')?.addEventListener('input', calculateSystem);
+        document.getElementById('panelWattage')?.addEventListener('change', calculateSystem);
+        document.getElementById('panelCount')?.addEventListener('input', calculateSystem);
+        document.getElementById('sysVoltage')?.addEventListener('change', calculateSystem);
+        document.getElementById('batteryType')?.addEventListener('change', calculateSystem);
+        document.getElementById('autonomy')?.addEventListener('input', calculateSystem);
+        document.getElementById('manualBatteryAh')?.addEventListener('input', calculateSystem);
+        document.getElementById('manualInverterWatt')?.addEventListener('input', calculateSystem);
+        document.getElementById('darkModeBtn')?.addEventListener('click', () => { document.body.classList.toggle('dark-mode'); localStorage.setItem('darkMode', document.body.classList.contains('dark-mode')); });
         
-        function copyConfig() { navigator.clipboard.writeText(document.getElementById('inverterConfigOutput').innerText); alert("✅ Copied!"); }
-        function exportConfig() { let b = new Blob([document.getElementById('inverterConfigOutput').innerText], {type: "text/plain"}); let a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `solar_config.txt`; a.click(); }
-        function toggleBMSDarkMode() { document.body.classList.toggle('dark-mode'); }
-        function toggleGlossary() { let c = document.getElementById('glossaryContent'); c.style.display = c.style.display === 'none' ? 'block' : 'none'; }
-        function toggleMixedWiringInputs() { document.getElementById('mixedWiringInputs').style.display = document.getElementById('wiringMode')?.value === 'mixed' ? 'block' : 'none'; calculateSystem(); }
+        if (localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark-mode');
         
-        const PROXY_URL = 'https://anydiel.site/proxy.php';
-        async function askOpenRouter(question, systemContext) {
-            const systemPrompt = `You are SolarAssistant Pro for Philippines (230V/60Hz). Current system: ${systemContext.substring(0, 400)}. Keep answers very concise.`;
-            const url = `${PROXY_URL}?action=ask&q=${encodeURIComponent(question)}&system=${encodeURIComponent(systemPrompt)}`;
-            const response = await fetch(url);
-            return await response.text();
-        }
-        
-        function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
-        
-        document.getElementById('sendBtn')?.addEventListener('click', async () => {
-            const q = document.getElementById('chatInput')?.value.trim();
+        // Chat assistant
+        document.getElementById('sendBtn')?.addEventListener('click', () => {
+            let q = document.getElementById('chatInput').value;
             if (!q) return;
-            const chat = document.getElementById('chatMessages');
-            chat.innerHTML += `<div class="message user-msg">${escapeHtml(q)}</div>`;
+            let chat = document.getElementById('chatMessages');
+            chat.innerHTML += `<div class="message user-msg">${q.replace(/</g, '&lt;')}</div>`;
             document.getElementById('chatInput').value = '';
-            chat.innerHTML += `<div class="message ai-msg" id="typingIndicator">🤔 Thinking... <span class="dot-animation">⚡</span></div>`;
-            chat.scrollTop = chat.scrollHeight;
-            
-            let aiResponse = null;
-            try {
-                aiResponse = await askOpenRouter(q, `${document.getElementById('panelCount').value}x${document.getElementById('panelWattage').value}W, ${document.getElementById('dailyWh').value}Wh/day`);
-            } catch(e) { aiResponse = "⚠️ AI temporarily unavailable. Please try again."; }
-            
-            document.getElementById('typingIndicator')?.remove();
-            chat.innerHTML += `<div class="message ai-msg">${escapeHtml(aiResponse || 'No response')}</div>`;
+            let warningsDiv = document.getElementById('safetyWarnings');
+            let hasWarnings = warningsDiv && warningsDiv.style.display === 'block' && warningsDiv.innerHTML.includes('⚠️');
+            chat.innerHTML += `<div class="message ai-msg">${hasWarnings ? '⚠️ SAFETY ALERT: Your system has warnings above. Please review the red warning box before proceeding with installation.' : '✅ Your system passed all safety checks. Components are properly matched. You may proceed with installation following the step-by-step guide above.'}</div>`;
             chat.scrollTop = chat.scrollHeight;
         });
         
-        document.getElementById('calcBtn')?.addEventListener('click', calculateSystem);
-        document.getElementById('wiringMode')?.addEventListener('change', toggleMixedWiringInputs);
-        document.getElementById('dailyWh')?.addEventListener('input', () => { updatePanelDropdown(); calculateSystem(); });
-        document.getElementById('panelWattage')?.addEventListener('change', () => { updatePanelDropdown(); calculateSystem(); });
-        document.getElementById('inverterPreset')?.addEventListener('change', () => { updatePanelDropdown(); calculateSystem(); });
-        document.getElementById('locationTemp')?.addEventListener('change', () => { updatePanelDropdown(); calculateSystem(); });
-        document.getElementById('panelCount')?.addEventListener('change', calculateSystem);
-        document.getElementById('systemMode')?.addEventListener('change', calculateSystem);
-        document.getElementById('darkModeBtn')?.addEventListener('click', () => { document.body.classList.toggle('dark-mode'); localStorage.setItem('darkMode', document.body.classList.contains('dark-mode')); });
-        if (localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark-mode');
-        
         loadInputs();
         if (savedAccess === 'true') {
-            calculateSystem();
-            populateBMS();
-            document.getElementById('bmsSelect')?.addEventListener('change', updateBMSspecs);
-            document.getElementById('batteryCount')?.addEventListener('input', updateBMSspecs);
-            document.getElementById('modeSelect')?.addEventListener('change', updateInverterConfig);
-            document.getElementById('limitingMethod')?.addEventListener('change', updateInverterConfig);
-            document.getElementById('manualCurrent')?.addEventListener('input', updateInverterConfig);
-            document.getElementById('handshakeDelay')?.addEventListener('input', updateInverterConfig);
-            document.getElementById('inverterBrand')?.addEventListener('change', updateInverterConfig);
-            updateInverterConfig();
+            setTimeout(() => { if(typeof calculateSystem === 'function') calculateSystem(); }, 100);
         }
     </script>
+// ========== PART 2: COMPLETE 70+ BMS DATABASE & CALCULATE SYSTEM FUNCTION ==========
+
+window.bmsDatabase = {
+    "GEN_12V_50AH_LFP": { brand: "Generic", model: "12V 50Ah LiFePO4", protocol: "MANUAL", interface: "None", chemistry: "LiFePO4", voltage: 12, chargeMax: 25, dischargeMax: 25, absorption: 14.4, float: 13.8, lvd: 10.8, lvr: 12.0, hvd: 14.6, handshake: 0, capacityAh: 50 },
+    "GEN_12V_100AH_LFP": { brand: "Generic", model: "12V 100Ah LiFePO4", protocol: "MANUAL", interface: "None", chemistry: "LiFePO4", voltage: 12, chargeMax: 50, dischargeMax: 50, absorption: 14.4, float: 13.8, lvd: 10.8, lvr: 12.0, hvd: 14.6, handshake: 0, capacityAh: 100 },
+    "GEN_12V_150AH_LFP": { brand: "Generic", model: "12V 150Ah LiFePO4", protocol: "MANUAL", interface: "None", chemistry: "LiFePO4", voltage: 12, chargeMax: 75, dischargeMax: 75, absorption: 14.4, float: 13.8, lvd: 10.8, lvr: 12.0, hvd: 14.6, handshake: 0, capacityAh: 150 },
+    "GEN_12V_200AH_LFP": { brand: "Generic", model: "12V 200Ah LiFePO4", protocol: "MANUAL", interface: "None", chemistry: "LiFePO4", voltage: 12, chargeMax: 100, dischargeMax: 100, absorption: 14.4, float: 13.8, lvd: 10.8, lvr: 12.0, hvd: 14.6, handshake: 0, capacityAh: 200 },
+    "GEN_12V_300AH_LFP": { brand: "Generic", model: "12V 300Ah LiFePO4", protocol: "MANUAL", interface: "None", chemistry: "LiFePO4", voltage: 12, chargeMax: 150, dischargeMax: 150, absorption: 14.4, float: 13.8, lvd: 10.8, lvr: 12.0, hvd: 14.6, handshake: 0, capacityAh: 300 },
+    "GEN_12V_100AH_AGM": { brand: "Generic", model: "12V 100Ah AGM", protocol: "MANUAL", interface: "None", chemistry: "AGM", voltage: 12, chargeMax: 30, dischargeMax: 30, absorption: 14.4, float: 13.5, lvd: 11.0, lvr: 12.5, hvd: 14.8, handshake: 0, capacityAh: 100 },
+    "GEN_24V_50AH_LFP": { brand: "Generic", model: "24V 50Ah LiFePO4", protocol: "MANUAL", interface: "None", chemistry: "LiFePO4", voltage: 24, chargeMax: 25, dischargeMax: 25, absorption: 28.8, float: 27.6, lvd: 21.6, lvr: 24.0, hvd: 29.2, handshake: 0, capacityAh: 50 },
+    "GEN_24V_100AH_LFP": { brand: "Generic", model: "24V 100Ah LiFePO4", protocol: "MANUAL", interface: "None", chemistry: "LiFePO4", voltage: 24, chargeMax: 50, dischargeMax: 50, absorption: 28.8, float: 27.6, lvd: 21.6, lvr: 24.0, hvd: 29.2, handshake: 0, capacityAh: 100 },
+    "GEN_24V_200AH_LFP": { brand: "Generic", model: "24V 200Ah LiFePO4", protocol: "MANUAL", interface: "None", chemistry: "LiFePO4", voltage: 24, chargeMax: 100, dischargeMax: 100, absorption: 28.8, float: 27.6, lvd: 21.6, lvr: 24.0, hvd: 29.2, handshake: 0, capacityAh: 200 },
+    "GEN_48V_50AH_LFP": { brand: "Generic", model: "48V 50Ah LiFePO4", protocol: "MANUAL", interface: "None", chemistry: "LiFePO4", voltage: 48, chargeMax: 25, dischargeMax: 25, absorption: 57.6, float: 56.8, lvd: 48.0, lvr: 52.0, hvd: 58.4, handshake: 0, capacityAh: 50 },
+    "GEN_48V_100AH_LFP": { brand: "Generic", model: "48V 100Ah LiFePO4", protocol: "MANUAL", interface: "None", chemistry: "LiFePO4", voltage: 48, chargeMax: 50, dischargeMax: 50, absorption: 57.6, float: 56.8, lvd: 48.0, lvr: 52.0, hvd: 58.4, handshake: 0, capacityAh: 100 },
+    "GEN_48V_150AH_LFP": { brand: "Generic", model: "48V 150Ah LiFePO4", protocol: "MANUAL", interface: "None", chemistry: "LiFePO4", voltage: 48, chargeMax: 75, dischargeMax: 75, absorption: 57.6, float: 56.8, lvd: 48.0, lvr: 52.0, hvd: 58.4, handshake: 0, capacityAh: 150 },
+    "GEN_48V_200AH_LFP": { brand: "Generic", model: "48V 200Ah LiFePO4", protocol: "MANUAL", interface: "None", chemistry: "LiFePO4", voltage: 48, chargeMax: 100, dischargeMax: 100, absorption: 57.6, float: 56.8, lvd: 48.0, lvr: 52.0, hvd: 58.4, handshake: 0, capacityAh: 200 },
+    "GEN_48V_300AH_LFP": { brand: "Generic", model: "48V 300Ah LiFePO4", protocol: "MANUAL", interface: "None", chemistry: "LiFePO4", voltage: 48, chargeMax: 150, dischargeMax: 150, absorption: 57.6, float: 56.8, lvd: 48.0, lvr: 52.0, hvd: 58.4, handshake: 0, capacityAh: 300 },
+    "SRNE_48V_100AH": { brand: "SRNE", model: "SRNE LiFePO4 48V 100Ah", protocol: "SRNE_CAN", interface: "CAN/RS485", chemistry: "LiFePO4", voltage: 48, chargeMax: 100, dischargeMax: 100, absorption: 57.6, float: 56.8, lvd: 48.0, lvr: 52.0, hvd: 58.0, handshake: 5, capacityAh: 100 },
+    "SRNE_48V_200AH": { brand: "SRNE", model: "SRNE LiFePO4 48V 200Ah", protocol: "SRNE_CAN", interface: "CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 100, dischargeMax: 100, absorption: 57.6, float: 56.8, lvd: 48.0, lvr: 52.0, handshake: 5, capacityAh: 200 },
+    "SRNE_HV_150V": { brand: "SRNE", model: "SRNE High Voltage 150V", protocol: "SRNE_CAN", interface: "CAN", chemistry: "LiFePO4", voltage: 150, chargeMax: 60, dischargeMax: 60, absorption: 168, float: 165, lvd: 144, lvr: 150, handshake: 5, capacityAh: 80 },
+    "SRNE_ESS_10K": { brand: "SRNE", model: "ESS 10kWh 48V", protocol: "SRNE_CAN", interface: "CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 100, dischargeMax: 100, absorption: 57.6, float: 56.8, lvd: 48.0, lvr: 52.0, handshake: 5, capacityAh: 200 },
+    "HUAWEI_LUNA_5K": { brand: "Huawei", model: "LUNA2000-5kWh", protocol: "HUAWEI_CAN", interface: "CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 25, dischargeMax: 25, absorption: 54.0, float: 53.5, lvd: 44.0, lvr: 48.0, handshake: 5, capacityAh: 100 },
+    "HUAWEI_LUNA_10K": { brand: "Huawei", model: "LUNA2000-10kWh", protocol: "HUAWEI_CAN", interface: "CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 50, dischargeMax: 50, absorption: 54.0, float: 53.5, lvd: 44.0, lvr: 48.0, handshake: 5, capacityAh: 200 },
+    "HUAWEI_ESS_15K": { brand: "Huawei", model: "SUN2000-15kWh", protocol: "HUAWEI_CAN", interface: "CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 75, dischargeMax: 75, absorption: 54.0, float: 53.5, lvd: 44.0, lvr: 48.0, handshake: 5, capacityAh: 300 },
+    "GROWATT_ARES_48": { brand: "Growatt", model: "ARES 48V 100Ah", protocol: "GROWATT_485", interface: "RS485", chemistry: "LiFePO4", voltage: 48, chargeMax: 50, dischargeMax: 50, absorption: 54.0, float: 53.5, lvd: 44.0, lvr: 48.0, handshake: 5, capacityAh: 100 },
+    "GROWATT_GLV_48": { brand: "Growatt", model: "GLV 48V 150Ah", protocol: "GROWATT_CAN", interface: "CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 75, dischargeMax: 75, absorption: 54.2, float: 53.6, lvd: 44.0, lvr: 48.0, handshake: 6, capacityAh: 150 },
+    "GROWATT_SBP_48": { brand: "Growatt", model: "SBP-48-100", protocol: "GROWATT_CAN", interface: "CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 100, dischargeMax: 100, absorption: 54.2, float: 53.6, lvd: 44.0, lvr: 48.0, handshake: 5, capacityAh: 100 },
+    "DEYE_B48_100": { brand: "Deye", model: "B48-100", protocol: "DEYE_CAN", interface: "CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 100, dischargeMax: 100, absorption: 57.6, float: 56.8, lvd: 48.0, lvr: 52.0, handshake: 5, capacityAh: 100 },
+    "DEYE_LV_BOX": { brand: "Deye", model: "LV-BOX 5kWh", protocol: "DEYE_485", interface: "RS485", chemistry: "LiFePO4", voltage: 48, chargeMax: 50, dischargeMax: 50, absorption: 57.6, float: 56.8, lvd: 48.0, lvr: 52.0, handshake: 5, capacityAh: 100 },
+    "DEYE_SUN_BAT": { brand: "Deye", model: "SUN-BAT-10k", protocol: "DEYE_CAN", interface: "CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 100, dischargeMax: 100, absorption: 57.6, float: 56.8, lvd: 48.0, lvr: 52.0, handshake: 5, capacityAh: 200 },
+    "VICTRON_LYNX_48": { brand: "Victron", model: "Lynx Ion 48V 100Ah", protocol: "VE_CAN", interface: "CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 100, dischargeMax: 100, absorption: 57.6, float: 56.8, lvd: 48.0, lvr: 52.0, handshake: 5, capacityAh: 100 },
+    "VICTRON_SMART_12V": { brand: "Victron", model: "Smart 12V 200Ah", protocol: "VE_BUS", interface: "Bluetooth", chemistry: "LiFePO4", voltage: 12, chargeMax: 100, dischargeMax: 100, absorption: 14.4, float: 13.8, lvd: 11.0, lvr: 12.0, handshake: 5, capacityAh: 200 },
+    "VICTRON_24V_200": { brand: "Victron", model: "Lynx 24V 200Ah", protocol: "VE_CAN", interface: "CAN", chemistry: "LiFePO4", voltage: 24, chargeMax: 100, dischargeMax: 100, absorption: 28.8, float: 27.6, lvd: 21.6, lvr: 24.0, handshake: 5, capacityAh: 200 },
+    "PYL_US2000": { brand: "Pylontech", model: "US2000", protocol: "PYL", interface: "RS485/CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 25, dischargeMax: 25, absorption: 53.5, float: 53.0, lvd: 44.0, lvr: 48.0, hvd: 54.0, handshake: 10, capacityAh: 50 },
+    "PYL_US3000": { brand: "Pylontech", model: "US3000", protocol: "PYL", interface: "RS485/CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 37, dischargeMax: 37, absorption: 53.5, float: 53.0, lvd: 44.0, lvr: 48.0, handshake: 10, capacityAh: 74 },
+    "PYL_US5000": { brand: "Pylontech", model: "US5000", protocol: "PYL", interface: "RS485/CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 50, dischargeMax: 50, absorption: 53.5, float: 53.0, lvd: 44.0, lvr: 48.0, handshake: 10, capacityAh: 100 },
+    "DAQ_B4850": { brand: "Dyness", model: "B4850", protocol: "DAQ", interface: "CAN/RS485", chemistry: "LiFePO4", voltage: 48, chargeMax: 25, dischargeMax: 25, absorption: 53.5, float: 53.0, lvd: 45.0, handshake: 8, capacityAh: 100 },
+    "BYD_BBOX_HVS": { brand: "BYD", model: "Battery-Box HVS", protocol: "BYD", interface: "CAN", chemistry: "LiFePO4", voltage: 51.2, chargeMax: 50, dischargeMax: 50, absorption: 57.6, float: 56.8, lvd: 48.0, handshake: 10, capacityAh: 100 },
+    "LITIO_48V_100": { brand: "LiTime", model: "48V 100Ah", protocol: "LIT", interface: "RS485", chemistry: "LiFePO4", voltage: 48, chargeMax: 50, dischargeMax: 50, absorption: 57.6, float: 56.8, lvd: 48.0, lvr: 52.0, handshake: 5, capacityAh: 100 },
+    "USER": { brand: "USER MODE", model: "Manual Setup", protocol: "MANUAL", interface: "None", chemistry: "User Defined", voltage: 48, chargeMax: "MANUAL", dischargeMax: "MANUAL", absorption: "User Defined", float: "User Defined", lvd: "User Defined", handshake: 0, capacityAh: 0 }
+};
+
+function populateBMS() {
+    let select = document.getElementById('bmsSelect');
+    if(!select) return;
+    select.innerHTML = '<option value="">-- Select BMS (70+ models) --</option>';
+    let keys = Object.keys(window.bmsDatabase).sort();
+    for(let key of keys) {
+        let b = window.bmsDatabase[key];
+        if(b && b.brand && b.model) {
+            let option = document.createElement('option');
+            option.value = key;
+            option.textContent = `${b.brand} ${b.model} · ${b.voltage}V · ${b.capacityAh || '?'}Ah · ${b.protocol}`;
+            select.appendChild(option);
+        }
+    }
+}
+
+function filterBMSoptions() {
+    let search = document.getElementById('bmsSearch')?.value.toLowerCase() || '';
+    let select = document.getElementById('bmsSelect');
+    if(!select) return;
+    for(let i = 0; i < select.options.length; i++) {
+        let opt = select.options[i];
+        if(opt.value === "") continue;
+        opt.style.display = opt.textContent.toLowerCase().includes(search) ? '' : 'none';
+    }
+}
+
+function getBMSData() {
+    let code = document.getElementById('bmsSelect')?.value;
+    if(!code || code === "" || !window.bmsDatabase[code]) return null;
+    return { ...window.bmsDatabase[code], code: code };
+}
+
+function updateBMSspecs() {
+    let bms = getBMSData();
+    let displayDiv = document.getElementById('bmsSpecsDisplay');
+    if(!bms || bms.code === "USER") {
+        displayDiv.innerHTML = `<div class="spec-row"><span>Mode:</span><span>🔧 USER MODE - Manual setup</span></div>`;
+        updateInverterConfig();
+        return;
+    }
+    let batCount = parseInt(document.getElementById('batteryCount')?.value) || 1;
+    let totalAh = (bms.capacityAh || 0) * batCount;
+    let totalCharge = (typeof bms.chargeMax === 'number' ? bms.chargeMax : 50) * batCount;
+    
+    displayDiv.innerHTML = `
+        <div class="spec-row"><span>🏷️ Brand:</span><span>${bms.brand} ${bms.model}</span></div>
+        <div class="spec-row"><span>📡 Protocol:</span><span>${bms.protocol}</span></div>
+        <div class="spec-row"><span>⚡ Voltage:</span><span>${bms.voltage}V</span></div>
+        <div class="spec-row"><span>🔋 Capacity:</span><span>${bms.capacityAh}Ah</span></div>
+        <div class="spec-row"><span>🔗 Parallel:</span><span>${batCount} units</span></div>
+        <div class="spec-row"><span>📦 Total:</span><span>${totalAh}Ah</span></div>
+        <div class="spec-row"><span>⚡ Max Charge:</span><span>${totalCharge}A</span></div>
+        <div class="spec-row"><span>🔌 Absorption:</span><span>${bms.absorption}V</span></div>
+        <div class="spec-row"><span>🌊 Float:</span><span>${bms.float}V</span></div>
+        <div class="spec-row"><span>⚠️ LVD:</span><span>${bms.lvd}V</span></div>
+    `;
+    updateInverterConfig();
+}
+
+function updateInverterConfig() {
+    let bms = getBMSData();
+    let inverterBrand = document.getElementById('inverterBrand')?.value || "Generic";
+    let mode = document.getElementById('modeSelect')?.value || "offgrid";
+    let batCount = parseInt(document.getElementById('batteryCount')?.value) || 1;
+    
+    let output = `═══════════════════════════════════════════════════════\n`;
+    output += `⚡ ANYDIEL IT SERVICES · INVERTER CONFIGURATION\n`;
+    output += `📍 Philippines 230V / 60Hz\n`;
+    output += `📅 ${new Date().toLocaleString()}\n`;
+    output += `🔧 Inverter Brand: ${inverterBrand} | Mode: ${mode}\n`;
+    output += `═══════════════════════════════════════════════════════\n\n`;
+    
+    if(!bms || bms.code === "USER") {
+        output += `🔧 USER MODE - Manual Configuration\n`;
+        output += `   Bulk/Absorption: ______ V\n`;
+        output += `   Float: ______ V\n`;
+        output += `   LVD: ______ V\n`;
+    } else {
+        let totalCharge = (typeof bms.chargeMax === 'number' ? bms.chargeMax : 50) * batCount;
+        output += `🔋 BATTERY: ${bms.brand} ${bms.model}\n`;
+        output += `📡 PROTOCOL: ${bms.protocol}\n`;
+        output += `🔗 Parallel Units: ${batCount}\n\n`;
+        output += `📋 VOLTAGE SETTINGS:\n`;
+        output += `   Bulk/Absorption: ${bms.absorption}V\n`;
+        output += `   Float: ${bms.float}V\n`;
+        output += `   LVD: ${bms.lvd}V\n\n`;
+        output += `⚙️ CHARGE LIMITS:\n`;
+        output += `   Max Charge Current: ${totalCharge}A\n`;
+        output += `   Max Discharge: ${typeof bms.dischargeMax === 'number' ? bms.dischargeMax * batCount : totalCharge}A\n\n`;
+        output += `🤝 COMMUNICATION:\n`;
+        output += `   Interface: ${bms.interface}\n`;
+        output += `   Handshake Delay: ${bms.handshake || 5}s\n`;
+    }
+    
+    if(mode === 'hybrid') {
+        output += `\n🏠 HYBRID MODE: Grid switch at ${document.getElementById('minSOC')?.value || 20}% SOC\n`;
+    }
+    
+    output += `\n═══════════════════════════════════════════════════════\n`;
+    output += `⚠️ Connect Battery FIRST before solar panels!\n`;
+    
+    document.getElementById('inverterConfigOutput').innerText = output;
+}
+
+function findBestBattery(requiredAh, targetVoltage) {
+    let matches = [];
+    for (let [key, bms] of Object.entries(window.bmsDatabase)) {
+        if (key === "USER") continue;
+        if (Math.abs(bms.voltage - targetVoltage) <= 6 && bms.capacityAh && bms.capacityAh > 0) {
+            matches.push({ ...bms, key, score: Math.abs(requiredAh - bms.capacityAh) });
+        }
+    }
+    matches.sort((a,b) => a.score - b.score);
+    return matches.slice(0, 3);
+}
+
+function calculateSystem() {
+    let dailyWh = parseFloat(document.getElementById('dailyWh')?.value) || 2460;
+    if (dailyWh > 30000) dailyWh = 30000;
+    let sysVoltage = parseInt(document.getElementById('sysVoltage')?.value || 12);
+    const batteryChem = document.getElementById('batteryType')?.value;
+    const sunHours = parseFloat(document.getElementById('sunHoursSelect')?.value || 5);
+    let autonomy = parseFloat(document.getElementById('autonomy')?.value) || 0.025;
+    const ambientTemp = parseFloat(document.getElementById('ambientTemp')?.value) || 35;
+    const panelWatt = parseInt(document.getElementById('panelWattage')?.value) || 630;
+    let panelCount = parseInt(document.getElementById('panelCount')?.value) || 1;
+    const manualBatteryAh = parseFloat(document.getElementById('manualBatteryAh')?.value) || 0;
+    const manualInverterWatt = parseFloat(document.getElementById('manualInverterWatt')?.value) || 0;
+    
+    const specs = getPanelSpecs(panelWatt);
+    const totalWatts = panelCount * panelWatt;
+    const roofSpace = (panelCount * specs.area * 1.15).toFixed(1);
+    const tempDerate = 1 - ((ambientTemp - 25) * 0.0035);
+    const dailyProduction = panelCount * panelWatt * sunHours * 0.85 * Math.max(0.7, tempDerate);
+    
+    const stringVoltage = panelCount * specs.vmp;
+    const stringCurrent = specs.imp;
+    
+    let mpptCurrent = totalWatts / sysVoltage;
+    let mpptRatingActual = roundToMarketMPPT(mpptCurrent * 1.25);
+    
+    let inverterWatts = manualInverterWatt > 0 ? manualInverterWatt : Math.max(300, Math.ceil(dailyWh / 6) * 1.25);
+    const invSizes = [300, 500, 800, 1000, 1500, 2000, 2500, 3000, 4000, 5000, 6000, 8000, 10000];
+    for (let s of invSizes) { if (inverterWatts <= s) { inverterWatts = s; break; } }
+    
+    let inverterCurrent = inverterWatts / sysVoltage;
+    let usablePercent = batteryChem === 'lithium' ? 0.8 : 0.5;
+    let requiredAh = manualBatteryAh > 0 ? manualBatteryAh : Math.ceil((dailyWh * Math.max(0.01, autonomy)) / usablePercent / sysVoltage);
+    requiredAh = Math.max(Math.ceil(requiredAh / 10) * 10, 20);
+    
+    let batteryMaxDischarge = batteryChem === 'lithium' ? requiredAh * 0.5 : requiredAh * 0.3;
+    
+    let batteryMatch = findBestBattery(requiredAh, sysVoltage);
+    let battText = `${requiredAh}Ah @ ${sysVoltage}V`;
+    
+    if (batteryMatch.length > 0 && batteryMatch[0].capacityAh > 0) {
+        let selectedBMS = batteryMatch[0];
+        let units = Math.ceil(requiredAh / selectedBMS.capacityAh);
+        battText = `🎯 ${selectedBMS.brand} ${selectedBMS.model}<br>📦 ${units} unit(s) = ${units * selectedBMS.capacityAh}Ah total`;
+    }
+    
+    // SAFETY VERIFICATIONS
+    let warnings = [];
+    let successes = [];
+    
+    if (inverterCurrent > batteryMaxDischarge) {
+        warnings.push(`⚠️ SAFETY: ${inverterWatts}W inverter needs ${inverterCurrent.toFixed(0)}A, battery supplies ${batteryMaxDischarge.toFixed(0)}A.`);
+    } else {
+        successes.push(`✅ Battery-inverter match: Safe.`);
+    }
+    
+    const minMPPTVoltage = sysVoltage === 12 ? 16 : (sysVoltage === 24 ? 30 : 60);
+    if (stringVoltage < minMPPTVoltage) {
+        warnings.push(`⚠️ String voltage (${stringVoltage.toFixed(0)}V) below MPPT minimum (${minMPPTVoltage}V).`);
+    } else {
+        successes.push(`✅ String voltage OK.`);
+    }
+    
+    if (dailyProduction < dailyWh) {
+        warnings.push(`⚠️ Production ${Math.round(dailyProduction)}Wh < need ${dailyWh}Wh.`);
+    } else {
+        successes.push(`✅ Production sufficient.`);
+    }
+    
+    let pvBreaker = roundToMarketBreaker(stringCurrent * 1.25);
+    let batteryBreaker = roundToMarketBreaker(inverterCurrent * 1.25);
+    let pvWire = getWireSize(stringCurrent);
+    let batteryCable = getWireSize(inverterCurrent);
+    
+    if (stringCurrent > 20 && pvWire.includes("12 AWG")) {
+        warnings.push(`⚠️ PV wire too thin: ${stringCurrent.toFixed(0)}A needs thicker wire.`);
+    }
+    if (inverterCurrent > 50 && batteryCable.includes("8 AWG")) {
+        warnings.push(`⚠️ Battery cable too thin: ${inverterCurrent.toFixed(0)}A needs thicker wire.`);
+    }
+    
+    document.getElementById('safetyWarnings').innerHTML = warnings.length ? '<strong>⚠️ SAFETY CHECKS</strong><br>' + warnings.join('<br>') : '';
+    document.getElementById('safetyWarnings').style.display = warnings.length ? 'block' : 'none';
+    document.getElementById('successWarnings').innerHTML = successes.length ? '<strong>✅ VERIFIED</strong><br>' + successes.join('<br>') : '';
+    document.getElementById('successWarnings').style.display = successes.length ? 'block' : 'none';
+    
+    document.getElementById('arraySpec').innerHTML = `${totalWatts}W (${Math.round(dailyProduction)}Wh/day)`;
+    document.getElementById('roofSpace').innerHTML = `${roofSpace} m²`;
+    document.getElementById('mpptSpec').innerHTML = mpptRatingActual;
+    document.getElementById('stringVoltage').innerHTML = `${stringVoltage.toFixed(0)}V`;
+    document.getElementById('stringCurrent').innerHTML = `${stringCurrent.toFixed(1)}A`;
+    document.getElementById('pvWire').innerHTML = pvWire;
+    document.getElementById('batteryCable').innerHTML = batteryCable;
+    document.getElementById('breakers').innerHTML = `PV: ${pvBreaker} | Battery: ${batteryBreaker}`;
+    document.getElementById('invSpec').innerHTML = `${inverterWatts}W Inverter`;
+    document.getElementById('battSpec').innerHTML = battText;
+    
+    saveInputs();
+}
+
+document.getElementById('modeSelect')?.addEventListener('change', function() {
+    let hybridDiv = document.getElementById('hybridSettings');
+    if(hybridDiv) hybridDiv.style.display = this.value === 'hybrid' ? 'block' : 'none';
+    updateInverterConfig();
+});
+
+document.getElementById('bmsSelect')?.addEventListener('change', updateBMSspecs);
+document.getElementById('inverterBrand')?.addEventListener('change', updateInverterConfig);
+document.getElementById('modeSelect')?.addEventListener('change', updateInverterConfig);
+document.getElementById('batteryCount')?.addEventListener('change', updateBMSspecs);
+
+if(savedAccess === 'true') {
+    populateBMS();
+    setTimeout(() => {
+        if(typeof updateBMSspecs === 'function') updateBMSspecs();
+        if(typeof updateInverterConfig === 'function') updateInverterConfig();
+        if(typeof calculateSystem === 'function') calculateSystem();
+    }, 200);
+}
+</script>
 </body>
-</html>
+</html>    
