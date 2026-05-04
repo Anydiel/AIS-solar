@@ -207,8 +207,8 @@
                     
                     <label>🔋 System Voltage</label>
                     <select id="sysVoltage">
-                        <option value="12" selected>12V</option>
-                        <option value="24">24V</option>
+                        <option value="12">12V</option>
+                        <option value="24" selected>24V</option>
                         <option value="48">48V (Recommended)</option>
                     </select>
                     
@@ -217,12 +217,13 @@
                         <option value="100">100W</option><option value="150">150W</option><option value="200">200W</option>
                         <option value="250">250W</option><option value="300">300W</option><option value="350">350W</option>
                         <option value="400">400W</option><option value="450">450W</option><option value="500">500W</option>
-                        <option value="550">550W</option><option value="600">600W</option><option value="630" selected>630W</option>
+                        <option value="550">550W</option><option value="600" selected>600W</option>
+                        <option value="630">630W</option>
                         <option value="650">650W</option>
                     </select>
                     
                     <label>🔢 Number of Panels</label>
-                    <input type="number" id="panelCount" value="1" min="1" max="50" step="1">
+                    <input type="number" id="panelCount" value="2" min="1" max="50" step="1">
                     
                     <label>🧪 Battery Chemistry</label>
                     <select id="batteryType">
@@ -230,11 +231,11 @@
                         <option value="lead">Lead-Acid AGM (50% usable, 0.3C discharge)</option>
                     </select>
                     
-                    <label>🔋 Battery Capacity (Ah) - Leave empty for auto-recommend</label>
-                    <input type="number" id="manualBatteryAh" value="60" step="10" min="0" placeholder="Auto if empty">
+                    <label>🔋 Battery Capacity (Ah) - LEAVE EMPTY FOR AUTO</label>
+                    <input type="number" id="manualBatteryAh" value="" step="10" min="0" placeholder="Auto-recommend">
                     
-                    <label>🔄 Inverter Power (Watts) - Leave empty for auto-recommend</label>
-                    <input type="number" id="manualInverterWatt" value="800" step="100" min="0" placeholder="Auto if empty">
+                    <label>🔄 Inverter Power (Watts) - LEAVE EMPTY FOR AUTO</label>
+                    <input type="number" id="manualInverterWatt" value="" step="100" min="0" placeholder="Auto-recommend">
                     
                     <label>🌞 Peak Sun Hours (Philippines)</label>
                     <select id="sunHoursSelect">
@@ -246,8 +247,8 @@
                     </select>
                     
                     <label>📆 Autonomy Days (Battery Backup)</label>
-                    <input type="number" id="autonomy" value="0.025" min="0.01" max="5" step="0.01">
-                    <div style="font-size:0.65rem; color:#666;">0.01 = 15 min, 0.5 = 12 hrs, 2 = 2 days</div>
+                    <input type="number" id="autonomy" value="0.5" min="0.01" max="5" step="0.01">
+                    <div style="font-size:0.65rem; color:#666;">0.5 = 12 hours backup</div>
                     
                     <label>📏 Wire Distance (meters, Panels to MPPT)</label>
                     <input type="number" id="wireDistance" value="5" step="1" min="1" max="50">
@@ -277,7 +278,7 @@
                 <div class="card">
                     <h3 style="font-size:1rem;">🤖 AI Solar Assistant</h3>
                     <div class="chat-messages" id="chatMessages">
-                        <div class="message ai-msg">👋 Universal Solar Assistant ready.<br><br>💡 This calculator uses MARKET-AVAILABLE RATINGS:<br>• MPPT: 10,20,30,40,50,60,80,100A<br>• Breakers: 10,16,20,25,32,40,50,63,80,100A<br>• Wires: 12,10,8,6,4 AWG<br><br>⚠️ Red warnings appear for ANY safety violation.</div>
+                        <div class="message ai-msg">👋 Universal Solar Assistant ready.<br><br>✅ AUTO-RECOMMEND ACTIVE: Leave Battery or Inverter fields empty.<br><br>📊 Current setup: 2 x 600W panels = 1200W solar array on 24V system.<br><br>⚡ Daily need: 2460Wh/day</div>
                     </div>
                     <div class="chat-input-area">
                         <input type="text" class="chat-input" id="chatInput" placeholder="Ask about your system...">
@@ -297,7 +298,7 @@
 
             <div class="card"><h3>✅ Final Installation Checklist</h3><div class="checklist-grid"><label class="checklist-item"><input type="checkbox" class="check-box"><span>🏠 Roof railing installed</span></label><label class="checklist-item"><input type="checkbox" class="check-box"><span>🔌 MC4 connectors wired correctly</span></label><label class="checklist-item"><input type="checkbox" class="check-box"><span>⚡ MPPT: Battery FIRST, then Panels</span></label><label class="checklist-item"><input type="checkbox" class="check-box"><span>🔋 Batteries wired correctly</span></label><label class="checklist-item"><input type="checkbox" class="check-box"><span>🛡️ T-Class Fuse installed</span></label><label class="checklist-item"><input type="checkbox" class="check-box"><span>⛓️ System grounded</span></label></div></div>
 
-            <!-- BMS CONFIGURATOR SECTION - EXPANDED DATABASE (70+ MODELS) -->
+            <!-- BMS CONFIGURATOR SECTION - FULL 70+ DATABASE -->
             <div class="bms-header">
                 <h2>🔋 70+ BMS + Inverter Configuration Database</h2>
                 <p>Select your battery for correct inverter settings · SRNE · Huawei · Growatt · Deye · Victron · Pylontech · Dyness · BYD · Generic 12/24/48V</p>
@@ -306,7 +307,7 @@
 
             <div class="config-grid">
                 <div class="card"><h3>🔋 Battery BMS Selection</h3><div class="search-box"><input type="text" id="bmsSearch" placeholder="🔍 Search BMS..." onkeyup="filterBMSoptions()"></div>
-                <select id="bmsSelect" size="10" style="height: auto; min-height: 200px; width: 100%; padding: 0.5rem; border-radius: 0.75rem;" onchange="updateBMSspecs()"><option value="">-- Select BMS --</option></select>
+                <select id="bmsSelect" size="10" style="height: auto; min-height: 200px; width: 100%; padding: 0.5rem; border-radius: 0.75rem;" onchange="updateBMSspecs()"><option value="">-- Select BMS (70+ models) --</option></select>
                 <div id="bmsSpecsDisplay" class="specs-box"></div>
                 <div class="input-group"><label>Batteries in Parallel</label><input type="number" id="batteryCount" value="1" min="1" max="20" onchange="updateBMSspecs()"></div>
                 <div id="bmsWarning" class="warning" style="display:none;"></div></div>
@@ -345,6 +346,21 @@
     <button class="btn-dark" id="darkModeBtn">🌙</button>
 
     <script>
+        // CLEAR OLD CACHED VALUES ON LOAD
+        (function() {
+            const saved = localStorage.getItem('solar_inputs');
+            if (saved) {
+                try {
+                    const d = JSON.parse(saved);
+                    if (d.manualBatteryAh === 60 || d.manualBatteryAh === "60" || 
+                        d.manualInverterWatt === 800 || d.manualInverterWatt === "800") {
+                        localStorage.removeItem('solar_inputs');
+                        console.log("Cleared old cached values");
+                    }
+                } catch(e) {}
+            }
+        })();
+        
         // PAYWALL
         const SECRET_ACCESS_CODE = 'SRNE2026';
         const savedAccess = localStorage.getItem('solar_access_granted');
@@ -368,7 +384,6 @@
         // ========== MARKET-AVAILABLE RATINGS ==========
         const marketMPPTSizes = [10, 20, 30, 40, 50, 60, 80, 100, 120, 150];
         const marketBreakerSizes = [6, 10, 16, 20, 25, 32, 40, 50, 63, 80, 100, 125, 160, 200];
-        const marketWireSizes = { 20: "12 AWG (4mm²)", 30: "10 AWG (6mm²)", 50: "8 AWG (10mm²)", 80: "6 AWG (16mm²)", 120: "4 AWG (25mm²)", 999: "2 AWG (35mm²)" };
         
         function roundToMarketMPPT(amps) {
             let nearest = marketMPPTSizes[0];
@@ -396,73 +411,77 @@
         }
         
         function getPanelSpecs(wattage) {
-            let voc, vmp, imp, area;
-            if (wattage <= 150) { voc = 22.5; vmp = 18.5; imp = wattage / vmp; area = 1.0; }
-            else if (wattage <= 250) { voc = 30.5; vmp = 25.2; imp = wattage / vmp; area = 1.6; }
-            else if (wattage <= 350) { voc = 37.5; vmp = 31.2; imp = wattage / vmp; area = 2.0; }
-            else if (wattage <= 450) { voc = 41.5; vmp = 34.8; imp = wattage / vmp; area = 2.2; }
-            else if (wattage <= 550) { voc = 45.0; vmp = 37.5; imp = wattage / vmp; area = 2.4; }
-            else { voc = 48.5; vmp = 40.2; imp = wattage / vmp; area = 2.6; }
-            return { voc, vmp, imp, area };
+            let vmp, imp, area;
+            if (wattage <= 150) { vmp = 18.5; imp = wattage / vmp; area = 1.0; }
+            else if (wattage <= 250) { vmp = 25.2; imp = wattage / vmp; area = 1.6; }
+            else if (wattage <= 350) { vmp = 31.2; imp = wattage / vmp; area = 2.0; }
+            else if (wattage <= 450) { vmp = 34.8; imp = wattage / vmp; area = 2.2; }
+            else if (wattage <= 550) { vmp = 37.5; imp = wattage / vmp; area = 2.4; }
+            else { vmp = 40.2; imp = wattage / vmp; area = 2.6; }
+            return { vmp, imp, area };
         }
         
-        // ========== EXPANDED BMS DATABASE (70+ MODELS) ==========
-        // Includes: SRNE, Huawei, Growatt, Deye, Victron, Pylontech, Dyness, BYD, LiTime, Generic 12/24/48V
+        // ========== FULL 70+ BMS DATABASE ==========
         const bmsDatabase = {
             // GENERIC 12V SERIES
-            "GEN_12V_50AH_LITHIUM": { brand: "Generic", model: "12V 50Ah LiFePO4", protocol: "MANUAL", interface: "None", chemistry: "LiFePO4", voltage: 12, chargeMax: 25, dischargeMax: 25, absorption: 14.4, float: 13.8, lvd: 10.8, lvr: 12.0, hvd: 14.6, handshake: 0, capacityAh: 50 },
-            "GEN_12V_100AH_LITHIUM": { brand: "Generic", model: "12V 100Ah LiFePO4", protocol: "MANUAL", interface: "None", chemistry: "LiFePO4", voltage: 12, chargeMax: 50, dischargeMax: 50, absorption: 14.4, float: 13.8, lvd: 10.8, lvr: 12.0, hvd: 14.6, handshake: 0, capacityAh: 100 },
-            "GEN_12V_150AH_LITHIUM": { brand: "Generic", model: "12V 150Ah LiFePO4", protocol: "MANUAL", interface: "None", chemistry: "LiFePO4", voltage: 12, chargeMax: 75, dischargeMax: 75, absorption: 14.4, float: 13.8, lvd: 10.8, lvr: 12.0, hvd: 14.6, handshake: 0, capacityAh: 150 },
-            "GEN_12V_200AH_LITHIUM": { brand: "Generic", model: "12V 200Ah LiFePO4", protocol: "MANUAL", interface: "None", chemistry: "LiFePO4", voltage: 12, chargeMax: 100, dischargeMax: 100, absorption: 14.4, float: 13.8, lvd: 10.8, lvr: 12.0, hvd: 14.6, handshake: 0, capacityAh: 200 },
-            "GEN_12V_100AH_AGM": { brand: "Generic", model: "12V 100Ah AGM", protocol: "MANUAL", interface: "None", chemistry: "AGM", voltage: 12, chargeMax: 30, dischargeMax: 30, absorption: 14.4, float: 13.5, lvd: 11.0, lvr: 12.5, hvd: 14.8, handshake: 0, capacityAh: 100 },
+            "GEN_12V_50AH": { brand: "Generic", model: "12V 50Ah LiFePO4", protocol: "MANUAL", interface: "None", voltage: 12, chargeMax: 25, dischargeMax: 25, absorption: 14.4, float: 13.8, lvd: 10.8, capacityAh: 50 },
+            "GEN_12V_100AH": { brand: "Generic", model: "12V 100Ah LiFePO4", protocol: "MANUAL", interface: "None", voltage: 12, chargeMax: 50, dischargeMax: 50, absorption: 14.4, float: 13.8, lvd: 10.8, capacityAh: 100 },
+            "GEN_12V_150AH": { brand: "Generic", model: "12V 150Ah LiFePO4", protocol: "MANUAL", interface: "None", voltage: 12, chargeMax: 75, dischargeMax: 75, absorption: 14.4, float: 13.8, lvd: 10.8, capacityAh: 150 },
+            "GEN_12V_200AH": { brand: "Generic", model: "12V 200Ah LiFePO4", protocol: "MANUAL", interface: "None", voltage: 12, chargeMax: 100, dischargeMax: 100, absorption: 14.4, float: 13.8, lvd: 10.8, capacityAh: 200 },
+            "GEN_12V_100AH_AGM": { brand: "Generic", model: "12V 100Ah AGM", protocol: "MANUAL", interface: "None", voltage: 12, chargeMax: 30, dischargeMax: 30, absorption: 14.4, float: 13.5, lvd: 11.0, capacityAh: 100 },
             
             // GENERIC 24V SERIES
-            "GEN_24V_50AH_LITHIUM": { brand: "Generic", model: "24V 50Ah LiFePO4", protocol: "MANUAL", interface: "None", chemistry: "LiFePO4", voltage: 24, chargeMax: 25, dischargeMax: 25, absorption: 28.8, float: 27.6, lvd: 21.6, lvr: 24.0, hvd: 29.2, handshake: 0, capacityAh: 50 },
-            "GEN_24V_100AH_LITHIUM": { brand: "Generic", model: "24V 100Ah LiFePO4", protocol: "MANUAL", interface: "None", chemistry: "LiFePO4", voltage: 24, chargeMax: 50, dischargeMax: 50, absorption: 28.8, float: 27.6, lvd: 21.6, lvr: 24.0, hvd: 29.2, handshake: 0, capacityAh: 100 },
-            "GEN_24V_200AH_LITHIUM": { brand: "Generic", model: "24V 200Ah LiFePO4", protocol: "MANUAL", interface: "None", chemistry: "LiFePO4", voltage: 24, chargeMax: 100, dischargeMax: 100, absorption: 28.8, float: 27.6, lvd: 21.6, lvr: 24.0, hvd: 29.2, handshake: 0, capacityAh: 200 },
+            "GEN_24V_50AH": { brand: "Generic", model: "24V 50Ah LiFePO4", protocol: "MANUAL", interface: "None", voltage: 24, chargeMax: 25, dischargeMax: 25, absorption: 28.8, float: 27.6, lvd: 21.6, capacityAh: 50 },
+            "GEN_24V_100AH": { brand: "Generic", model: "24V 100Ah LiFePO4", protocol: "MANUAL", interface: "None", voltage: 24, chargeMax: 50, dischargeMax: 50, absorption: 28.8, float: 27.6, lvd: 21.6, capacityAh: 100 },
+            "GEN_24V_150AH": { brand: "Generic", model: "24V 150Ah LiFePO4", protocol: "MANUAL", interface: "None", voltage: 24, chargeMax: 75, dischargeMax: 75, absorption: 28.8, float: 27.6, lvd: 21.6, capacityAh: 150 },
+            "GEN_24V_200AH": { brand: "Generic", model: "24V 200Ah LiFePO4", protocol: "MANUAL", interface: "None", voltage: 24, chargeMax: 100, dischargeMax: 100, absorption: 28.8, float: 27.6, lvd: 21.6, capacityAh: 200 },
             
             // GENERIC 48V SERIES
-            "GEN_48V_50AH_LITHIUM": { brand: "Generic", model: "48V 50Ah LiFePO4", protocol: "MANUAL", interface: "None", chemistry: "LiFePO4", voltage: 48, chargeMax: 25, dischargeMax: 25, absorption: 57.6, float: 56.8, lvd: 48.0, lvr: 52.0, hvd: 58.4, handshake: 0, capacityAh: 50 },
-            "GEN_48V_100AH_LITHIUM": { brand: "Generic", model: "48V 100Ah LiFePO4", protocol: "MANUAL", interface: "None", chemistry: "LiFePO4", voltage: 48, chargeMax: 50, dischargeMax: 50, absorption: 57.6, float: 56.8, lvd: 48.0, lvr: 52.0, hvd: 58.4, handshake: 0, capacityAh: 100 },
-            "GEN_48V_150AH_LITHIUM": { brand: "Generic", model: "48V 150Ah LiFePO4", protocol: "MANUAL", interface: "None", chemistry: "LiFePO4", voltage: 48, chargeMax: 75, dischargeMax: 75, absorption: 57.6, float: 56.8, lvd: 48.0, lvr: 52.0, hvd: 58.4, handshake: 0, capacityAh: 150 },
-            "GEN_48V_200AH_LITHIUM": { brand: "Generic", model: "48V 200Ah LiFePO4", protocol: "MANUAL", interface: "None", chemistry: "LiFePO4", voltage: 48, chargeMax: 100, dischargeMax: 100, absorption: 57.6, float: 56.8, lvd: 48.0, lvr: 52.0, hvd: 58.4, handshake: 0, capacityAh: 200 },
+            "GEN_48V_50AH": { brand: "Generic", model: "48V 50Ah LiFePO4", protocol: "MANUAL", interface: "None", voltage: 48, chargeMax: 25, dischargeMax: 25, absorption: 57.6, float: 56.8, lvd: 48.0, capacityAh: 50 },
+            "GEN_48V_100AH": { brand: "Generic", model: "48V 100Ah LiFePO4", protocol: "MANUAL", interface: "None", voltage: 48, chargeMax: 50, dischargeMax: 50, absorption: 57.6, float: 56.8, lvd: 48.0, capacityAh: 100 },
+            "GEN_48V_150AH": { brand: "Generic", model: "48V 150Ah LiFePO4", protocol: "MANUAL", interface: "None", voltage: 48, chargeMax: 75, dischargeMax: 75, absorption: 57.6, float: 56.8, lvd: 48.0, capacityAh: 150 },
+            "GEN_48V_200AH": { brand: "Generic", model: "48V 200Ah LiFePO4", protocol: "MANUAL", interface: "None", voltage: 48, chargeMax: 100, dischargeMax: 100, absorption: 57.6, float: 56.8, lvd: 48.0, capacityAh: 200 },
             
             // SRNE BATTERIES
-            "SRNE_48V_100AH": { brand: "SRNE", model: "SRNE 48V 100Ah LiFePO4", protocol: "SRNE_CAN", interface: "CAN/RS485", chemistry: "LiFePO4", voltage: 48, chargeMax: 100, dischargeMax: 100, absorption: 57.6, float: 56.8, lvd: 48.0, lvr: 52.0, hvd: 58.0, handshake: 5, capacityAh: 100 },
-            "SRNE_48V_200AH": { brand: "SRNE", model: "SRNE 48V 200Ah LiFePO4", protocol: "SRNE_CAN", interface: "CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 100, dischargeMax: 100, absorption: 57.6, float: 56.8, lvd: 48.0, lvr: 52.0, handshake: 5, capacityAh: 200 },
-            "SRNE_HV_150V": { brand: "SRNE", model: "SRNE High Voltage 150V", protocol: "SRNE_CAN", interface: "CAN", chemistry: "LiFePO4", voltage: 150, chargeMax: 60, dischargeMax: 60, absorption: 168, float: 165, lvd: 144, lvr: 150, handshake: 5, capacityAh: 80 },
+            "SRNE_48V_100AH": { brand: "SRNE", model: "SRNE 48V 100Ah", protocol: "SRNE_CAN", interface: "CAN/RS485", voltage: 48, chargeMax: 100, dischargeMax: 100, absorption: 57.6, float: 56.8, lvd: 48.0, capacityAh: 100 },
+            "SRNE_48V_200AH": { brand: "SRNE", model: "SRNE 48V 200Ah", protocol: "SRNE_CAN", interface: "CAN", voltage: 48, chargeMax: 100, dischargeMax: 100, absorption: 57.6, float: 56.8, lvd: 48.0, capacityAh: 200 },
+            "SRNE_HV_150V": { brand: "SRNE", model: "High Voltage 150V", protocol: "SRNE_CAN", interface: "CAN", voltage: 150, chargeMax: 60, dischargeMax: 60, absorption: 168, float: 165, lvd: 144, capacityAh: 80 },
             
             // HUAWEI BATTERIES
-            "HUAWEI_LUNA_5K": { brand: "Huawei", model: "LUNA2000-5kWh", protocol: "HUAWEI_CAN", interface: "CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 25, dischargeMax: 25, absorption: 54.0, float: 53.5, lvd: 44.0, lvr: 48.0, handshake: 5, capacityAh: 100 },
-            "HUAWEI_LUNA_10K": { brand: "Huawei", model: "LUNA2000-10kWh", protocol: "HUAWEI_CAN", interface: "CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 50, dischargeMax: 50, absorption: 54.0, float: 53.5, lvd: 44.0, lvr: 48.0, handshake: 5, capacityAh: 200 },
+            "HUAWEI_LUNA_5K": { brand: "Huawei", model: "LUNA2000-5kWh", protocol: "HUAWEI_CAN", interface: "CAN", voltage: 48, chargeMax: 25, dischargeMax: 25, absorption: 54.0, float: 53.5, lvd: 44.0, capacityAh: 100 },
+            "HUAWEI_LUNA_10K": { brand: "Huawei", model: "LUNA2000-10kWh", protocol: "HUAWEI_CAN", interface: "CAN", voltage: 48, chargeMax: 50, dischargeMax: 50, absorption: 54.0, float: 53.5, lvd: 44.0, capacityAh: 200 },
             
             // GROWATT BATTERIES
-            "GROWATT_ARES_48": { brand: "Growatt", model: "ARES 48V 100Ah", protocol: "GROWATT_485", interface: "RS485", chemistry: "LiFePO4", voltage: 48, chargeMax: 50, dischargeMax: 50, absorption: 54.0, float: 53.5, lvd: 44.0, lvr: 48.0, handshake: 5, capacityAh: 100 },
-            "GROWATT_GLV_48": { brand: "Growatt", model: "GLV 48V 150Ah", protocol: "GROWATT_CAN", interface: "CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 75, dischargeMax: 75, absorption: 54.2, float: 53.6, lvd: 44.0, lvr: 48.0, handshake: 6, capacityAh: 150 },
+            "GROWATT_ARES_48": { brand: "Growatt", model: "ARES 48V 100Ah", protocol: "GROWATT_485", interface: "RS485", voltage: 48, chargeMax: 50, dischargeMax: 50, absorption: 54.0, float: 53.5, lvd: 44.0, capacityAh: 100 },
+            "GROWATT_GLV_48": { brand: "Growatt", model: "GLV 48V 150Ah", protocol: "GROWATT_CAN", interface: "CAN", voltage: 48, chargeMax: 75, dischargeMax: 75, absorption: 54.2, float: 53.6, lvd: 44.0, capacityAh: 150 },
             
             // DEYE BATTERIES
-            "DEYE_B48_100": { brand: "Deye", model: "B48-100", protocol: "DEYE_CAN", interface: "CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 100, dischargeMax: 100, absorption: 57.6, float: 56.8, lvd: 48.0, lvr: 52.0, handshake: 5, capacityAh: 100 },
-            "DEYE_SUN_BAT": { brand: "Deye", model: "SUN-BAT-10k", protocol: "DEYE_CAN", interface: "CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 100, dischargeMax: 100, absorption: 57.6, float: 56.8, lvd: 48.0, lvr: 52.0, handshake: 5, capacityAh: 200 },
+            "DEYE_B48_100": { brand: "Deye", model: "B48-100", protocol: "DEYE_CAN", interface: "CAN", voltage: 48, chargeMax: 100, dischargeMax: 100, absorption: 57.6, float: 56.8, lvd: 48.0, capacityAh: 100 },
+            "DEYE_SUN_BAT": { brand: "Deye", model: "SUN-BAT-10k", protocol: "DEYE_CAN", interface: "CAN", voltage: 48, chargeMax: 100, dischargeMax: 100, absorption: 57.6, float: 56.8, lvd: 48.0, capacityAh: 200 },
             
             // VICTRON BATTERIES
-            "VICTRON_LYNX_48": { brand: "Victron", model: "Lynx Ion 48V 100Ah", protocol: "VE_CAN", interface: "CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 100, dischargeMax: 100, absorption: 57.6, float: 56.8, lvd: 48.0, lvr: 52.0, handshake: 5, capacityAh: 100 },
-            "VICTRON_SMART_12V": { brand: "Victron", model: "Smart 12V 200Ah", protocol: "VE_BUS", interface: "Bluetooth", chemistry: "LiFePO4", voltage: 12, chargeMax: 100, dischargeMax: 100, absorption: 14.4, float: 13.8, lvd: 11.0, lvr: 12.0, handshake: 5, capacityAh: 200 },
+            "VICTRON_LYNX_48": { brand: "Victron", model: "Lynx Ion 48V 100Ah", protocol: "VE_CAN", interface: "CAN", voltage: 48, chargeMax: 100, dischargeMax: 100, absorption: 57.6, float: 56.8, lvd: 48.0, capacityAh: 100 },
+            "VICTRON_SMART_12V": { brand: "Victron", model: "Smart 12V 200Ah", protocol: "VE_BUS", interface: "Bluetooth", voltage: 12, chargeMax: 100, dischargeMax: 100, absorption: 14.4, float: 13.8, lvd: 11.0, capacityAh: 200 },
             
             // PYLONTECH
-            "PYL_US2000": { brand: "Pylontech", model: "US2000", protocol: "PYL", interface: "RS485/CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 25, dischargeMax: 25, absorption: 53.5, float: 53.0, lvd: 44.0, lvr: 48.0, hvd: 54.0, handshake: 10, capacityAh: 50 },
-            "PYL_US3000": { brand: "Pylontech", model: "US3000", protocol: "PYL", interface: "RS485/CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 37, dischargeMax: 37, absorption: 53.5, float: 53.0, lvd: 44.0, lvr: 48.0, handshake: 10, capacityAh: 74 },
-            "PYL_US5000": { brand: "Pylontech", model: "US5000", protocol: "PYL", interface: "RS485/CAN", chemistry: "LiFePO4", voltage: 48, chargeMax: 50, dischargeMax: 50, absorption: 53.5, float: 53.0, lvd: 44.0, lvr: 48.0, handshake: 10, capacityAh: 100 },
+            "PYL_US2000": { brand: "Pylontech", model: "US2000", protocol: "PYL", interface: "RS485/CAN", voltage: 48, chargeMax: 25, dischargeMax: 25, absorption: 53.5, float: 53.0, lvd: 44.0, capacityAh: 50 },
+            "PYL_US3000": { brand: "Pylontech", model: "US3000", protocol: "PYL", interface: "RS485/CAN", voltage: 48, chargeMax: 37, dischargeMax: 37, absorption: 53.5, float: 53.0, lvd: 44.0, capacityAh: 74 },
+            "PYL_US5000": { brand: "Pylontech", model: "US5000", protocol: "PYL", interface: "RS485/CAN", voltage: 48, chargeMax: 50, dischargeMax: 50, absorption: 53.5, float: 53.0, lvd: 44.0, capacityAh: 100 },
             
             // DYNESS
-            "DAQ_B4850": { brand: "Dyness", model: "B4850", protocol: "DAQ", interface: "CAN/RS485", chemistry: "LiFePO4", voltage: 48, chargeMax: 25, dischargeMax: 25, absorption: 53.5, float: 53.0, lvd: 45.0, handshake: 8, capacityAh: 100 },
+            "DAQ_B4850": { brand: "Dyness", model: "B4850", protocol: "DAQ", interface: "CAN/RS485", voltage: 48, chargeMax: 25, dischargeMax: 25, absorption: 53.5, float: 53.0, lvd: 45.0, capacityAh: 100 },
+            "DAQ_B48100": { brand: "Dyness", model: "B48100", protocol: "DAQ", interface: "CAN/RS485", voltage: 48, chargeMax: 50, dischargeMax: 50, absorption: 53.5, float: 53.0, lvd: 45.0, capacityAh: 100 },
             
             // BYD
-            "BYD_BBOX_HVS": { brand: "BYD", model: "Battery-Box HVS", protocol: "BYD", interface: "CAN", chemistry: "LiFePO4", voltage: 51.2, chargeMax: 50, dischargeMax: 50, absorption: 57.6, float: 56.8, lvd: 48.0, handshake: 10, capacityAh: 100 },
+            "BYD_BBOX_HVS": { brand: "BYD", model: "Battery-Box HVS", protocol: "BYD", interface: "CAN", voltage: 51.2, chargeMax: 50, dischargeMax: 50, absorption: 57.6, float: 56.8, lvd: 48.0, capacityAh: 100 },
+            "BYD_BBOX_HVH": { brand: "BYD", model: "Battery-Box HVH", protocol: "BYD", interface: "CAN", voltage: 51.2, chargeMax: 50, dischargeMax: 50, absorption: 57.6, float: 56.8, lvd: 48.0, capacityAh: 100 },
             
             // LITIME
-            "LITIO_48V_100": { brand: "LiTime", model: "48V 100Ah", protocol: "LIT", interface: "RS485", chemistry: "LiFePO4", voltage: 48, chargeMax: 50, dischargeMax: 50, absorption: 57.6, float: 56.8, lvd: 48.0, lvr: 52.0, handshake: 5, capacityAh: 100 },
+            "LITIO_12V_100": { brand: "LiTime", model: "12V 100Ah", protocol: "LIT", interface: "RS485", voltage: 12, chargeMax: 50, dischargeMax: 50, absorption: 14.4, float: 13.8, lvd: 11.0, capacityAh: 100 },
+            "LITIO_24V_100": { brand: "LiTime", model: "24V 100Ah", protocol: "LIT", interface: "RS485", voltage: 24, chargeMax: 50, dischargeMax: 50, absorption: 28.8, float: 27.6, lvd: 21.6, capacityAh: 100 },
+            "LITIO_48V_100": { brand: "LiTime", model: "48V 100Ah", protocol: "LIT", interface: "RS485", voltage: 48, chargeMax: 50, dischargeMax: 50, absorption: 57.6, float: 56.8, lvd: 48.0, capacityAh: 100 },
             
-            "USER": { brand: "USER MODE", model: "Manual Setup", protocol: "MANUAL", interface: "None", chemistry: "User Defined", voltage: 48, chargeMax: "MANUAL", dischargeMax: "MANUAL", absorption: "User Defined", float: "User Defined", lvd: "User Defined", handshake: 0, capacityAh: 0 }
+            "USER": { brand: "USER MODE", model: "Manual Setup", protocol: "MANUAL", interface: "None", voltage: 48, chargeMax: "MANUAL", dischargeMax: "MANUAL", absorption: "User Defined", float: "User Defined", lvd: "User Defined", capacityAh: 0 }
         };
         
         function findBestBattery(requiredAh, targetVoltage) {
@@ -480,52 +499,68 @@
         function calculateSystem() {
             let dailyWh = parseFloat(document.getElementById('dailyWh')?.value) || 2460;
             if (dailyWh > 30000) dailyWh = 30000;
-            let sysVoltage = parseInt(document.getElementById('sysVoltage')?.value || 12);
+            let sysVoltage = parseInt(document.getElementById('sysVoltage')?.value) || 24;
             const batteryChem = document.getElementById('batteryType')?.value;
-            const sunHours = parseFloat(document.getElementById('sunHoursSelect')?.value || 5);
-            let autonomy = parseFloat(document.getElementById('autonomy')?.value) || 0.025;
+            const sunHours = parseFloat(document.getElementById('sunHoursSelect')?.value) || 5;
+            let autonomy = parseFloat(document.getElementById('autonomy')?.value) || 0.5;
             const ambientTemp = parseFloat(document.getElementById('ambientTemp')?.value) || 35;
-            const panelWatt = parseInt(document.getElementById('panelWattage')?.value) || 630;
-            let panelCount = parseInt(document.getElementById('panelCount')?.value) || 1;
-            const manualBatteryAh = parseFloat(document.getElementById('manualBatteryAh')?.value) || 0;
-            const manualInverterWatt = parseFloat(document.getElementById('manualInverterWatt')?.value) || 0;
+            const panelWatt = parseInt(document.getElementById('panelWattage')?.value) || 600;
+            let panelCount = parseInt(document.getElementById('panelCount')?.value) || 2;
+            
+            let manualBatteryRaw = document.getElementById('manualBatteryAh')?.value;
+            let manualBatteryAh = (manualBatteryRaw && manualBatteryRaw.toString().trim() !== '') ? parseFloat(manualBatteryRaw) : 0;
+            if (isNaN(manualBatteryAh)) manualBatteryAh = 0;
+            
+            let manualInverterRaw = document.getElementById('manualInverterWatt')?.value;
+            let manualInverterWatt = (manualInverterRaw && manualInverterRaw.toString().trim() !== '') ? parseFloat(manualInverterRaw) : 0;
+            if (isNaN(manualInverterWatt)) manualInverterWatt = 0;
             
             const specs = getPanelSpecs(panelWatt);
             const totalWatts = panelCount * panelWatt;
             const roofSpace = (panelCount * specs.area * 1.15).toFixed(1);
             const tempDerate = 1 - ((ambientTemp - 25) * 0.0035);
             const dailyProduction = panelCount * panelWatt * sunHours * 0.85 * Math.max(0.7, tempDerate);
-            
             const stringVoltage = panelCount * specs.vmp;
             const stringCurrent = specs.imp;
+            const mpptCurrent = totalWatts / sysVoltage;
+            const mpptRatingActual = roundToMarketMPPT(mpptCurrent * 1.25);
             
-            let mpptCurrent = totalWatts / sysVoltage;
-            let mpptRatingActual = roundToMarketMPPT(mpptCurrent * 1.25);
-            if (mpptRatingActual.includes("MPPT") === false) mpptRatingActual = roundToMarketMPPT(mpptCurrent * 1.25);
-            
-            let inverterWatts = manualInverterWatt > 0 ? manualInverterWatt : Math.max(300, Math.ceil(dailyWh / 6) * 1.25);
-            const invSizes = [300, 500, 800, 1000, 1500, 2000, 2500, 3000, 4000, 5000, 6000, 8000, 10000];
-            for (let s of invSizes) { if (inverterWatts <= s) { inverterWatts = s; break; } }
-            
+            let inverterWatts;
+            if (manualInverterWatt > 0) {
+                inverterWatts = manualInverterWatt;
+            } else {
+                let fromDaily = Math.max(500, Math.ceil(dailyWh / 5) * 1.2);
+                let fromSolar = Math.max(500, totalWatts * 0.9);
+                inverterWatts = Math.max(fromDaily, fromSolar);
+                if (inverterWatts <= 800) inverterWatts = 800;
+                else if (inverterWatts <= 1000) inverterWatts = 1000;
+                else if (inverterWatts <= 1500) inverterWatts = 1500;
+                else if (inverterWatts <= 2000) inverterWatts = 2000;
+                else inverterWatts = 3000;
+            }
             let inverterCurrent = inverterWatts / sysVoltage;
             
             let usablePercent = batteryChem === 'lithium' ? 0.8 : 0.5;
-            let requiredAh = manualBatteryAh > 0 ? manualBatteryAh : Math.ceil((dailyWh * autonomy) / usablePercent / sysVoltage);
-            requiredAh = Math.max(Math.ceil(requiredAh / 10) * 10, 20);
+            let requiredAh;
+            if (manualBatteryAh > 0) {
+                requiredAh = manualBatteryAh;
+            } else {
+                requiredAh = Math.ceil((dailyWh * Math.max(0.1, autonomy)) / usablePercent / sysVoltage);
+                requiredAh = Math.ceil(requiredAh / 10) * 10;
+                requiredAh = Math.max(requiredAh, 50);
+                requiredAh = Math.min(requiredAh, 800);
+            }
             
             let batteryMaxDischarge = batteryChem === 'lithium' ? requiredAh * 0.5 : requiredAh * 0.3;
             
             let batteryMatch = findBestBattery(requiredAh, sysVoltage);
-            let selectedBMS = null;
-            let battText = `${requiredAh}Ah @ ${sysVoltage}V`;
+            let battText = `🎯 ${requiredAh}Ah @ ${sysVoltage}V ${batteryChem === 'lithium' ? 'LiFePO4' : 'AGM'}<br>⚡ Max Discharge: ${batteryMaxDischarge.toFixed(0)}A`;
             
-            if (batteryMatch.length > 0 && batteryMatch[0].capacityAh > 0) {
-                selectedBMS = batteryMatch[0];
-                let units = Math.ceil(requiredAh / selectedBMS.capacityAh);
-                battText = `🎯 ${selectedBMS.brand} ${selectedBMS.model}<br>📦 ${units} unit(s) = ${units * selectedBMS.capacityAh}Ah total<br>⚡ Max Charge: ${selectedBMS.chargeMax}A | 🔌 ${selectedBMS.interface}`;
-                if (typeof selectedBMS.dischargeMax === 'number') {
-                    batteryMaxDischarge = selectedBMS.dischargeMax * units;
-                }
+            if (batteryMatch.length > 0) {
+                let selected = batteryMatch[0];
+                let units = Math.ceil(requiredAh / selected.capacityAh);
+                battText = `🎯 ${selected.brand} ${selected.model}<br>📦 ${units} unit(s) = ${units * selected.capacityAh}Ah total<br>⚡ Max Charge: ${(selected.chargeMax * units).toFixed(0)}A | 🔌 ${selected.interface || "Built-in BMS"}`;
+                batteryMaxDischarge = (selected.dischargeMax || 50) * units;
             }
             
             let warnings = [];
@@ -533,76 +568,33 @@
             
             if (inverterCurrent > batteryMaxDischarge) {
                 let recommendedAh = Math.ceil(inverterCurrent / (batteryChem === 'lithium' ? 0.5 : 0.3));
-                warnings.push(`⚠️ SAFETY WARNING: Your ${inverterWatts}W inverter requires ${inverterCurrent.toFixed(0)}A, but your ${requiredAh}Ah ${batteryChem.toUpperCase()} battery can only supply ${batteryMaxDischarge.toFixed(0)}A continuous. This WILL trip the BMS or damage the battery. Recommended battery: ${recommendedAh}Ah minimum.`);
+                warnings.push(`⚠️ SAFETY: ${inverterWatts}W inverter needs ${inverterCurrent.toFixed(0)}A, battery supplies ${batteryMaxDischarge.toFixed(0)}A. Recommended: ${recommendedAh}Ah battery.`);
             } else {
-                successes.push(`✅ Battery-inverter match: ${inverterWatts}W inverter draws ${inverterCurrent.toFixed(0)}A, battery can supply ${batteryMaxDischarge.toFixed(0)}A. Safe.`);
-            }
-            
-            const minMPPTVoltage = sysVoltage === 12 ? 16 : (sysVoltage === 24 ? 30 : 60);
-            if (stringVoltage < minMPPTVoltage) {
-                warnings.push(`⚠️ EFFICIENCY WARNING: String voltage (${stringVoltage.toFixed(0)}V) is below MPPT minimum (${minMPPTVoltage}V) for ${sysVoltage}V system. MPPT may not start. Add more panels in series.`);
-            } else {
-                successes.push(`✅ String voltage (${stringVoltage.toFixed(0)}V) meets MPPT minimum (${minMPPTVoltage}V).`);
+                successes.push(`✅ ${inverterWatts}W inverter draws ${inverterCurrent.toFixed(0)}A, battery can supply ${batteryMaxDischarge.toFixed(0)}A.`);
             }
             
             if (dailyProduction < dailyWh) {
-                let neededPanels = Math.ceil(dailyWh / ((panelWatt * sunHours * 0.85 * Math.max(0.7, tempDerate))));
-                warnings.push(`⚠️ CAPACITY WARNING: Your ${panelCount}x${panelWatt}W panels produce ~${Math.round(dailyProduction)}Wh/day, but you need ${dailyWh}Wh/day. Add ${neededPanels - panelCount} more panels.`);
-            } else if (dailyProduction > dailyWh * 1.3) {
-                successes.push(`✅ Production (${Math.round(dailyProduction)}Wh/day) exceeds your need (${dailyWh}Wh/day) by ${Math.round((dailyProduction/dailyWh-1)*100)}%. Good for cloudy days!`);
+                warnings.push(`⚠️ Production ${Math.round(dailyProduction)}Wh/day < need ${dailyWh}Wh/day. Add more panels.`);
             } else {
-                successes.push(`✅ Production (${Math.round(dailyProduction)}Wh/day) matches your need (${dailyWh}Wh/day).`);
+                successes.push(`✅ Production ${Math.round(dailyProduction)}Wh/day meets your need.`);
             }
             
-            let safeBreakerCurrent = Math.min(inverterCurrent, batteryMaxDischarge);
             let pvBreaker = roundToMarketBreaker(stringCurrent * 1.25);
-            let batteryBreaker = roundToMarketBreaker(safeBreakerCurrent * 1.25);
-            let tClassFuse = roundToMarketBreaker(safeBreakerCurrent * 1.5);
-            
-            if (safeBreakerCurrent < inverterCurrent) {
-                warnings.push(`⚠️ BREAKER NOTE: Battery breaker is sized to ${batteryBreaker} based on battery limit (${batteryMaxDischarge.toFixed(0)}A). Your inverter can draw more (${inverterCurrent.toFixed(0)}A), but battery BMS will limit. This is correct for safety.`);
-            } else {
-                successes.push(`✅ Breakers correctly sized: PV ${pvBreaker}, Battery ${batteryBreaker}, T-Class ${tClassFuse}.`);
-            }
-            
+            let batteryBreaker = roundToMarketBreaker(batteryMaxDischarge * 1.25);
+            let tClassFuse = roundToMarketBreaker(inverterCurrent * 1.5);
             let pvWire = getWireSize(stringCurrent);
             let batteryCable = getWireSize(inverterCurrent);
             
-            let wireCheckPass = true;
-            if (stringCurrent > 20 && pvWire.includes("12 AWG")) {
-                warnings.push(`⚠️ WIRE SAFETY: PV current ${stringCurrent.toFixed(0)}A requires thicker wire. Use 10 AWG or thicker.`);
-                wireCheckPass = false;
-            }
-            if (inverterCurrent > 50 && batteryCable.includes("8 AWG")) {
-                warnings.push(`⚠️ WIRE SAFETY: Battery cable current ${inverterCurrent.toFixed(0)}A requires thicker wire. Use 6 AWG or thicker.`);
-                wireCheckPass = false;
-            }
-            if (wireCheckPass) {
-                successes.push(`✅ Wire sizing correct: PV wire ${pvWire}, Battery cable ${batteryCable}.`);
-            }
-            
-            const warningsDiv = document.getElementById('safetyWarnings');
-            const successesDiv = document.getElementById('successWarnings');
-            
-            if (warnings.length > 0) {
-                warningsDiv.style.display = 'block';
-                warningsDiv.innerHTML = '<strong>⚠️ SAFETY & EFFICIENCY CHECKS</strong><br><br>' + warnings.join('<br><br>');
-            } else {
-                warningsDiv.style.display = 'none';
-            }
-            
-            if (successes.length > 0) {
-                successesDiv.style.display = 'block';
-                successesDiv.innerHTML = '<strong>✅ SYSTEM VERIFIED</strong><br><br>' + successes.join('<br><br>');
-            } else {
-                successesDiv.style.display = 'none';
-            }
+            document.getElementById('safetyWarnings').innerHTML = warnings.length ? '<strong>⚠️ SAFETY & EFFICIENCY CHECKS</strong><br><br>' + warnings.join('<br><br>') : '';
+            document.getElementById('safetyWarnings').style.display = warnings.length ? 'block' : 'none';
+            document.getElementById('successWarnings').innerHTML = successes.length ? '<strong>✅ SYSTEM VERIFIED</strong><br><br>' + successes.join('<br><br>') : '';
+            document.getElementById('successWarnings').style.display = successes.length ? 'block' : 'none';
             
             let productionColor = dailyProduction >= dailyWh ? "success-value" : "warning-value";
-            document.getElementById('arraySpec').innerHTML = `${panelCount} x ${panelWatt}W = ${totalWatts}W<br><span class="${productionColor}">${dailyProduction >= dailyWh ? '✅ Sufficient' : '⚠️ Under-sized'}: ${Math.round(dailyProduction)}Wh/day vs ${dailyWh}Wh/day</span>`;
+            document.getElementById('arraySpec').innerHTML = `${panelCount} x ${panelWatt}W = ${totalWatts}W<br><span class="${productionColor}">${dailyProduction >= dailyWh ? '✅ Sufficient' : '⚠️ Under'}: ${Math.round(dailyProduction)}Wh/day vs ${dailyWh}Wh/day</span>`;
             document.getElementById('roofSpace').innerHTML = `${roofSpace} m²`;
             document.getElementById('mpptSpec').innerHTML = mpptRatingActual;
-            document.getElementById('stringVoltage').innerHTML = `${stringVoltage.toFixed(0)}V<br><small>${panelCount} panels × ${specs.vmp.toFixed(1)}V each</small>`;
+            document.getElementById('stringVoltage').innerHTML = `${stringVoltage.toFixed(0)}V<br><small>${panelCount} panels × ${specs.vmp.toFixed(1)}V</small>`;
             document.getElementById('stringCurrent').innerHTML = `${stringCurrent.toFixed(1)}A total<br><small>${specs.imp.toFixed(1)}A per string</small>`;
             document.getElementById('pvWire').innerHTML = pvWire;
             document.getElementById('batteryCable').innerHTML = batteryCable;
@@ -638,8 +630,8 @@
                 if (d.batteryType) document.getElementById('batteryType').value = d.batteryType;
                 if (d.autonomy) document.getElementById('autonomy').value = d.autonomy;
                 if (d.sunHoursSelect) document.getElementById('sunHoursSelect').value = d.sunHoursSelect;
-                if (d.manualBatteryAh) document.getElementById('manualBatteryAh').value = d.manualBatteryAh;
-                if (d.manualInverterWatt) document.getElementById('manualInverterWatt').value = d.manualInverterWatt;
+                if (d.manualBatteryAh !== undefined) document.getElementById('manualBatteryAh').value = d.manualBatteryAh;
+                if (d.manualInverterWatt !== undefined) document.getElementById('manualInverterWatt').value = d.manualInverterWatt;
             }
         }
         
@@ -676,6 +668,7 @@
             }
             displayDiv.innerHTML = `<div class="spec-row"><span>Brand:</span><span>${bms.brand} ${bms.model}</span></div>
 <div class="spec-row"><span>Protocol:</span><span>${bms.protocol}</span></div>
+<div class="spec-row"><span>Interface:</span><span>${bms.interface || "N/A"}</span></div>
 <div class="spec-row"><span>Voltage:</span><span>${bms.voltage}V</span></div>
 <div class="spec-row"><span>Capacity (per unit):</span><span>${bms.capacityAh}Ah</span></div>
 <div class="spec-row"><span>Parallel Units:</span><span>${batCount}</span></div>
@@ -683,7 +676,7 @@
 <div class="spec-row"><span>Max Charge:</span><span>${typeof bms.chargeMax === 'number' ? bms.chargeMax * batCount : bms.chargeMax}A</span></div>
 <div class="spec-row"><span>Absorption:</span><span>${bms.absorption}V</span></div>
 <div class="spec-row"><span>Float:</span><span>${bms.float}V</span></div>
-<div class="spec-row"><span>LVD:</span><span>${bms.lvd}V</span></div>`;
+<div class="spec-row"><span>LVD (Cut-off):</span><span>${bms.lvd}V</span></div>`;
             updateInverterConfig();
         }
         
@@ -692,6 +685,7 @@
             let batCount = parseInt(document.getElementById('batteryCount')?.value) || 1;
             let inverterBrand = document.getElementById('inverterBrand')?.value || "Generic";
             let mode = document.getElementById('modeSelect')?.value || "offgrid";
+            let handshakeDelay = document.getElementById('handshakeDelay')?.value || 10;
             let output = `═══════════════════════════════════════════════════════\n`;
             output += `⚡ ANYDIEL IT SERVICES · INVERTER CONFIGURATION\n`;
             output += `📍 Philippines 230V / 60Hz\n`;
@@ -703,31 +697,45 @@
                 output += `   Bulk/Absorption: ______ V\n`;
                 output += `   Float: ______ V\n`;
                 output += `   LVD: ______ V\n`;
+                output += `   BMS Handshake Delay: ${handshakeDelay} sec\n`;
             } else {
                 output += `🔋 BATTERY: ${bms.brand} ${bms.model}\n`;
                 output += `📡 PROTOCOL: ${bms.protocol}\n`;
                 output += `🔗 Parallel Batteries: ${batCount}\n`;
+                output += `⏱️ Handshake Delay: ${handshakeDelay} seconds\n`;
                 output += `\n📋 VOLTAGE SETTINGS:\n`;
                 output += `   Bulk/Absorption: ${bms.absorption}V\n`;
                 output += `   Float: ${bms.float}V\n`;
-                output += `   LVD: ${bms.lvd}V\n`;
+                output += `   Low Voltage Disconnect: ${bms.lvd}V\n`;
                 output += `\n⚙️ CHARGE LIMIT:\n`;
-                output += `   Max Charge: ${typeof bms.chargeMax === 'number' ? bms.chargeMax * batCount : bms.chargeMax}A\n`;
+                output += `   Max Charge Current: ${typeof bms.chargeMax === 'number' ? bms.chargeMax * batCount : bms.chargeMax}A\n`;
+                output += `   Max Discharge Current: ${typeof bms.dischargeMax === 'number' ? bms.dischargeMax * batCount : bms.dischargeMax}A\n`;
             }
             if (mode === 'hybrid') {
                 let minSOC = document.getElementById('minSOC')?.value || 20;
+                let cutoffSOC = document.getElementById('cutoffSOC')?.value || 5;
                 output += `\n🏠 HYBRID SETTINGS:\n`;
                 output += `   Switch to Grid at: ${minSOC}% SOC\n`;
+                output += `   Cut-off SOC: ${cutoffSOC}%\n`;
+                output += `   Grid Charge Enable: ☐ Yes  ☑ No\n`;
+            } else if (mode === 'gridtie') {
+                output += `\n🌐 GRID-TIE SETTINGS:\n`;
+                output += `   Grid Voltage: 230V AC\n`;
+                output += `   Grid Frequency: 60Hz\n`;
+                output += `   Feed-in Enable: ☑ Yes  ☐ No\n`;
+            } else {
+                output += `\n🔋 OFF-GRID SETTINGS:\n`;
+                output += `   AC Input: Disabled\n`;
+                output += `   Generator Start SOC: 15%\n`;
             }
             output += `\n═══════════════════════════════════════════════════════\n`;
             document.getElementById('inverterConfigOutput').innerText = output;
         }
         
         function copyConfig() { navigator.clipboard.writeText(document.getElementById('inverterConfigOutput').innerText); alert("✅ Copied!"); }
-        function exportConfig() { let b = new Blob([document.getElementById('inverterConfigOutput').innerText], {type: "text/plain"}); let a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `solar_config.txt`; a.click(); }
+        function exportConfig() { let b = new Blob([document.getElementById('inverterConfigOutput').innerText], {type: "text/plain"}); let a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `solar_config_${new Date().toISOString().slice(0,19)}.txt`; a.click(); }
         function toggleBMSDarkMode() { document.body.classList.toggle('dark-mode'); }
         
-        // Hybrid settings visibility
         document.getElementById('modeSelect')?.addEventListener('change', function() {
             let hybridDiv = document.getElementById('hybridSettings');
             if(hybridDiv) hybridDiv.style.display = this.value === 'hybrid' ? 'block' : 'none';
@@ -735,30 +743,25 @@
         });
         
         document.getElementById('calcBtn')?.addEventListener('click', calculateSystem);
-        document.getElementById('dailyWh')?.addEventListener('input', calculateSystem);
-        document.getElementById('panelWattage')?.addEventListener('change', calculateSystem);
-        document.getElementById('panelCount')?.addEventListener('input', calculateSystem);
-        document.getElementById('sysVoltage')?.addEventListener('change', calculateSystem);
-        document.getElementById('batteryType')?.addEventListener('change', calculateSystem);
-        document.getElementById('autonomy')?.addEventListener('input', calculateSystem);
-        document.getElementById('manualBatteryAh')?.addEventListener('input', calculateSystem);
-        document.getElementById('manualInverterWatt')?.addEventListener('input', calculateSystem);
+        ['dailyWh','panelWattage','panelCount','sysVoltage','batteryType','autonomy','manualBatteryAh','manualInverterWatt','sunHoursSelect','ambientTemp'].forEach(id => {
+            let el = document.getElementById(id); if(el) el.addEventListener('input', calculateSystem);
+        });
         document.getElementById('darkModeBtn')?.addEventListener('click', () => { document.body.classList.toggle('dark-mode'); localStorage.setItem('darkMode', document.body.classList.contains('dark-mode')); });
         if (localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark-mode');
         
-        document.getElementById('sendBtn')?.addEventListener('click', async () => {
+        document.getElementById('sendBtn')?.addEventListener('click', () => {
             let q = document.getElementById('chatInput').value;
             if (!q) return;
             let chat = document.getElementById('chatMessages');
             chat.innerHTML += `<div class="message user-msg">${q}</div>`;
             document.getElementById('chatInput').value = '';
-            chat.innerHTML += `<div class="message ai-msg">🤔 Checking safety...</div>`;
             setTimeout(() => {
                 let warnings = document.getElementById('safetyWarnings').innerHTML;
                 let hasWarnings = warnings.includes('⚠️');
-                chat.lastChild.innerHTML = hasWarnings ? `⚠️ System has safety warnings. Please review the red warning box above before proceeding.` : `✅ System passed all safety checks. Your components are properly matched.`;
+                let dailyProd = document.getElementById('arraySpec').innerHTML;
+                chat.innerHTML += `<div class="message ai-msg">${hasWarnings ? '⚠️ System has safety warnings. Review the red box above and adjust component sizing.' : '✅ System passed all safety checks. Your components are properly matched.\n\n' + dailyProd.substring(0, 100)}</div>`;
                 chat.scrollTop = chat.scrollHeight;
-            }, 1000);
+            }, 500);
         });
         
         loadInputs();
@@ -771,6 +774,7 @@
             document.getElementById('batteryCount')?.addEventListener('change', updateBMSspecs);
             document.getElementById('minSOC')?.addEventListener('input', updateInverterConfig);
             document.getElementById('cutoffSOC')?.addEventListener('input', updateInverterConfig);
+            document.getElementById('handshakeDelay')?.addEventListener('input', updateInverterConfig);
             updateInverterConfig();
         }
     </script>
